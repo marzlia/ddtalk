@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDTalk</title>
+    <link rel="stylesheet" href="/resources/css/style.css" />
+</head>
+<body>
+
+<table>
+    <tr>
+        <td>Learner</td>
+    </tr>
+    <tr>
+        <td ><a th:href="edit + '/' + ${learner.learnerId}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<b>Objective Plans</b>
+<table>
+    <tr th:each="objectivePlan : ${objectivePlans}">
+        <td ><a th:href="objectivePlan + '/' + ${objectivePlan.learnerPlanId}" th:text="${#dates.format(objectivePlan.dateStartPlan, 'MMM dd, yyyy')}" /></td>
+        <td th:text="${objectivePlan.treatmentFrequency}"></td>
+        <td th:text="${objectivePlan.dataCollectFrequency}"></td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<b>Target Plans</b>
+<table>
+    <tr th:each="objectivePlan : ${objectivePlans}">
+        <td ><a th:href="objectivePlan + '/' + ${objectivePlan.learnerPlanId}" th:text="${#dates.format(objectivePlan.dateStartPlan, 'MMM dd, yyyy')}" /></td>
+        <td th:text="${objectivePlan.treatmentFrequency}"></td>
+        <td th:text="${objectivePlan.dataCollectFrequency}"></td>
+    </tr>
+</table>
+
+</body>
+</html>

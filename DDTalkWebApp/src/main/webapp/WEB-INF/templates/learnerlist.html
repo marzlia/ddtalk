@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDTalk</title>
+    <link type="text/css" rel="stylesheet" href="/resources/css/style.css" />
+</head>
+<body>
+<table class="center">
+    <tr>
+        <th>Learner</th>
+    </tr>
+    <tr th:each="learner : ${learners}">
+        <td ><a th:href="${learner.learnerId}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
+    </tr>
+</table>
+<br /><br /><br />
+<a href="new">Add Learner</a>
+<br /><br /><br />
+<br /><br /><br />
+<a href="../user/logout">Logout</a>
+</body>
+</html>
