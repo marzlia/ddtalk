@@ -22,12 +22,8 @@ public class LearnerPlanService {
         return learnerPlanRepository.findAll();
     }
 
-    public List<LearnerPlan> getObjectivePlansForLearnerId(Long learnerId) {
-        return learnerPlanRepository.findByLearnerIdAndTreatmentType(learnerId, "Objective");
-    }
-
-    public List<LearnerPlan> getTargetPlansForLearnerId(Long learnerId) {
-        return learnerPlanRepository.findByLearnerIdAndTreatmentType(learnerId, "Target");
+    public List<LearnerPlan> getPlansForLearnerId(Long learnerId) {
+        return learnerPlanRepository.findByLearnerId(learnerId);
     }
 
     public LearnerPlan getLearnerPlan(Long planId) {

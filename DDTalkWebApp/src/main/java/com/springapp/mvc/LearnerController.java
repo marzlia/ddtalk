@@ -44,12 +44,10 @@ public class LearnerController {
     public String getLearnerUI(@PathVariable String learnerId, ModelMap model) {
 
         Learner learner = learnerService.getLearner(Long.parseLong(learnerId));
-        List<LearnerPlan> objectivePlans = learnerPlanService.getObjectivePlansForLearnerId(learner.getLearnerId());
-        List<LearnerPlan> targetPlans = learnerPlanService.getTargetPlansForLearnerId(learner.getLearnerId());
+        List<LearnerPlan> plans = learnerPlanService.getPlansForLearnerId(learner.getLearnerId());
 
         model.addAttribute("learner", learner);
-        model.addAttribute("objectivePlans", objectivePlans);
-        model.addAttribute("targetPlans", targetPlans);
+        model.addAttribute("plans", plans);
 
         return "learnerMain";
     }
@@ -95,26 +93,6 @@ public class LearnerController {
         model.addAttribute("learner", learner);
         model.addAttribute("savePath", "../");
         return "learnerProfile";
-    }
-
-    @RequestMapping(value = "/objectivePlan/{planId}", method = RequestMethod.GET)
-    public String learnerObjectivePlan(@PathVariable String planId, ModelMap model) {
-
-        LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
-        Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
-        List<Domain> domains = domainService.getAllDomains();
-        model.addAttribute("learner", learner);
-        model.addAttribute("objectivePlan", learnerPlan);
-        model.addAttribute("domains", domains);
-
-        return "learnerObjectivePlan";
-    }
-
-    @RequestMapping(value = "/objectivePlan/addDomain", method = RequestMethod.POST)
-    public String addDomain(@RequestBody String planId, ModelMap model) {
-
-
-        return "OK";
     }
 
 }

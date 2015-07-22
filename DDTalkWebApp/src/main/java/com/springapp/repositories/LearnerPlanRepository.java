@@ -14,6 +14,4 @@ import java.util.List;
 public interface LearnerPlanRepository extends JpaRepository<LearnerPlan, Long> {
 
     List<LearnerPlan> findByLearnerId(Long learnerId);
-    List<LearnerPlan> findByLearnerIdAndTreatmentType(Long learnerId, String treatmentType);
-
 }

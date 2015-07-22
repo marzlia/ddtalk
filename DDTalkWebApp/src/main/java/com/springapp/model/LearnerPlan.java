@@ -19,8 +19,8 @@ public class LearnerPlan {
     @Column(name = "learner_id")
     Long learnerId;
 
-    @Column(name = "treatment_type")
-    String treatmentType;
+    @Column(name = "treatment_description")
+    String treatmentDescription;
 
     @Column(name = "date_start_plan")
     Date dateStartPlan;
@@ -40,12 +40,7 @@ public class LearnerPlan {
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "learner_plan_id")
-    List<LearnerPlanDomainObjective> learnerPlanDomainObjectiveList;
-
-    @OneToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "learner_plan_id")
-    List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets;
+    List<LearnerPlanObjective> learnerPlanObjectiveList;
 
     public Long getLearnerPlanId() {
         return learnerPlanId;
@@ -61,14 +56,6 @@ public class LearnerPlan {
 
     public void setLearnerId(Long learnerId) {
         this.learnerId = learnerId;
-    }
-
-    public String getTreatmentType() {
-        return treatmentType;
-    }
-
-    public void setTreatmentType(String treatmentType) {
-        this.treatmentType = treatmentType;
     }
 
     public Date getDateStartPlan() {
@@ -111,19 +98,19 @@ public class LearnerPlan {
         this.targetEnableRetentionProbes = targetEnableRetentionProbes;
     }
 
-    public List<LearnerPlanDomainObjective> getLearnerPlanDomainObjectiveList() {
-        return learnerPlanDomainObjectiveList;
+    public String getTreatmentDescription() {
+        return treatmentDescription;
     }
 
-    public void setLearnerPlanDomainObjectiveList(List<LearnerPlanDomainObjective> learnerPlanDomainObjectiveList) {
-        this.learnerPlanDomainObjectiveList = learnerPlanDomainObjectiveList;
+    public void setTreatmentDescription(String treatmentDescription) {
+        this.treatmentDescription = treatmentDescription;
     }
 
-    public List<LearnerPlanObjectiveTarget> getLearnerPlanObjectiveTargets() {
-        return learnerPlanObjectiveTargets;
+    public List<LearnerPlanObjective> getLearnerPlanObjectiveList() {
+        return learnerPlanObjectiveList;
     }
 
-    public void setLearnerPlanObjectiveTargets(List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets) {
-        this.learnerPlanObjectiveTargets = learnerPlanObjectiveTargets;
+    public void setLearnerPlanObjectiveList(List<LearnerPlanObjective> learnerPlanObjectiveList) {
+        this.learnerPlanObjectiveList = learnerPlanObjectiveList;
     }
 }

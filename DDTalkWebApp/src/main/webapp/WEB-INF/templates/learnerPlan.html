@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDTalk</title>
+    <link rel="stylesheet" href="/resources/css/style.css" />
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+<body>
+
+<table>
+    <tr>
+        <td>Plan for learner</td>
+    </tr>
+    <tr>
+        <td ><a th:href="@{'/learner/edit/' + ${learner.learnerId}}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<table>
+    <tr>
+        <td th:text="${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
+        <td th:text="${plan.treatmentFrequency}"></td>
+        <td th:text="${plan.dataCollectFrequency}"></td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<b>Domains</b>
+<select>
+    <option th:each="domain : ${domains}"
+            th:value="${domain}"
+            th:text="${domain.description}">Domains</option>
+</select>
+
+</body>
+</html>

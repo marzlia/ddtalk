@@ -11,29 +11,17 @@
         <td>Learner</td>
     </tr>
     <tr>
-        <td ><a th:href="edit + '/' + ${learner.learnerId}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
+        <td ><a th:href="@{'/learner/edit/' + ${learner.learnerId}}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
     </tr>
 </table>
 
 <br /><br /><br />
 
-<b>Objective Plans</b>
+<b>Plans</b>
 <table>
-    <tr th:each="objectivePlan : ${objectivePlans}">
-        <td ><a th:href="objectivePlan + '/' + ${objectivePlan.learnerPlanId}" th:text="${#dates.format(objectivePlan.dateStartPlan, 'MMM dd, yyyy')}" /></td>
-        <td th:text="${objectivePlan.treatmentFrequency}"></td>
-        <td th:text="${objectivePlan.dataCollectFrequency}"></td>
-    </tr>
-</table>
-
-<br /><br /><br />
-
-<b>Target Plans</b>
-<table>
-    <tr th:each="objectivePlan : ${objectivePlans}">
-        <td ><a th:href="objectivePlan + '/' + ${objectivePlan.learnerPlanId}" th:text="${#dates.format(objectivePlan.dateStartPlan, 'MMM dd, yyyy')}" /></td>
-        <td th:text="${objectivePlan.treatmentFrequency}"></td>
-        <td th:text="${objectivePlan.dataCollectFrequency}"></td>
+    <tr th:each="plan : ${plans}">
+        <td ><a th:href="@{'/learnerPlan/' + ${plan.learnerPlanId}}" th:text="${plan.treatmentDescription}" /></td>
+        <td th:text="${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
     </tr>
 </table>
 
