@@ -1,9 +1,6 @@
 package com.springapp.mvc;
 
-import com.springapp.model.Domain;
-import com.springapp.model.Learner;
-import com.springapp.model.LearnerPlan;
-import com.springapp.model.LoginUser;
+import com.springapp.model.*;
 import com.springapp.service.DomainService;
 import com.springapp.service.LearnerPlanService;
 import com.springapp.service.LearnerService;
@@ -31,13 +28,15 @@ public class LearnerPlanController {
     LearnerPlanService learnerPlanService;
 
     @RequestMapping(value = "/{planId}", method = RequestMethod.GET)
-    public String learnerObjectivePlan(@PathVariable String planId, ModelMap model) {
+    public String learnerPlan(@PathVariable String planId, ModelMap model) {
 
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
+        List<LearnerPlanObjective> objectives = learnerPlan.getLearnerPlanObjectiveList();
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
 
         model.addAttribute("learner", learner);
         model.addAttribute("plan", learnerPlan);
+        model.addAttribute("planObjectives", objectives);
 
         return "learnerPlan";
     }

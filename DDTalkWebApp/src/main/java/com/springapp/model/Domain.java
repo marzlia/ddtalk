@@ -17,12 +17,6 @@ public class Domain {
     String description;
 
 
-    @ManyToMany(targetEntity = Objective.class, cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(name = "domain_objectives",
-            joinColumns = { @JoinColumn(name = "domain_id") },
-            inverseJoinColumns = { @JoinColumn(name = "objective_id") })
-    private List<Objective> objectives;
-
     public Long getDomainId() {
         return domainId;
     }
@@ -37,13 +31,5 @@ public class Domain {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public List<Objective> getObjectives() {
-        return objectives;
-    }
-
-    public void setObjectives(List<Objective> objectives) {
-        this.objectives = objectives;
     }
 }

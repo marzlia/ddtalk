@@ -29,4 +29,43 @@ public class LearnerPlanObjective {
     @JoinColumn(name = "learner_plan_objective_id")
     LearnerPlanObjectiveData learnerPlanObjectiveData;
 
+    public Long getLearnerPlanObjectiveId() {
+        return learnerPlanObjectiveId;
+    }
+
+    public void setLearnerPlanObjectiveId(Long learnerPlanObjectiveId) {
+        this.learnerPlanObjectiveId = learnerPlanObjectiveId;
+    }
+
+    public Long getLearnerPlanId() {
+        return learnerPlanId;
+    }
+
+    public void setLearnerPlanId(Long learnerPlanId) {
+        this.learnerPlanId = learnerPlanId;
+    }
+
+    public Objective getObjective() {
+        return objective;
+    }
+
+    public void setObjective(Objective objective) {
+        this.objective = objective;
+    }
+
+    public String getObjectiveType() {
+        return objectiveType;
+    }
+
+    public void setObjectiveType(String objectiveType) {
+        this.objectiveType = objectiveType;
+    }
+
+    public LearnerPlanObjectiveData getLearnerPlanObjectiveData() {
+        return learnerPlanObjectiveData;
+    }
+
+    public void setLearnerPlanObjectiveData(LearnerPlanObjectiveData learnerPlanObjectiveData) {
+        this.learnerPlanObjectiveData = learnerPlanObjectiveData;
+    }
 }

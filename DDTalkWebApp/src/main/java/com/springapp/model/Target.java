@@ -3,7 +3,7 @@ package com.springapp.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="targets")
+@Table(name="target")
 public class Target {
 
     @Id

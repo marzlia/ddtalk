@@ -14,14 +14,17 @@ public class LearnerPlanObjectiveData {
     @Column(name = "learner_plan_objective_id")
     Long learnerPlanObjectiveId;
 
-    @Column(name = "target_id")
-    Long targetId;
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "target_id")
+    Target target;
 
-    @Column(name = "condition_id")
-    Long conditionId;
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "condition_id")
+    Condition condition;
 
-    @Column(name = "criteria_id")
-    Long criteriaId;
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "criteria_id")
+    Criteria criteria;
 
     @Column(name = "mastery_value")
     Long mastery_value;
@@ -42,28 +45,28 @@ public class LearnerPlanObjectiveData {
         this.learnerPlanObjectiveId = learnerPlanObjectiveId;
     }
 
-    public Long getTargetId() {
-        return targetId;
+    public Target getTarget() {
+        return target;
     }
 
-    public void setTargetId(Long targetId) {
-        this.targetId = targetId;
+    public void setTarget(Target target) {
+        this.target = target;
     }
 
-    public Long getConditionId() {
-        return conditionId;
+    public Condition getCondition() {
+        return condition;
     }
 
-    public void setConditionId(Long conditionId) {
-        this.conditionId = conditionId;
+    public void setCondition(Condition condition) {
+        this.condition = condition;
     }
 
-    public Long getCriteriaId() {
-        return criteriaId;
+    public Criteria getCriteria() {
+        return criteria;
     }
 
-    public void setCriteriaId(Long criteriaId) {
-        this.criteriaId = criteriaId;
+    public void setCriteria(Criteria criteria) {
+        this.criteria = criteria;
     }
 
     public Long getMastery_value() {

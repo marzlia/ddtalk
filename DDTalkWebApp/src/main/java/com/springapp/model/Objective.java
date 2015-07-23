@@ -12,14 +12,12 @@ public class Objective {
     @Column(name = "objective_id")
     Long objectiveId;
 
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "domain_id")
+    Domain domain;
+
     @Column(name = "description")
     String description;
-
-//    @ManyToMany(targetEntity = Targets.class, cascade = { CascadeType.ALL })
-//    @JoinTable(name = "objective_targets",
-//            joinColumns = { @JoinColumn(name = "objective_id") },
-//            inverseJoinColumns = { @JoinColumn(name = "target_id") })
-//    private Set<Targets> targets;
 
     public Long getObjectiveId() {
         return objectiveId;
@@ -37,4 +35,11 @@ public class Objective {
         this.description = description;
     }
 
+    public Domain getDomain() {
+        return domain;
+    }
+
+    public void setDomain(Domain domain) {
+        this.domain = domain;
+    }
 }

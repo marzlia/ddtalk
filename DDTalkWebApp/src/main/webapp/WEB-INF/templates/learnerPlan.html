@@ -2,14 +2,43 @@
 <html>
 <head>
     <title>DDTalk</title>
-    <link rel="stylesheet" href="/resources/css/style.css" />
-
+    <style type="text/css">
+        #table-3 {
+            border: 1px solid #DFDFDF;
+            background-color: #F9F9F9;
+            width: 100%;
+            -moz-border-radius: 3px;
+            -webkit-border-radius: 3px;
+            border-radius: 3px;
+            font-family: Arial,"Bitstream Vera Sans",Helvetica,Verdana,sans-serif;
+            color: #333;
+        }
+        #table-3 td, #table-3 th {
+            border-top-color: white;
+            border-bottom: 1px solid #DFDFDF;
+            color: #555;
+        }
+        #table-3 th {
+            text-shadow: rgba(255, 255, 255, 0.796875) 0px 1px 0px;
+            font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
+            font-weight: normal;
+            padding: 7px 7px 8px;
+            text-align: left;
+            line-height: 1.3em;
+            font-size: 14px;
+        }
+        #table-3 td {
+            font-size: 12px;
+            padding: 4px 7px 2px;
+            vertical-align: top;
+        }
+    </style>
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 </head>
 <body>
 
-<table>
+<table >
     <tr>
         <td>Plan for learner</td>
     </tr>
@@ -25,6 +54,19 @@
         <td th:text="${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
         <td th:text="${plan.treatmentFrequency}"></td>
         <td th:text="${plan.dataCollectFrequency}"></td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<table id="table-3">
+    <tr th:each="planObjective : ${planObjectives}">
+        <td th:text="${planObjective.objective.domain.description}"></td>
+        <td th:text="${planObjective.objective.description}"></td>
+        <td th:text="${planObjective.learnerPlanObjectiveData.target.description}"></td>
+        <td th:text="${planObjective.learnerPlanObjectiveData.condition.description}"></td>
+        <td th:text="${planObjective.learnerPlanObjectiveData.criteria.description}"></td>
+        <td th:text="${planObjective.learnerPlanObjectiveData.mastery_value}"></td>
     </tr>
 </table>
 
