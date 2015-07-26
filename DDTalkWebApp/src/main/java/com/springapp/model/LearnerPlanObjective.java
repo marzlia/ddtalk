@@ -22,8 +22,9 @@ public class LearnerPlanObjective {
     @JoinColumn(name = "objective_id")
     Objective objective;
 
-    @Column(name = "objective_type")
-    String objectiveType;
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "objective_type_id")
+    ObjectiveType objectiveType;
 
     @OneToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "learner_plan_objective_id")
@@ -53,11 +54,11 @@ public class LearnerPlanObjective {
         this.objective = objective;
     }
 
-    public String getObjectiveType() {
+    public ObjectiveType getObjectiveType() {
         return objectiveType;
     }
 
-    public void setObjectiveType(String objectiveType) {
+    public void setObjectiveType(ObjectiveType objectiveType) {
         this.objectiveType = objectiveType;
     }
 
