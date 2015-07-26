@@ -3,22 +3,17 @@
 <head>
     <title>DDTalk</title>
     <link rel="stylesheet" href="/resources/css/style.css" />
+
+    <style th:replace="learnerCssFragments :: learner_table_standard"></style>
 </head>
 <body>
 
-<table>
-    <tr>
-        <td>Learner</td>
-    </tr>
-    <tr>
-        <td ><a th:href="@{'/learner/edit/' + ${learner.learnerId}}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
-    </tr>
-</table>
+<div th:replace="learnerFragments :: learner_header"></div>
 
 <br /><br /><br />
 
 <b>Plans</b>
-<table>
+<table class="table-style-standard">
     <tr th:each="plan : ${plans}">
         <td ><a th:href="@{'/learnerPlan/' + ${plan.learnerPlanId}}" th:text="${plan.treatmentDescription}" /></td>
         <td th:text="${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
