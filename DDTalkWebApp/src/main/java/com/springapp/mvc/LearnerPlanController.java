@@ -36,18 +36,22 @@ public class LearnerPlanController {
     @Autowired
     ObjectiveTypeService objectiveTypeService;
 
+    @Autowired
+    DomainService domainService;
+
     @RequestMapping(value = "/{planId}", method = RequestMethod.GET)
     public String learnerPlan(@PathVariable String planId, ModelMap model) {
 
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
         List<LearnerPlanObjective> objectives = learnerPlan.getLearnerPlanObjectiveList();
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
+        List<Domain> domains = domainService.getAllDomains();
 
+        // populate existing objectives
         Map<Domain, List<LearnerPlanObjective>> domainObjectivesMap = new HashMap<Domain, List<LearnerPlanObjective>>();
         for (LearnerPlanObjective objective : objectives) {
-            Domain domain = objective.getObjective().getDomain();
+            Domain domain = returnDomainObjectFromArrayWhichMatches(objective.getObjective().getDomain(), domains);
             List<LearnerPlanObjective> domainObjectiveList = domainObjectivesMap.get(domain);
-
             if (domainObjectiveList == null) {
                 domainObjectiveList = new ArrayList<LearnerPlanObjective>();
                 domainObjectivesMap.put(domain, domainObjectiveList);
@@ -55,9 +59,19 @@ public class LearnerPlanController {
             domainObjectiveList.add(objective);
         }
 
+        //empty domains
+        List<Domain> emptyDomains = new ArrayList<Domain>();
+        for (Domain domain : domains) {
+            List<LearnerPlanObjective> domainObjectiveList = domainObjectivesMap.get(domain);
+            if (domainObjectiveList == null) {
+                emptyDomains.add(domain);
+            }
+        }
+
         model.addAttribute("learner", learner);
         model.addAttribute("plan", learnerPlan);
         model.addAttribute("domainObjectivesMap", domainObjectivesMap);
+        model.addAttribute("emptyDomains", emptyDomains);
 
         List<Condition> conditionList = conditionService.getAllConditions();
         List<Criteria> criteriaList = criteriaService.getAllCriteria();
@@ -80,6 +94,15 @@ public class LearnerPlanController {
         model.addAttribute("masteryPercents", masteryPercents);
 
         return "learnerPlan";
+    }
+
+    private Domain returnDomainObjectFromArrayWhichMatches(Domain domain, List<Domain> domainArray) {
+        for (Domain searchDomain : domainArray) {
+            if (searchDomain.getDomainId() == domain.getDomainId()) {
+                return searchDomain;
+            }
+        }
+        return null;
     }
 }
 

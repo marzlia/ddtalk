@@ -13,6 +13,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.JstlView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -27,7 +29,7 @@ import java.util.Properties;
 @ComponentScan("com.springapp")
 @PropertySource("classpath:application.properties")
 @EnableJpaRepositories("com.springapp.repositories")
-public class MainConfig {
+public class MainConfig extends WebMvcConfigurerAdapter {
 
     private static final String PROPERTY_NAME_DATABASE_DRIVER = "db.driver";
     private static final String PROPERTY_NAME_DATABASE_PASSWORD = "db.password";
@@ -73,11 +75,6 @@ public class MainConfig {
         properties.put(PROPERTY_NAME_HIBERNATE_C3P0_MIN_SIZE, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_C3P0_MIN_SIZE));
         properties.put(PROPERTY_NAME_HIBERNATE_SHOW_SQL, env.getRequiredProperty(PROPERTY_NAME_HIBERNATE_SHOW_SQL));
 
-//        <property name="c3p0.acquire_increment">1</property>
-//        <property name="c3p0.idle_test_period">100</property> <!-- seconds -->
-//        <property name="c3p0.max_size">100</property>
-//        <property name="c3p0.max_statements">0</property>
-//        <property name="c3p0.timeout">100</property> <!-- seconds -->
         return properties;
     }
 
@@ -96,4 +93,8 @@ public class MainConfig {
         return source;
     }
 
+    @Override
+    public void addResourceHandlers( final ResourceHandlerRegistry registry ) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
 }

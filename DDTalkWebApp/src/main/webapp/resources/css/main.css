@@ -1,6 +1,6 @@
 table.table-style-standard {
     font-family: verdana, arial, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #333333;
     border-width: 1px;
     border-color: #3A3A3A;
@@ -11,14 +11,14 @@ table.table-style-standard th {
     padding: 8px;
     border-style: solid;
     border-color: #000000;
-    background-color: #79d533;
+    background-color: rgba(122, 207, 48, 0.34);
     color: #ffffff;
 }
 table.table-style-standard tr:hover td {
     cursor: pointer;
 }
 table.table-style-standard tr:nth-child(even) td{
-    background-color: #F7CFCF;
+    background-color: rgba(71, 255, 42, 0.23);
 }
 table.table-style-standard td {
     border-width: 1px;
