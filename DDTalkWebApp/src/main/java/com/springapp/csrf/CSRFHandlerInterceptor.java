@@ -3,6 +3,7 @@ package com.springapp.csrf;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
@@ -17,6 +18,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
  * @see CSRFRequestDataValueProcessor
  *
  */
+@Component
 public class CSRFHandlerInterceptor extends HandlerInterceptorAdapter{
 
     @Override

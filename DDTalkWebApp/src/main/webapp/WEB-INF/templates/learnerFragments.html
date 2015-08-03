@@ -1,5 +1,17 @@
 <!DOCTYPE html>
 <html>
+<head th:fragment="standard_head">
+    <title>DDTalk</title>
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+    <link type="text/css" rel="stylesheet" href="/resources/css/main.css" th:href="@{/resources/css/main.css}" />
+    <link type="text/css" rel="stylesheet" href="/resources/css/selectize.css" th:href="@{/resources/css/selectize.css}" />
+
+    <script src="/resources/js/selectize.js" th:src="@{/resources/js/selectize.js}"></script>
+    <script src="/resources/js/elemental.js" th:src="@{/resources/js/elemental.js}"></script>
+    <script src="/resources/js/behaviors/domain_selection.js" th:src="@{/resources/js/behaviors/domain_selection.js}"></script>
+</head>
 <body>
 
 <table class="table-style-standard" th:fragment="learner_header">

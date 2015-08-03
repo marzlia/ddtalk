@@ -1,15 +1,10 @@
 package com.springapp.mvc;
 
-import com.springapp.model.Condition;
-import com.springapp.model.Criteria;
-import com.springapp.model.Domain;
-import com.springapp.model.Learner;
-import com.springapp.service.ConditionService;
-import com.springapp.service.CriteriaService;
-import com.springapp.service.DomainService;
-import com.springapp.service.LearnerService;
+import com.springapp.model.*;
+import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +21,9 @@ public class LookupController {
 
     @Autowired
     DomainService domainService;
+
+    @Autowired
+    ObjectiveService objectiveService;
 
     @RequestMapping(value = "/conditions", method = RequestMethod.GET)
     @ResponseBody
@@ -74,5 +72,14 @@ public class LookupController {
         Domain persistedDomain = domainService.createDomain(domain);
         return persistedDomain;
     }
+
+    @RequestMapping(value = "/objectives/{domainId}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Objective> objectivesForDomain(@PathVariable String domainId) {
+
+        List<Objective> objectives = objectiveService.objectivesForDomainId(domainId);
+        return objectives;
+    }
+
 
 }

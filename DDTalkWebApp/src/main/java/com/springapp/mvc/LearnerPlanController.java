@@ -1,7 +1,9 @@
 package com.springapp.mvc;
 
 import com.springapp.model.*;
+import com.springapp.model.request.AddObjectiveRequest;
 import com.springapp.service.*;
+import com.springapp.csrf.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -104,5 +106,14 @@ public class LearnerPlanController {
         }
         return null;
     }
+
+    @RequestMapping(value = "/addObjective", method = RequestMethod.POST)
+    @ResponseBody
+    public String createCriteria(@ModelAttribute(value="addObjectiveRequest") AddObjectiveRequest addObjectiveRequest, BindingResult errors) {
+        learnerPlanService.addObjectiveToLearnerPlan(Long.parseLong(addObjectiveRequest.getLearnerPlanId()), Long.parseLong(addObjectiveRequest.getObjectiveId()));
+
+        return "Sucessssss";
+    }
+
 }
 

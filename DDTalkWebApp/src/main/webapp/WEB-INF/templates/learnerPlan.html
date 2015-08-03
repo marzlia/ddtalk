@@ -1,14 +1,8 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <title>DDTalk</title>
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
-    <script src="/resources/js/selectize.js" th:src="@{/resources/js/selectize.js}"></script>
 
-    <link type="text/css" rel="stylesheet" href="/resources/css/main.css" th:href="@{/resources/css/main.css}" />
+<head th:replace="learnerFragments :: standard_head"></head>
 
-</head>
 <body>
 
 <div th:replace="learnerFragments :: learner_header"></div>
@@ -95,85 +89,99 @@
                 </table>
             </tr>
          </table>
-        <br />
-        <table>
-            <tr>
-                <td>
-                    <select>
-                        <option th:each="domainObjective : ${domainObjectives}"
-                                th:value="${domainObjective}"
-                                th:text="${domainObjective.description}"/>
-                    </select>
-                </td>
-            </tr>
-        </table>
     </div>
     <br /><br />
 </div>
 
-<div id="wrapper">
-    <h1>Selectize.js</h1>
-    <div class="demo">
-        <h2>API</h2>
-        <p>Examples of how to interact with the control programmatically.</p>
-        <div class="control-group">
-            <label for="select-tools">Tools:</label>
-            <select id="select-tools" placeholder="Pick a tool..."></select>
-        </div>
-        <div class="buttons">
-            <input type="button" value="clear()" id="button-clear" />
-            <input type="button" value="clearOptions()" id="button-clearoptions" />
-            <input type="button" value="addOption()" id="button-addoption" />
-            <input type="button" value="addItem()" id="button-additem" />
-            <input type="button" value="setValue()" id="button-setvalue" />
-        </div>
-        <script>
-            var $select = $('#select-tools').selectize({
-                maxItems: null,
-                valueField: 'id',
-                labelField: 'title',
-                searchField: 'title',
-                options: [
-                    {id: 1, title: 'Spectrometer', url: 'http://en.wikipedia.org/wiki/Spectrometers'},
-                    {id: 2, title: 'Star Chart', url: 'http://en.wikipedia.org/wiki/Star_chart'},
-                    {id: 3, title: 'Electrical Tape', url: 'http://en.wikipedia.org/wiki/Electrical_tape'}
-                ],
-                create: false
-            });
-            // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-            var control = $select[0].selectize;
-            $('#button-clear').on('click', function() {
-                control.clear();
-            });
-            $('#button-clearoptions').on('click', function() {
-                control.clearOptions();
-            });
-            $('#button-addoption').on('click', function() {
-                control.addOption({
-                    id: 4,
-                    title: 'Something New',
-                    url: 'http://google.com'
-                });
-            });
-            $('#button-additem').on('click', function() {
-                control.addItem(2);
-            });
-            $('#button-setvalue').on('click', function() {
-                control.setValue([2, 3]);
-            });
-        </script>
+<div>
+    <div>
+        <label for="select-domain">Add Domain Objective:</label>
+        <select id="select-domain" placeholder="Select a domain...">
+            <option th:each="domain : ${emptyDomains}"
+                    th:value="${domain.domainId}"
+                    th:text="${domain.description}"/>
+        </select>
     </div>
 </div>
 
+<script>
+    $('#select-domain').selectize({
+        create: false,
+        dropdownParent: 'body',
+        onChange: function(value) {
+            $.ajax({
+                url: '../lookup/objectives/' + value,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var selectize = $('#select-objective')[0].selectize;
+                    selectize.clearOptions();
+                    selectize.renderCache = {};
+                    selectize.load( function(callback) {
+                        callback(data);
+                    });
+                }
+            });
+        }
+    });
+</script>
 
-<select>
-    <option th:each="domain : ${emptyDomains}"
-            th:value="${domain}"
-            th:text="${domain.description}"/>
-</select>
-<br />
-<input type="button" value="Add selected Domain to plan" class="add_domain_button" />
+<div>
+    <select id="select-objective" placeholder="Select an objective..." />
+</div>
 
+<script>
+    $('#select-objective').selectize({
+        create: true,
+        valueField: 'objectiveId',
+        labelField: 'description',
+        searchField: 'description',
+        sortField: {
+            field: 'description',
+            direction: 'asc'
+        }
+    });
+</script>
+
+<form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
+</form>
+
+<div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
+<button onclick="addObjective()">Add Objective</button>
+
+<script type="text/javascript">
+    var addObjective = function() {
+        var selectizeObjective = $('#select-objective')[0].selectize;
+        var selectizeDomain = $('#select-domain')[0].selectize;
+
+        var planId = $('#postPlanId').attr('value');
+        var objectiveId = selectizeObjective.getValue();
+        var domainId = selectizeDomain.getValue();
+
+        var theAction = $('#add_objective_form').attr('action');
+        var theCSRF = $("[name^='_csrf']").attr('value');
+        $.ajax({
+            url: theAction,
+            type: 'POST',
+            headers: {
+                '_csrf':theCSRF
+            },
+            data: {
+                learnerPlanId: planId,
+                domainId: domainId,
+                objectiveId: objectiveId,
+                _csrf:theCSRF
+            },
+            dataType:'json',
+            success: function (data) {
+                alert(data);
+            },
+            failure: function (data) {
+                alert(data);
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

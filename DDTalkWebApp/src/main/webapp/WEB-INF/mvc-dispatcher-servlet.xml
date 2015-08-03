@@ -37,12 +37,4 @@
     <beans:bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
     </beans:bean>
 
-    <!-- Data Value Processor -->
-    <beans:bean name="requestDataValueProcessor" class="com.springapp.csrf.CSRFRequestDataValueProcessor"/>
-
-    <!-- Interceptor handlers -->
-    <interceptors>
-        <beans:bean class="com.springapp.csrf.CSRFHandlerInterceptor"/>
-    </interceptors>
-
 </beans:beans>

@@ -11,7 +11,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author Eyal Lupu
  */
-final class CSRFTokenManager {
+public final class CSRFTokenManager {
 
     /**
      * The token parameter name
@@ -23,7 +23,7 @@ final class CSRFTokenManager {
      */
     private final static String CSRF_TOKEN_FOR_SESSION_ATTR_NAME = CSRFTokenManager.class.getName() + ".tokenval";
 
-    static String getTokenForSession (HttpSession session) {
+    public static String getTokenForSession (HttpSession session) {
         String token = null;
         // I cannot allow more than one token on a session - in the case of two requests trying to
         // init the token concurrently

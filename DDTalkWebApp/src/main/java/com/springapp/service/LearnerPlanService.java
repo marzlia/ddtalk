@@ -1,9 +1,7 @@
 package com.springapp.service;
 
-import com.springapp.model.Learner;
-import com.springapp.model.LearnerPlan;
-import com.springapp.repositories.LearnerPlanRepository;
-import com.springapp.repositories.LearnerRepository;
+import com.springapp.model.*;
+import com.springapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +16,15 @@ public class LearnerPlanService {
     @Autowired
     LearnerPlanRepository learnerPlanRepository;
 
+    @Autowired
+    LearnerPlanObjectiveRepository learnerPlanObjectiveRepository;
+
+    @Autowired
+    ObjectiveRepository objectiveRepository;
+
+    @Autowired
+    ObjectiveTypeRepository objectiveTypeRepository;
+
     public List<LearnerPlan> getAllLearnerPlans() {
         return learnerPlanRepository.findAll();
     }
@@ -29,5 +36,19 @@ public class LearnerPlanService {
     public LearnerPlan getLearnerPlan(Long planId) {
         return learnerPlanRepository.findOne(planId);
     }
+
+    public void addObjectiveToLearnerPlan(Long planId, Long objectiveId) {
+        LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
+        learnerPlanObjective.setLearnerPlanId(planId);
+
+        Objective objective = objectiveRepository.findOne(objectiveId);
+        learnerPlanObjective.setObjective(objective);
+
+        ObjectiveType objectiveType = objectiveTypeRepository.findByTypeId("P");
+        learnerPlanObjective.setObjectiveType(objectiveType);
+
+        learnerPlanObjectiveRepository.save(learnerPlanObjective);
+    }
+
 
 }
