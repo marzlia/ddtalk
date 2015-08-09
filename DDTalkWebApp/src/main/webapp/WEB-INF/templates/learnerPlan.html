@@ -53,6 +53,9 @@
                                         th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
                             </select>
                         </td>
+                        <td>
+                            <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
+                        </td>
                     </tr>
                 </table>
             </tr>

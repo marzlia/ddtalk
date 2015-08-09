@@ -2,6 +2,7 @@ package com.springapp.mvc;
 
 import com.springapp.model.*;
 import com.springapp.model.request.AddObjectiveRequest;
+import com.springapp.model.request.AddObjectiveTargetsRequest;
 import com.springapp.model.request.UpdateObjectiveRequestItem;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,6 +140,38 @@ public class LearnerPlanController {
 
         return "redirect:/learnerPlan/" + learnerPlan.getLearnerPlanId();
     }
+
+    @RequestMapping(value = "/addObjectiveTargets", method = RequestMethod.POST)
+    public String saveTargets(@ModelAttribute(value="addObjectiveTargetsRequest") AddObjectiveTargetsRequest addObjectiveTargetsRequest, BindingResult errors) {
+
+        LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(addObjectiveTargetsRequest.getLearnerPlanId()));
+        learnerPlanService.addPlanObjectiveTargets(Long.parseLong(addObjectiveTargetsRequest.getPlanObjectiveId()), addObjectiveTargetsRequest.getTargets());
+        return "redirect:/learnerPlan/" + learnerPlan.getLearnerPlanId();
+    }
+
+    @RequestMapping(value = "/learnerPlanObjectiveTargets/{learnerPlanId}/{planObjectiveId}", method = RequestMethod.GET)
+    public String learnerPlanAddTargets(@PathVariable String learnerPlanId, @PathVariable String planObjectiveId, ModelMap model) {
+
+        LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        model.addAttribute("learnerPlan", plan);
+
+        LearnerPlanObjective learnerPlanObjective = learnerPlanService.getLearnerPlanObjective(Long.parseLong(planObjectiveId));
+        model.addAttribute("learnerPlanObjective", learnerPlanObjective);
+
+        List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets = learnerPlanService.getLearnerPlanObjectiveTargets(Long.parseLong(planObjectiveId));
+        model.addAttribute("learnerPlanObjectiveTargets", learnerPlanObjectiveTargets);
+
+        return "learnerPlanObjectiveTargets";
+    }
+
+
+    @RequestMapping(value = "/removeObjectiveTarget/{planId}/{objectiveId}/{objectiveTargetId}", method = RequestMethod.GET)
+    public String removeObjectiveTarget(@PathVariable String planId, @PathVariable String objectiveId, @PathVariable String objectiveTargetId) {
+        learnerPlanService.deleteLearnerPlanObjectiveTarget(Long.parseLong(objectiveTargetId));
+        return "redirect:/learnerPlan/learnerPlanObjectiveTargets/" + planId + "/" + objectiveId;
+    }
+
+
 
 }
 

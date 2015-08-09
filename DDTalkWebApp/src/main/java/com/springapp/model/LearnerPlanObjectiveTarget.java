@@ -9,25 +9,20 @@ public class LearnerPlanObjectiveTarget {
     @Id
     @GeneratedValue
     @Column(name = "learner_plan_objective_target_id")
-    Long learnerPlanObjectiveDataId;
+    Long learnerPlanObjectiveTargetId;
 
     @Column(name = "learner_plan_objective_id")
     Long learnerPlanObjectiveId;
 
-    @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "target_id")
-    Target target;
+    @Column(name = "description")
+    String targetDescription;
 
-    @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "prompt_code_id")
-    PromptCode promptCode;
-
-    public Long getLearnerPlanObjectiveDataId() {
-        return learnerPlanObjectiveDataId;
+    public Long getLearnerPlanObjectiveTargetId() {
+        return learnerPlanObjectiveTargetId;
     }
 
-    public void setLearnerPlanObjectiveDataId(Long learnerPlanObjectiveDataId) {
-        this.learnerPlanObjectiveDataId = learnerPlanObjectiveDataId;
+    public void setLearnerPlanObjectiveTargetId(Long learnerPlanObjectiveTargetId) {
+        this.learnerPlanObjectiveTargetId = learnerPlanObjectiveTargetId;
     }
 
     public Long getLearnerPlanObjectiveId() {
@@ -38,19 +33,11 @@ public class LearnerPlanObjectiveTarget {
         this.learnerPlanObjectiveId = learnerPlanObjectiveId;
     }
 
-    public Target getTarget() {
-        return target;
+    public String getTargetDescription() {
+        return targetDescription;
     }
 
-    public void setTarget(Target target) {
-        this.target = target;
-    }
-
-    public PromptCode getPromptCode() {
-        return promptCode;
-    }
-
-    public void setPromptCode(PromptCode promptCode) {
-        this.promptCode = promptCode;
+    public void setTargetDescription(String targetDescription) {
+        this.targetDescription = targetDescription;
     }
 }

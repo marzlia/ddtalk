@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDTalk</title>
+    <link type="text/css" rel="stylesheet" href="/resources/css/main.css" th:href="@{/resources/css/main.css}" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+</head>
+<body>
+
+<fieldset style="width: 650px">
+    <legend>Add Targets</legend>
+    <form th:action="@{../../addObjectiveTargets}" th:object="${learnerPlanObjective}" method="post">
+        <table>
+            <tr>
+                <td>Targets</td>
+                <td>
+                    <input type="text" name="targets" value="" style="width: 600px"/>
+                </td>
+            </tr>
+        </table>
+
+        <input  type="hidden" name="planObjectiveId" th:value="${learnerPlanObjective.learnerPlanObjectiveId}" />
+        <input  type="hidden" name="learnerPlanId" th:value="${learnerPlan.learnerPlanId}" />
+
+        <br />
+        <input type="submit" value="Submit" />
+
+    </form>
+</fieldset>
+
+<br /><br />
+
+<b>Targets</b>
+<table class="table-style-standard">
+    <tr th:each="target : ${learnerPlanObjectiveTargets}">
+        <td th:text="${target.targetDescription}" />
+        <td>
+            <a href="" th:href="@{../../removeObjectiveTarget} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerPlanObjective.learnerPlanObjectiveId} + '/' + ${target.learnerPlanObjectiveTargetId}">Remove</a>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

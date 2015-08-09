@@ -9,5 +9,5 @@ import java.util.List;
 @Repository
 public interface LearnerPlanObjectiveTargetRepository extends JpaRepository<LearnerPlanObjectiveTarget, Long> {
 
-    List<LearnerPlanObjectiveTarget> findByLearnerPlanObjectiveId(String learnerPlanObjectiveId);
+    List<LearnerPlanObjectiveTarget> findByLearnerPlanObjectiveId(Long learnerPlanObjectiveId);
 }

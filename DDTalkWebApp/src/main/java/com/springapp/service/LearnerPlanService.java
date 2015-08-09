@@ -20,6 +20,9 @@ public class LearnerPlanService {
     LearnerPlanObjectiveRepository learnerPlanObjectiveRepository;
 
     @Autowired
+    LearnerPlanObjectiveTargetRepository learnerPlanObjectiveTargetRepository;
+
+    @Autowired
     ObjectiveRepository objectiveRepository;
 
     @Autowired
@@ -77,4 +80,25 @@ public class LearnerPlanService {
         return learnerPlanRepository.save(plan);
     }
 
+    public void addPlanObjectiveTargets(Long planObjectiveId, String targets) {
+        LearnerPlanObjectiveTarget learnerPlanObjectiveTarget = new LearnerPlanObjectiveTarget();
+        learnerPlanObjectiveTarget.setLearnerPlanObjectiveId(planObjectiveId);
+        learnerPlanObjectiveTarget.setTargetDescription(targets);
+
+        learnerPlanObjectiveTargetRepository.save(learnerPlanObjectiveTarget);
+    }
+
+    public LearnerPlanObjective getLearnerPlanObjective(Long planObjectiveId) {
+        LearnerPlanObjective learnerPlanObjective = learnerPlanObjectiveRepository.findOne(planObjectiveId);
+        return learnerPlanObjective;
+    }
+
+    public List<LearnerPlanObjectiveTarget> getLearnerPlanObjectiveTargets(Long planObjectiveId) {
+        List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets = learnerPlanObjectiveTargetRepository.findByLearnerPlanObjectiveId(planObjectiveId);
+        return learnerPlanObjectiveTargets;
+    }
+
+    public void deleteLearnerPlanObjectiveTarget(Long planObjectiveTargetId) {
+        learnerPlanObjectiveTargetRepository.delete(planObjectiveTargetId);
+    }
 }
