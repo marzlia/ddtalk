@@ -19,42 +19,6 @@
 
 <br /><br /><br />
 
-<fieldset>
-    <legend>Add Objective</legend>
-    <div>
-        <div>
-            <label for="select-domain"></label>
-            <select id="select-domain" placeholder="Select a domain...">
-                <option th:each="domain : ${emptyDomains}"
-                        th:value="${domain.domainId}"
-                        th:text="${domain.description}"/>
-            </select>
-        </div>
-    </div>
-
-    <div>
-        <select id="select-objective" placeholder="Select an objective..." />
-    </div>
-
-    <div>
-        <div>
-            <select id="select-objective-type">
-                <option th:each="objectiveType : ${objectiveTypes}"
-                        th:value="${objectiveType.objectiveTypeId}"
-                        th:text="${objectiveType.typeDescription}"/>
-            </select>
-        </div>
-    </div>
-
-    <form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
-    </form>
-
-    <div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
-    <button onclick="addObjective()">Add Objective</button>
-</fieldset>
-
-<br /><br />
-
 <div th:each="mapEntry : ${domainObjectivesMap}">
     <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
     <div th:each="planObjective : ${mapEntry.value}">
@@ -130,6 +94,46 @@
 
 <form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form">
 </form>
+
+<br /><br />
+
+<fieldset style="width: 650px">
+    <legend>Add Objective</legend>
+    <div>
+        <div>
+            <label for="select-domain"></label>
+            <select id="select-domain" placeholder="Select a domain..." style="width: 250px">
+                <option th:each="domain : ${emptyDomains}"
+                        th:value="${domain.domainId}"
+                        th:text="${domain.description}"/>
+            </select>
+        </div>
+    </div>
+
+    <div>
+        <select id="select-objective" placeholder="Select an objective..." style="width: 500px"/>
+    </div>
+
+    <br />
+
+    <div>
+        <div>
+            <select id="select-objective-type" style="width: 250px">
+                <option th:each="objectiveType : ${objectiveTypes}"
+                        th:value="${objectiveType.objectiveTypeId}"
+                        th:text="${objectiveType.typeDescription}"/>
+            </select>
+        </div>
+    </div>
+
+    <form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
+    </form>
+
+    <div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
+    <button onclick="addObjective()">Add Objective</button>
+</fieldset>
+
+<br /><br /><br />
 
 <script>
     $('#select-domain').selectize({
@@ -237,6 +241,11 @@
         });
 
     }
+
+    $( document ).ready(function() {
+        var selectizeDomain = $('#select-domain')[0].selectize;
+        selectizeDomain.clear(true);
+    });
 </script>
 
 </body>
