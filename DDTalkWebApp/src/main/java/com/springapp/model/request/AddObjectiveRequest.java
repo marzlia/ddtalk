@@ -8,6 +8,7 @@ public class AddObjectiveRequest {
     String learnerPlanId;
     String objectiveId;
     String domainId;
+    String objectiveTypeId;
 
     public String getLearnerPlanId() {
         return learnerPlanId;
@@ -31,5 +32,13 @@ public class AddObjectiveRequest {
 
     public void setDomainId(String domainId) {
         this.domainId = domainId;
+    }
+
+    public String getObjectiveTypeId() {
+        return objectiveTypeId;
+    }
+
+    public void setObjectiveTypeId(String objectiveTypeId) {
+        this.objectiveTypeId = objectiveTypeId;
     }
 }

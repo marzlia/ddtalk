@@ -19,70 +19,104 @@
 
 <br /><br /><br />
 
+<fieldset>
+    <legend>Add Objective</legend>
+    <div>
+        <div>
+            <label for="select-domain"></label>
+            <select id="select-domain" placeholder="Select a domain...">
+                <option th:each="domain : ${emptyDomains}"
+                        th:value="${domain.domainId}"
+                        th:text="${domain.description}"/>
+            </select>
+        </div>
+    </div>
+
+    <div>
+        <select id="select-objective" placeholder="Select an objective..." />
+    </div>
+
+    <div>
+        <div>
+            <select id="select-objective-type">
+                <option th:each="objectiveType : ${objectiveTypes}"
+                        th:value="${objectiveType.objectiveTypeId}"
+                        th:text="${objectiveType.typeDescription}"/>
+            </select>
+        </div>
+    </div>
+
+    <form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
+    </form>
+
+    <div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
+    <button onclick="addObjective()">Add Objective</button>
+</fieldset>
+
+<br /><br />
+
 <div th:each="mapEntry : ${domainObjectivesMap}">
     <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
     <div th:each="planObjective : ${mapEntry.value}">
         <table class="table-style-standard">
             <tr>
                 <td th:text="${planObjective.objective.description}"></td>
-                <td>
-                <select>
-                    <option th:each="objectiveType : ${objectiveTypes}"
-                            th:value="${objectiveType.typeId}"
-                            th:text="${objectiveType.typeDescription}"
-                            th:selected="${planObjective.objectiveType.typeId == objectiveType.typeId}"/>
-                </select>
-                </td>
             </tr>
             <tr th:if="${planObjective.objectiveType.typeId == 'C'}">
-                <table class="table-style-standard">
+                <table class="table-style-standard" id="C" th:id="${planObjective.learnerPlanObjectiveId}">
                     <tr>
                         <td>
-                            <select>
+                            <select name="mastery">
                                 <option th:each="masteryCount : ${masteryCounts}"
                                         th:value="${masteryCount}"
-                                        th:text="${masteryCount}"/>
+                                        th:text="${masteryCount}"
+                                        th:selected="${masteryCount == planObjective.masteryValue}"/>
                             </select>
                         </td>
                         <td>
-                            <select>
+                            <select name="condition">
                                 <option th:each="condition : ${conditions}"
-                                        th:value="${condition}"
-                                        th:text="${condition.description}"/>
+                                        th:value="${condition.conditionId}"
+                                        th:text="${condition.description}"
+                                        th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
                             </select>
                         </td>
                         <td>
-                            <select>
+                            <select name="criteria">
                                 <option th:each="criteria : ${criterias}"
-                                        th:value="${criteria}"
-                                        th:text="${criteria.description}"/>
+                                        th:value="${criteria.criteriaId}"
+                                        th:text="${criteria.description}"
+                                        th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
                             </select>
                         </td>
                     </tr>
                 </table>
             </tr>
             <tr th:if="${planObjective.objectiveType.typeId == 'P'}">
-                <table class="table-style-standard">
+                <table class="table-style-standard" id="P" th:id="${planObjective.learnerPlanObjectiveId}">
                     <tr>
                         <td>
-                            <select>
+                            <select name="mastery">
                                 <option th:each="masteryPercent : ${masteryPercents}"
                                         th:value="${masteryPercent}"
-                                        th:text="${masteryPercent} + '%'"/>
+                                        th:text="${masteryPercent} + '%'"
+                                        th:selected="${masteryPercent == planObjective.masteryValue}"/>
                             </select>
                         </td>
                         <td>
-                            <select>
+                            <select name="condition">
                                 <option th:each="condition : ${conditions}"
-                                        th:value="${condition}"
-                                        th:text="${condition.description}"/>
+                                        th:value="${condition.conditionId}"
+                                        th:text="${condition.description}"
+                                        th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
                             </select>
                         </td>
                         <td>
-                            <select>
+                            <select name="criteria">
                                 <option th:each="criteria : ${criterias}"
-                                        th:value="${criteria}"
-                                        th:text="${criteria.description}"/>
+                                        th:value="${criteria.criteriaId}"
+                                        th:text="${criteria.description}"
+                                        th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
                             </select>
                         </td>
                     </tr>
@@ -92,17 +126,10 @@
     </div>
     <br /><br />
 </div>
+<button onclick="updateObjectives()">Save Changes</button>
 
-<div>
-    <div>
-        <label for="select-domain">Add Domain Objective:</label>
-        <select id="select-domain" placeholder="Select a domain...">
-            <option th:each="domain : ${emptyDomains}"
-                    th:value="${domain.domainId}"
-                    th:text="${domain.description}"/>
-        </select>
-    </div>
-</div>
+<form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form">
+</form>
 
 <script>
     $('#select-domain').selectize({
@@ -124,13 +151,7 @@
             });
         }
     });
-</script>
 
-<div>
-    <select id="select-objective" placeholder="Select an objective..." />
-</div>
-
-<script>
     $('#select-objective').selectize({
         create: true,
         valueField: 'objectiveId',
@@ -141,22 +162,20 @@
             direction: 'asc'
         }
     });
-</script>
 
-<form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
-</form>
+    $('#select-objective-type').selectize({
+        create: false
+    });
 
-<div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
-<button onclick="addObjective()">Add Objective</button>
-
-<script type="text/javascript">
     var addObjective = function() {
         var selectizeObjective = $('#select-objective')[0].selectize;
         var selectizeDomain = $('#select-domain')[0].selectize;
+        var selectizeObjectiveType = $('#select-objective-type')[0].selectize;
 
         var planId = $('#postPlanId').attr('value');
         var objectiveId = selectizeObjective.getValue();
         var domainId = selectizeDomain.getValue();
+        var objectiveTypeId = selectizeObjectiveType.getValue();
 
         var theAction = $('#add_objective_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
@@ -170,16 +189,53 @@
                 learnerPlanId: planId,
                 domainId: domainId,
                 objectiveId: objectiveId,
+                objectiveTypeId: objectiveTypeId,
                 _csrf:theCSRF
             },
             dataType:'json',
             success: function (data) {
-                alert(data);
+                location.reload();
             },
-            failure: function (data) {
-                alert(data);
+            error: function() {
             }
         });
+    };
+
+    var updateObjectives = function() {
+        var theAction = $('#update_objectives_form').attr('action');
+        var theCSRF = $("[name^='_csrf']").attr('value');
+
+        var allObjectiveTables = $('table[id]');
+        jQuery.each( allObjectiveTables, function( i, val ) {
+            var planObjectiveId = $(val).attr("id");
+            var columns = $(val).find('tbody > tr > td');
+
+            var masteryCol = $(columns).find('[name="mastery"]');
+            var masteryValue = masteryCol.val();
+
+            var conditionCol = $(columns).find('[name="condition"]');
+            var conditionValue = conditionCol.val();
+
+            var criteriaCol = $(columns).find('[name="criteria"]');
+            var criteriaValue = criteriaCol.val();
+
+            $.ajax({
+                url: theAction,
+                type: 'POST',
+                headers: {
+                    '_csrf':theCSRF
+                },
+                data: {
+                    planObjectiveId:planObjectiveId, conditionId:conditionValue, criteriaId:criteriaValue, masteryValue:masteryValue,
+                    _csrf:theCSRF
+                },
+                success: function (data) {
+                },
+                error: function() {
+                }
+            });
+        });
+
     }
 </script>
 

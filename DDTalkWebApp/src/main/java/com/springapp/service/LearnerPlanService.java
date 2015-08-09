@@ -25,6 +25,12 @@ public class LearnerPlanService {
     @Autowired
     ObjectiveTypeRepository objectiveTypeRepository;
 
+    @Autowired
+    ConditionRepository conditionRepository;
+
+    @Autowired
+    CriteriaRepository criteriaRepository;
+
     public List<LearnerPlan> getAllLearnerPlans() {
         return learnerPlanRepository.findAll();
     }
@@ -37,18 +43,38 @@ public class LearnerPlanService {
         return learnerPlanRepository.findOne(planId);
     }
 
-    public void addObjectiveToLearnerPlan(Long planId, Long objectiveId) {
+    public void addObjectiveToLearnerPlan(Long planId, Long objectiveId, Long objectiveTypeId) {
         LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
         learnerPlanObjective.setLearnerPlanId(planId);
 
         Objective objective = objectiveRepository.findOne(objectiveId);
         learnerPlanObjective.setObjective(objective);
 
-        ObjectiveType objectiveType = objectiveTypeRepository.findByTypeId("P");
+        ObjectiveType objectiveType = objectiveTypeRepository.findByObjectiveTypeId(objectiveTypeId);
         learnerPlanObjective.setObjectiveType(objectiveType);
 
         learnerPlanObjectiveRepository.save(learnerPlanObjective);
     }
 
+    public void updatePlanObjective(Long planObjectiveId, Long conditionId, Long criteriaId, Long masteryValue) {
+        LearnerPlanObjective learnerPlanObjective = learnerPlanObjectiveRepository.findOne(planObjectiveId);
+        Condition condition = conditionRepository.findOne(conditionId);
+        Criteria criteria = criteriaRepository.findOne(criteriaId);
+
+        learnerPlanObjective.setCondition(condition);
+        learnerPlanObjective.setCriteria(criteria);
+        learnerPlanObjective.setMasteryValue(masteryValue);
+        learnerPlanObjectiveRepository.save(learnerPlanObjective);
+    }
+
+    public LearnerPlan createNewPlanForLearnerId(Long learnerId) {
+        LearnerPlan plan = new LearnerPlan();
+        plan.setLearnerId(learnerId);
+        return learnerPlanRepository.save(plan);
+    }
+
+    public LearnerPlan saveLearnerPlan(LearnerPlan plan) {
+        return learnerPlanRepository.save(plan);
+    }
 
 }

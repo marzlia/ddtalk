@@ -10,5 +10,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface ObjectiveTypeRepository extends JpaRepository<ObjectiveType, Long> {
 
+    public ObjectiveType findByObjectiveTypeId(Long objectiveTypeId);
     public ObjectiveType findByTypeId(String typeId);
 }

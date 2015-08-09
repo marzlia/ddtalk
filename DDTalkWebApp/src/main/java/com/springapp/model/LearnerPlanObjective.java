@@ -1,8 +1,5 @@
 package com.springapp.model;
 
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-
 import javax.persistence.*;
 import java.util.List;
 
@@ -27,8 +24,19 @@ public class LearnerPlanObjective {
     ObjectiveType objectiveType;
 
     @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "condition_id")
+    Condition condition;
+
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "criteria_id")
+    Criteria criteria;
+
+    @Column(name = "mastery_value")
+    Long masteryValue;
+
+    @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name = "learner_plan_objective_id")
-    LearnerPlanObjectiveData learnerPlanObjectiveData;
+    List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTarget;
 
     public Long getLearnerPlanObjectiveId() {
         return learnerPlanObjectiveId;
@@ -62,11 +70,35 @@ public class LearnerPlanObjective {
         this.objectiveType = objectiveType;
     }
 
-    public LearnerPlanObjectiveData getLearnerPlanObjectiveData() {
-        return learnerPlanObjectiveData;
+    public List<LearnerPlanObjectiveTarget> getLearnerPlanObjectiveTarget() {
+        return learnerPlanObjectiveTarget;
     }
 
-    public void setLearnerPlanObjectiveData(LearnerPlanObjectiveData learnerPlanObjectiveData) {
-        this.learnerPlanObjectiveData = learnerPlanObjectiveData;
+    public void setLearnerPlanObjectiveTarget(List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTarget) {
+        this.learnerPlanObjectiveTarget = learnerPlanObjectiveTarget;
+    }
+
+    public Condition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(Condition condition) {
+        this.condition = condition;
+    }
+
+    public Criteria getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(Criteria criteria) {
+        this.criteria = criteria;
+    }
+
+    public Long getMasteryValue() {
+        return masteryValue;
+    }
+
+    public void setMasteryValue(Long masteryValue) {
+        this.masteryValue = masteryValue;
     }
 }

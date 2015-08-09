@@ -3,12 +3,12 @@ package com.springapp.model;
 import javax.persistence.*;
 
 @Entity
-@Table(name="learner_plan_objective_data")
-public class LearnerPlanObjectiveData {
+@Table(name="learner_plan_objective_target")
+public class LearnerPlanObjectiveTarget {
 
     @Id
     @GeneratedValue
-    @Column(name = "learner_plan_objective_data_id")
+    @Column(name = "learner_plan_objective_target_id")
     Long learnerPlanObjectiveDataId;
 
     @Column(name = "learner_plan_objective_id")
@@ -19,15 +19,8 @@ public class LearnerPlanObjectiveData {
     Target target;
 
     @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "condition_id")
-    Condition condition;
-
-    @OneToOne(fetch=FetchType.EAGER)
-    @JoinColumn(name = "criteria_id")
-    Criteria criteria;
-
-    @Column(name = "mastery_value")
-    Long mastery_value;
+    @JoinColumn(name = "prompt_code_id")
+    PromptCode promptCode;
 
     public Long getLearnerPlanObjectiveDataId() {
         return learnerPlanObjectiveDataId;
@@ -53,27 +46,11 @@ public class LearnerPlanObjectiveData {
         this.target = target;
     }
 
-    public Condition getCondition() {
-        return condition;
+    public PromptCode getPromptCode() {
+        return promptCode;
     }
 
-    public void setCondition(Condition condition) {
-        this.condition = condition;
-    }
-
-    public Criteria getCriteria() {
-        return criteria;
-    }
-
-    public void setCriteria(Criteria criteria) {
-        this.criteria = criteria;
-    }
-
-    public Long getMastery_value() {
-        return mastery_value;
-    }
-
-    public void setMastery_value(Long mastery_value) {
-        this.mastery_value = mastery_value;
+    public void setPromptCode(PromptCode promptCode) {
+        this.promptCode = promptCode;
     }
 }

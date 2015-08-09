@@ -2,8 +2,8 @@ package com.springapp.mvc;
 
 import com.springapp.model.*;
 import com.springapp.model.request.AddObjectiveRequest;
+import com.springapp.model.request.UpdateObjectiveRequestItem;
 import com.springapp.service.*;
-import com.springapp.csrf.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -61,19 +61,10 @@ public class LearnerPlanController {
             domainObjectiveList.add(objective);
         }
 
-        //empty domains
-        List<Domain> emptyDomains = new ArrayList<Domain>();
-        for (Domain domain : domains) {
-            List<LearnerPlanObjective> domainObjectiveList = domainObjectivesMap.get(domain);
-            if (domainObjectiveList == null) {
-                emptyDomains.add(domain);
-            }
-        }
-
         model.addAttribute("learner", learner);
         model.addAttribute("plan", learnerPlan);
         model.addAttribute("domainObjectivesMap", domainObjectivesMap);
-        model.addAttribute("emptyDomains", emptyDomains);
+        model.addAttribute("emptyDomains", domains);
 
         List<Condition> conditionList = conditionService.getAllConditions();
         List<Criteria> criteriaList = criteriaService.getAllCriteria();
@@ -107,12 +98,46 @@ public class LearnerPlanController {
         return null;
     }
 
+    @RequestMapping(value = "/updateObjectives", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateObjectives(@ModelAttribute(value="updateObjectiveRequestItem") UpdateObjectiveRequestItem updateObjectiveRequestItem, BindingResult errors) {
+        learnerPlanService.updatePlanObjective(Long.parseLong(updateObjectiveRequestItem.getPlanObjectiveId()),
+                Long.parseLong(updateObjectiveRequestItem.getConditionId()),
+                Long.parseLong(updateObjectiveRequestItem.getCriteriaId()),
+                updateObjectiveRequestItem.getMasteryValue());
+
+
+        return "{}";
+    }
+
     @RequestMapping(value = "/addObjective", method = RequestMethod.POST)
     @ResponseBody
-    public String createCriteria(@ModelAttribute(value="addObjectiveRequest") AddObjectiveRequest addObjectiveRequest, BindingResult errors) {
-        learnerPlanService.addObjectiveToLearnerPlan(Long.parseLong(addObjectiveRequest.getLearnerPlanId()), Long.parseLong(addObjectiveRequest.getObjectiveId()));
+    public String addObjective(@ModelAttribute(value="addObjectiveRequest") AddObjectiveRequest addObjectiveRequest, BindingResult errors) {
+        learnerPlanService.addObjectiveToLearnerPlan(Long.parseLong(addObjectiveRequest.getLearnerPlanId()),
+                Long.parseLong(addObjectiveRequest.getObjectiveId()),
+                Long.parseLong(addObjectiveRequest.getObjectiveTypeId()));
 
-        return "Sucessssss";
+        return "{}";
+    }
+
+    @RequestMapping(value = "/newLearnerPlan/{learnerId}", method = RequestMethod.GET)
+    public String createLearnerPlan(@PathVariable String learnerId, ModelMap model) {
+
+        LearnerPlan plan = learnerPlanService.createNewPlanForLearnerId(Long.parseLong(learnerId));
+        Learner learner = learnerService.getLearner(Long.parseLong(learnerId));
+
+        model.addAttribute("learnerPlan", plan);
+        model.addAttribute("learner", learner);
+
+        return "learnerNewPlan";
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String saveLearnerPlan(@ModelAttribute(value="learnerPlan") LearnerPlan learnerPlan, BindingResult errors) {
+
+        learnerPlanService.saveLearnerPlan(learnerPlan);
+
+        return "redirect:/learnerPlan/" + learnerPlan.getLearnerPlanId();
     }
 
 }

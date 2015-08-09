@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>DDTalk</title>
+    <link type="text/css" rel="stylesheet" href="/resources/css/main.css" th:href="@{/resources/css/main.css}" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+
+    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+        $(function() {
+            $( "#datepicker" ).datepicker();
+        });
+    </script>
+</head>
+<body>
+
+
+<form th:action="@{../save}" th:object="${learnerPlan}" method="post">
+    <table>
+        <tr>
+            <td>Description</td>
+            <td>
+                <input type="text" name="treatmentDescription" th:value="${learnerPlan.treatmentDescription}" />
+            </td>
+        </tr>
+        <tr>
+            <td>Start Date</td>
+            <td>
+                <input type="text" id="datepicker" name="dateStartPlan" th:value="${learnerPlan.dateStartPlan}" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Treatment Frequency</td>
+            <td>
+                <input type="text" name="treatmentFrequency" th:value="${learnerPlan.treatmentFrequency}" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Data Collection Frequency</td>
+            <td>
+                <input type="text" name="dataCollectFrequency" th:value="${learnerPlan.dataCollectFrequency}" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Target Number of Fluency Probes</td>
+            <td>
+                <input type="text" name="targetNumFluencyProbes" th:value="${learnerPlan.targetNumFluencyProbes}" />
+            </td>
+        </tr>
+
+        <tr>
+            <td>Target enable Retention Probes</td>
+            <td>
+                <input type="text" name="targetEnableRetentionProbes" th:value="${learnerPlan.targetEnableRetentionProbes}" />
+            </td>
+        </tr>
+
+    </table>
+
+    <input  type="hidden" name="learnerId" th:value="${learner.learnerId}" />
+
+    <br />
+    <br />
+    <input type="submit" value="Submit" />
+</form>
+</body>
+</html>

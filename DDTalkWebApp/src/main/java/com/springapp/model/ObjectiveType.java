@@ -35,4 +35,12 @@ public class ObjectiveType {
     public void setTypeId(String typeId) {
         this.typeId = typeId;
     }
+
+    public Long getObjectiveTypeId() {
+        return objectiveTypeId;
+    }
+
+    public void setObjectiveTypeId(Long objectiveTypeId) {
+        this.objectiveTypeId = objectiveTypeId;
+    }
 }
