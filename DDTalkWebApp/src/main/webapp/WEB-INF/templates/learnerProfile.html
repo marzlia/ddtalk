@@ -9,7 +9,10 @@
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script>
         $(function() {
-            $( "#datepicker" ).datepicker();
+            $( ".datepicker" ).datepicker({
+                changeMonth: true,
+                changeYear: true
+            });
         });
     </script>
 </head>
@@ -32,7 +35,7 @@
         <tr>
             <td>Date of Birth</td>
             <td>
-                <input type="text" name="dob" th:value="${learner.dob}" />
+                <input type="text" class="datepicker" name="dob" th:value="${learner.dob}" />
             </td>
         </tr>
 
@@ -60,7 +63,7 @@
         <tr>
             <td>Date of Initial Evaluation</td>
             <td>
-                <input type="text" id="datepicker" name="dateIntialEval" th:value="${learner.dateIntialEval}" />
+                <input type="text" class="datepicker" name="dateIntialEval" th:value="${learner.dateIntialEval}" />
             </td>
         </tr>
 

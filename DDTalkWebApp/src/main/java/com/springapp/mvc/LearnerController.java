@@ -81,7 +81,10 @@ public class LearnerController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public String saveLearner(@ModelAttribute(value="learner") Learner learner, BindingResult errors) {
 
+        LoginUser loginUser = loginUserService.getLoginUser(httpServletRequest.getUserPrincipal().getName());
         learnerService.saveLearner(learner);
+
+        learnerService.linkLearnerToLoginUser(learner, loginUser);
 
         return "redirect:/learner/user";
     }

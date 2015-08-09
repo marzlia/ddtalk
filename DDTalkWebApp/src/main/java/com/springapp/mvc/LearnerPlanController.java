@@ -146,7 +146,7 @@ public class LearnerPlanController {
 
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(addObjectiveTargetsRequest.getLearnerPlanId()));
         learnerPlanService.addPlanObjectiveTargets(Long.parseLong(addObjectiveTargetsRequest.getPlanObjectiveId()), addObjectiveTargetsRequest.getTargets());
-        return "redirect:/learnerPlan/" + learnerPlan.getLearnerPlanId();
+        return "redirect:/learnerPlan/learnerPlanObjectiveTargets/" + learnerPlan.getLearnerPlanId() + "/" + addObjectiveTargetsRequest.getPlanObjectiveId();
     }
 
     @RequestMapping(value = "/learnerPlanObjectiveTargets/{learnerPlanId}/{planObjectiveId}", method = RequestMethod.GET)
