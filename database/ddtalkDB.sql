@@ -133,6 +133,7 @@ CREATE TABLE IF NOT EXISTS learner_session_objective (
 
 CREATE TABLE IF NOT EXISTS learner_session_objective_target(
   learner_session_objective_target_id int(11) NOT NULL AUTO_INCREMENT,
+  learner_session_objective_id int(11) NOT NULL,
   learner_plan_objective_target_id int(11) NOT NULL,
   prompt_code_id int(11),
   session_value int(11),

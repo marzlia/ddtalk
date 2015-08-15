@@ -1,6 +1,10 @@
 package com.springapp.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name="learner_session_objective")
@@ -8,17 +12,23 @@ public class LearnerSessionObjective {
 
     @Id
     @GeneratedValue
-    @Column(name = "internalId")
-    Long internalId;
+    @Column(name = "learner_session_objective_id")
+    Long learnerSessionObjectiveId;
 
     @Column(name = "learner_session_id")
     Long learnerSessionId;
 
-    @Column(name = "objective_id")
-    Long objectiveId;
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "learner_plan_objective_id")
+    LearnerPlanObjective learnerPlanObjective;
 
-    @Column(name = "percent")
-    Long percent;
+    @Column(name = "session_value")
+    Long sessionValue;
+
+    @OneToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "learner_session_objective_id")
+    List<LearnerSessionObjectiveTarget> learnerSessionObjectiveTargets;
 
     public Long getLearnerSessionId() {
         return learnerSessionId;
@@ -28,19 +38,35 @@ public class LearnerSessionObjective {
         this.learnerSessionId = learnerSessionId;
     }
 
-    public Long getObjectiveId() {
-        return objectiveId;
+    public Long getLearnerSessionObjectiveId() {
+        return learnerSessionObjectiveId;
     }
 
-    public void setObjectiveId(Long objectiveId) {
-        this.objectiveId = objectiveId;
+    public void setLearnerSessionObjectiveId(Long learnerSessionObjectiveId) {
+        this.learnerSessionObjectiveId = learnerSessionObjectiveId;
     }
 
-    public Long getPercent() {
-        return percent;
+    public LearnerPlanObjective getLearnerPlanObjective() {
+        return learnerPlanObjective;
     }
 
-    public void setPercent(Long percent) {
-        this.percent = percent;
+    public void setLearnerPlanObjective(LearnerPlanObjective learnerPlanObjective) {
+        this.learnerPlanObjective = learnerPlanObjective;
+    }
+
+    public Long getSessionValue() {
+        return sessionValue;
+    }
+
+    public void setSessionValue(Long sessionValue) {
+        this.sessionValue = sessionValue;
+    }
+
+    public List<LearnerSessionObjectiveTarget> getLearnerSessionObjectiveTargets() {
+        return learnerSessionObjectiveTargets;
+    }
+
+    public void setLearnerSessionObjectiveTargets(List<LearnerSessionObjectiveTarget> learnerSessionObjectiveTargets) {
+        this.learnerSessionObjectiveTargets = learnerSessionObjectiveTargets;
     }
 }

@@ -130,7 +130,7 @@ public class LearnerPlanController {
         model.addAttribute("learnerPlan", plan);
         model.addAttribute("learner", learner);
 
-        return "learnerNewPlan";
+        return "learnerPlanNew";
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)

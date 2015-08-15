@@ -1,7 +1,11 @@
 package com.springapp.model;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="learner_session")
@@ -18,8 +22,10 @@ public class LearnerSession {
     @Column(name = "session_date")
     Date sessionDate;
 
-    @Column(name = "has_mastered")
-    Long hasMastered;
+    @OneToMany(cascade = {CascadeType.ALL})
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinColumn(name = "learner_session_id")
+    List<LearnerSessionObjective> learnerSessionObjectiveList;
 
     public Long getLearnerSessionId() {
         return learnerSessionId;
@@ -45,11 +51,11 @@ public class LearnerSession {
         this.sessionDate = sessionDate;
     }
 
-    public Long getHasMastered() {
-        return hasMastered;
+    public List<LearnerSessionObjective> getLearnerSessionObjectiveList() {
+        return learnerSessionObjectiveList;
     }
 
-    public void setHasMastered(Long hasMastered) {
-        this.hasMastered = hasMastered;
+    public void setLearnerSessionObjectiveList(List<LearnerSessionObjective> learnerSessionObjectiveList) {
+        this.learnerSessionObjectiveList = learnerSessionObjectiveList;
     }
 }

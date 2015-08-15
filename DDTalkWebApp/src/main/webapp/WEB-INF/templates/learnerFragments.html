@@ -4,6 +4,7 @@
     <title>DDTalk</title>
     <script src="//code.jquery.com/jquery-1.10.2.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
 
     <link type="text/css" rel="stylesheet" href="/resources/css/main.css" th:href="@{/resources/css/main.css}" />
     <link type="text/css" rel="stylesheet" href="/resources/css/selectize.css" th:href="@{/resources/css/selectize.css}" />
@@ -11,14 +12,21 @@
     <script src="/resources/js/selectize.js" th:src="@{/resources/js/selectize.js}"></script>
     <script src="/resources/js/elemental.js" th:src="@{/resources/js/elemental.js}"></script>
     <script src="/resources/js/behaviors/domain_selection.js" th:src="@{/resources/js/behaviors/domain_selection.js}"></script>
+
+    <script>
+        $(function() {
+            $( ".datepicker" ).datepicker({
+                changeMonth: true,
+                changeYear: true
+            });
+        });
+    </script>
 </head>
 <body>
 
-<table class="table-style-standard" th:fragment="learner_header">
-    <tr>
-        <td ><a th:href="@{'/learner/edit/' + ${learner.learnerId}}" th:text="${'Learner:' + learner.lastName + ', ' + learner.firstName}"></a> </td>
-    </tr>
-</table>
+<div th:fragment="learner_header">
+        <b><p th:text="${'Learner: ' + learner.firstName + ' ' + learner.lastName}" /></b>
+</div>
 
 </body>
 </html>

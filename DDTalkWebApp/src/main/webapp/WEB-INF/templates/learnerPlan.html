@@ -26,7 +26,11 @@
     </tr>
 </table>
 
-<br /><br /><br />
+<br /><br />
+
+<a th:href="@{'/learnerSession/newLearnerSession/' + ${plan.learnerPlanId}}">Create New Session</a>
+
+<br />
 
 <div th:each="mapEntry : ${domainObjectivesMap}">
     <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
@@ -109,7 +113,7 @@
 
 <br /><br />
 
-<fieldset style="width: 650px">
+<fieldset style="width: 600px">
     <legend>Add Objective</legend>
     <div>
         <div>

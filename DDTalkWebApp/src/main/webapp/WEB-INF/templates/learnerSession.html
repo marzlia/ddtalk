@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="learnerFragments :: standard_head"></head>
+<body>
+
+
+
+<div th:replace="learnerFragments :: learner_header"></div>
+
+<br />
+
+<table class="table-style-standard">
+    <tr>
+        <td ><a href="" th:href="@{/learnerPlan} + '/' + ${learnerPlan.learnerPlanId}">Back to Learner Plan</a></td>
+    </tr>
+</table>
+
+
+
+<br /><br />
+
+<table class="table-style-standard">
+    <tr>
+        <td>Plan</td>
+        <td th:text="${learnerPlan.treatmentDescription}"></td>
+    </tr>
+    <tr>
+        <td>Session Date</td>
+        <td>
+            <input type="text" class="datepicker" name="sessionDate" th:value="${learnerSession.sessionDate}" />
+        </td>
+    </tr>
+</table>
+
+<br />
+
+
+<div th:each="mapEntry : ${domainObjectivesMap}">
+    <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
+    <div th:each="planObjective : ${mapEntry.value}">
+        <table class="table-style-standard">
+            <tr>
+                <td th:text="${planObjective.objective.description}"></td>
+            </tr>
+            <tr th:if="${planObjective.objectiveType.typeId == 'C'}">
+                <table class="table-style-standard" id="C" th:id="${planObjective.learnerPlanObjectiveId}">
+                    <tr>
+                        <td th:text="${planObjective.condition.description}" />
+                        <td th:text="${planObjective.criteria.description}" />
+                        <td>
+                            <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
+                        </td>
+                    </tr>
+                </table>
+            </tr>
+            <tr th:if="${planObjective.objectiveType.typeId == 'P'}">
+                <table class="table-style-standard" id="P" th:id="${planObjective.learnerPlanObjectiveId}">
+                    <tr>
+                        <td>
+                            <select name="mastery">
+                                <option th:each="masteryPercent : ${masteryPercents}"
+                                        th:value="${masteryPercent}"
+                                        th:text="${masteryPercent} + '%'"
+                                        th:selected="${masteryPercent == planObjective.masteryValue}"/>
+                            </select>
+                        </td>
+                        <td th:text="${planObjective.condition.description}" />
+                        <td th:text="${planObjective.criteria.description}" />
+                    </tr>
+                </table>
+            </tr>
+        </table>
+    </div>
+    <br /><br />
+</div>
+
+<button onclick="updateSessionData()">Save Session Data</button>
+
+<form th:action="@{updateSessionData}" th:object="${learnerSession}" method="post" id="update_session_data_form">
+</form>
+
+<script>
+    var updateSessionData = function() {
+        var theAction = $('#update_session_data_form').attr('action');
+        var theCSRF = $("[name^='_csrf']").attr('value');
+
+        var allObjectiveTables = $('table[id]');
+        jQuery.each( allObjectiveTables, function( i, val ) {
+            var planObjectiveId = $(val).attr("id");
+            var columns = $(val).find('tbody > tr > td');
+
+            var masteryValue = "";
+            var masteryCol = $(columns).find('[name="mastery"]');
+            if (masteryCol != null) {
+                masteryValue = masteryCol.val();
+            }
+
+            $.ajax({
+                url: theAction,
+                type: 'POST',
+                headers: {
+                    '_csrf':theCSRF
+                },
+                data: {
+                    planObjectiveId:planObjectiveId, conditionId:conditionValue, criteriaId:criteriaValue, masteryValue:masteryValue,
+                    _csrf:theCSRF
+                },
+                success: function (data) {
+                },
+                error: function() {
+                }
+            });
+        });
+
+    }
+</script>
+</body>
+</html>

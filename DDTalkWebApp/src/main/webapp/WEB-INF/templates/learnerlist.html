@@ -8,6 +8,7 @@
     </tr>
     <tr th:each="learner : ${learners}">
         <td ><a th:href="${learner.learnerId}" th:text="${learner.lastName + ', ' + learner.firstName}"></a> </td>
+        <td ><a th:href="@{'/learner/edit/' + ${learner.learnerId}}">Edit Learner</a> </td>
     </tr>
 </table>
 <br /><br /><br />
