@@ -34,44 +34,41 @@
 
 <br />
 
-
-<div th:each="mapEntry : ${domainObjectivesMap}">
-    <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
-    <div th:each="planObjective : ${mapEntry.value}">
-        <table class="table-style-standard">
-            <tr>
+<div th:each="mapEntry : ${domainObjectivesMap}" class="accordion" style="width: 850px">
+    <h3 th:text="${mapEntry.key.description}"/>
+    <div>
+    <table class="table-style-standard">
+        <div th:each="planObjective, row : ${mapEntry.value}">
+            <tr th:if="${planObjective.objectiveType.typeId == 'C'}" th:id="${planObjective.learnerPlanObjectiveId}">
+                <td th:text="${row.index} + 1"></td>
                 <td th:text="${planObjective.objective.description}"></td>
+                <div>
+                    <td th:text="${planObjective.condition.description}" />
+                    <td th:text="${planObjective.criteria.description}" />
+                    <td>
+                        <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
+                    </td>
+                </div>
             </tr>
-            <tr th:if="${planObjective.objectiveType.typeId == 'C'}">
-                <table class="table-style-standard" id="C" th:id="${planObjective.learnerPlanObjectiveId}">
-                    <tr>
-                        <td th:text="${planObjective.condition.description}" />
-                        <td th:text="${planObjective.criteria.description}" />
-                        <td>
-                            <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
-                        </td>
-                    </tr>
-                </table>
+            <tr th:if="${planObjective.objectiveType.typeId == 'P'}" th:id="${planObjective.learnerPlanObjectiveId}">
+                <td th:text="${row.index} + 1"></td>
+                <td th:text="${planObjective.objective.description}"></td>
+                <div>
+                    <td th:text="${planObjective.condition.description}" />
+                    <td th:text="${planObjective.criteria.description}" />
+                    <td>
+                        <select name="mastery">
+                            <option th:each="masteryPercent : ${masteryPercents}"
+                                    th:value="${masteryPercent}"
+                                    th:text="${masteryPercent} + '%'"
+                                    th:selected="${masteryPercent == planObjective.masteryValue}"/>
+                        </select>
+                    </td>
+                </div>
             </tr>
-            <tr th:if="${planObjective.objectiveType.typeId == 'P'}">
-                <table class="table-style-standard" id="P" th:id="${planObjective.learnerPlanObjectiveId}">
-                    <tr>
-                        <td>
-                            <select name="mastery">
-                                <option th:each="masteryPercent : ${masteryPercents}"
-                                        th:value="${masteryPercent}"
-                                        th:text="${masteryPercent} + '%'"
-                                        th:selected="${masteryPercent == planObjective.masteryValue}"/>
-                            </select>
-                        </td>
-                        <td th:text="${planObjective.condition.description}" />
-                        <td th:text="${planObjective.criteria.description}" />
-                    </tr>
-                </table>
-            </tr>
-        </table>
-    </div>
-    <br /><br />
+        </div>
+    </table>
+</div>
 </div>
 
 <button onclick="updateSessionData()">Save Session Data</button>
@@ -84,10 +81,10 @@
         var theAction = $('#update_session_data_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
 
-        var allObjectiveTables = $('table[id]');
-        jQuery.each( allObjectiveTables, function( i, val ) {
+        var allObjectiveTableRows = $('tr[id]');
+        jQuery.each( allObjectiveTableRows, function( i, val ) {
             var planObjectiveId = $(val).attr("id");
-            var columns = $(val).find('tbody > tr > td');
+            var columns = $(val).find('td');
 
             var masteryValue = "";
             var masteryCol = $(columns).find('[name="mastery"]');
@@ -113,6 +110,13 @@
         });
 
     }
+
+    $(function() {
+        $( ".accordion" ).accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+    });
 </script>
 </body>
 </html>

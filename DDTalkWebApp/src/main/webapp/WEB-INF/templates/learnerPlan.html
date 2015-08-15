@@ -32,16 +32,15 @@
 
 <br />
 
-<div th:each="mapEntry : ${domainObjectivesMap}">
-    <label th:text="${mapEntry.key.description}" class="label-style-domain"></label>
-    <div th:each="planObjective : ${mapEntry.value}">
+<div th:each="mapEntry : ${domainObjectivesMap}" class="accordion" style="width: 850px">
+    <h3 th:text="${mapEntry.key.description}"/>
+    <div>
         <table class="table-style-standard">
-            <tr>
-                <td th:text="${planObjective.objective.description}"></td>
-            </tr>
-            <tr th:if="${planObjective.objectiveType.typeId == 'C'}">
-                <table class="table-style-standard" id="C" th:id="${planObjective.learnerPlanObjectiveId}">
-                    <tr>
+            <div th:each="planObjective, row : ${mapEntry.value}">
+                <tr th:if="${planObjective.objectiveType.typeId == 'C'}" th:id="${planObjective.learnerPlanObjectiveId}">
+                    <td th:text="${row.index} + 1"></td>
+                    <td th:text="${planObjective.objective.description}"></td>
+                    <div>
                         <td>
                             <select name="mastery">
                                 <option th:each="masteryCount : ${masteryCounts}"
@@ -68,13 +67,12 @@
                         </td>
                         <td>
                             <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
-                        </td>
-                    </tr>
-                </table>
-            </tr>
-            <tr th:if="${planObjective.objectiveType.typeId == 'P'}">
-                <table class="table-style-standard" id="P" th:id="${planObjective.learnerPlanObjectiveId}">
-                    <tr>
+                        </td>                    </div>
+                </tr>
+                <tr th:if="${planObjective.objectiveType.typeId == 'P'}" th:id="${planObjective.learnerPlanObjectiveId}">
+                    <td th:text="${row.index} + 1"></td>
+                    <td th:text="${planObjective.objective.description}"></td>
+                    <div>
                         <td>
                             <select name="mastery">
                                 <option th:each="masteryPercent : ${masteryPercents}"
@@ -99,12 +97,11 @@
                                         th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
                             </select>
                         </td>
-                    </tr>
-                </table>
-            </tr>
-         </table>
+                    </div>
+                </tr>
+            </div>
+        </table>
     </div>
-    <br /><br />
 </div>
 <button onclick="updateObjectives()">Save Changes</button>
 
@@ -225,10 +222,10 @@
         var theAction = $('#update_objectives_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
 
-        var allObjectiveTables = $('table[id]');
-        jQuery.each( allObjectiveTables, function( i, val ) {
+        var allObjectiveTableRows = $('tr[id]');
+        jQuery.each( allObjectiveTableRows, function( i, val ) {
             var planObjectiveId = $(val).attr("id");
-            var columns = $(val).find('tbody > tr > td');
+            var columns = $(val).find('td');
 
             var masteryCol = $(columns).find('[name="mastery"]');
             var masteryValue = masteryCol.val();
@@ -261,6 +258,14 @@
     $( document ).ready(function() {
         var selectizeDomain = $('#select-domain')[0].selectize;
         selectizeDomain.clear(true);
+
+        $( ".accordion" ).accordion({
+            collapsible: true,
+            heightStyle: "content"
+        });
+        $('.accordion').collapse({
+            toggle: false
+        });
     });
 </script>
 
