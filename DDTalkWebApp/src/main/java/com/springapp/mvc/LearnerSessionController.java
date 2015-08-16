@@ -42,6 +42,21 @@ public class LearnerSessionController {
     @Autowired
     LearnerSessionService learnerSessionService;
 
+    @RequestMapping(value = "/{learnerPlanId}", method = RequestMethod.GET)
+    public String learnerSessions(@PathVariable String learnerPlanId, ModelMap model) {
+
+        LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        Learner learner = learnerService.getLearner(plan.getLearnerId());
+
+        model.addAttribute("plan", plan);
+        model.addAttribute("learner", learner);
+
+        List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(Long.parseLong(learnerPlanId));
+        model.addAttribute("learnerSessions", learnerSessions);
+
+        return "learnerSessionMain";
+    }
+
     @RequestMapping(value = "/newLearnerSession/{learnerPlanId}", method = RequestMethod.GET)
     public String createLearnerSession(@PathVariable String learnerPlanId, ModelMap model) {
 

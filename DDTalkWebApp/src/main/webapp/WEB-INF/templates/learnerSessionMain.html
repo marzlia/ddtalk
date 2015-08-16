@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="learnerFragments :: standard_head"></head>
+<body>
+
+<div th:replace="learnerFragments :: learner_header"></div>
+
+<br />
+
+<table class="table-style-standard">
+    <tr>
+        <td ><a href="" th:href="@{/learner} + '/' + ${plan.learnerId}">Back to Learner</a></td>
+    </tr>
+</table>
+
+<br /><br /><br />
+
+<b>Sessions</b>
+<table class="table-style-standard">
+    <tr th:each="learnerSession : ${learnerSessions}">
+        <td th:text="${learnerSession.sessionDate} ? ${#dates.format(learnerSession.sessionDate, 'MMM dd, yyyy')}"></td>
+        <td >
+            <a th:href="@{'/learnerSession/' + ${plan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}}">Edit Session</a>
+        </td>
+    </tr>
+</table>
+
+<br />
+
+<a th:href="@{'/learnerSession/newLearnerSession/' + ${plan.learnerPlanId}}" class="standardButton">New Session</a>
+
+<br />
+
+</body>
+</html>

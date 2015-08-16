@@ -22,6 +22,10 @@
     <tr th:each="plan : ${plans}">
         <td ><a th:href="@{'/learnerPlan/' + ${plan.learnerPlanId}}" th:text="${plan.treatmentDescription}" /></td>
         <td th:text="${plan.dateStartPlan} ? ${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
+        <td >
+            <a th:href="@{'/learnerSession/' + ${plan.learnerPlanId}}">Sessions</a>
+        </td>
+
     </tr>
 </table>
 

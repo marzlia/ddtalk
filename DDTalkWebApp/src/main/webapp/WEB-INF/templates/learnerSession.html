@@ -11,7 +11,7 @@
 
 <table class="table-style-standard">
     <tr>
-        <td ><a href="" th:href="@{/learnerPlan} + '/' + ${learnerPlan.learnerPlanId}">Back to Learner Plan</a></td>
+        <td ><a href="" th:href="@{/learnerSession/} + ${learnerPlan.learnerPlanId}">Back to Sessions</a></td>
     </tr>
 </table>
 
@@ -71,7 +71,9 @@
 </div>
 </div>
 
-<button onclick="updateSessionData()">Save Session Data</button>
+<br />
+
+<button onclick="updateSessionData()" class="standardButton">Save Session Data</button>
 
 <form th:action="@{../updateSessionObjective}" th:object="${learnerSession}" method="post" id="update_session_objective_form">
 </form>
