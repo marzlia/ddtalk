@@ -2,8 +2,10 @@ package com.springapp.mvc;
 
 import com.springapp.model.*;
 import com.springapp.model.request.MapSessionObjectiveItem;
+import com.springapp.model.request.MapSessionObjectiveTargetItem;
 import com.springapp.model.request.UpdateSessionObjectiveItem;
 import com.springapp.model.request.UpdateSessionObjectiveTargetItem;
+import com.springapp.repositories.PromptCodeRepository;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/learnerSession")
@@ -32,6 +35,9 @@ public class LearnerSessionController {
 
     @Autowired
     CriteriaService criteriaService;
+
+    @Autowired
+    PromptCodeService promptCodeService;
 
     @Autowired
     ObjectiveTypeService objectiveTypeService;
@@ -134,8 +140,10 @@ public class LearnerSessionController {
     @RequestMapping(value = "/updateSessionObjectiveTarget", method = RequestMethod.POST)
     @ResponseBody
     public String updateSessionObjectiveTarget(@ModelAttribute(value="updateSessionObjectiveTargetRequestItem") UpdateSessionObjectiveTargetItem updateSessionObjectiveTargetItem, BindingResult errors) {
+        String promptCodeId = (updateSessionObjectiveTargetItem.getPromptCodeId() != null) ? updateSessionObjectiveTargetItem.getPromptCodeId() : "-1";
+
         learnerSessionService.updateSessionObjectiveTarget(Long.parseLong(updateSessionObjectiveTargetItem.getLearnerSessionObjectiveTargetId()),
-                Long.parseLong(updateSessionObjectiveTargetItem.getPromptCodeId()),
+                Long.parseLong(promptCodeId),
                 updateSessionObjectiveTargetItem.getSessionValue());
 
 
@@ -150,5 +158,46 @@ public class LearnerSessionController {
         LearnerPlan plan = learnerPlanService.getLearnerPlan(learnerSession.getLearnerPlanId());
         return "redirect:/learnerPlan/" + plan.getLearnerPlanId();
     }
+
+    @RequestMapping(value = "/learnerSessionObjectiveTargets/{learnerPlanId}/{sessionId}/{planObjectiveId}", method = RequestMethod.GET)
+    public String learnerSessionObjectiveTargets(@PathVariable String learnerPlanId, @PathVariable String sessionId, @PathVariable String planObjectiveId, ModelMap model) {
+
+        LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        Learner learner = learnerService.getLearner(plan.getLearnerId());
+        LearnerSession learnerSession = learnerSessionService.getLearnerSession(Long.parseLong(sessionId));
+
+        model.addAttribute("learnerPlan", plan);
+        model.addAttribute("learner", learner);
+        model.addAttribute("learnerSession", learnerSession);
+
+        // populate existing objective targets
+        LearnerPlanObjective learnerPlanObjective = learnerPlanService.getLearnerPlanObjective(Long.parseLong(planObjectiveId));
+        LearnerSessionObjective learnerSessionObjective = learnerSessionService.getSessionObjective(learnerPlanObjective, Long.parseLong(sessionId));
+
+        List<MapSessionObjectiveTargetItem> objectiveTargetMapList = new ArrayList<MapSessionObjectiveTargetItem>();
+        for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
+
+            MapSessionObjectiveTargetItem mapSessionObjectiveTargetItem = new MapSessionObjectiveTargetItem();
+            mapSessionObjectiveTargetItem.setPlanObjectiveTarget(planObjectiveTarget);
+
+            for (LearnerSessionObjectiveTarget sessionObjectiveTarget : learnerSessionObjective.getLearnerSessionObjectiveTargets()) {
+                if (sessionObjectiveTarget.getLearnerPlanObjectiveTarget().getLearnerPlanObjectiveTargetId() == planObjectiveTarget.getLearnerPlanObjectiveTargetId()) {
+                    mapSessionObjectiveTargetItem.setSessionObjectiveTarget(sessionObjectiveTarget);
+                    break;
+                }
+            }
+
+            objectiveTargetMapList.add(mapSessionObjectiveTargetItem);
+        }
+
+        model.addAttribute("planObjective", learnerPlanObjective);
+        model.addAttribute("sessionObjectiveTargets", objectiveTargetMapList);
+
+        List<PromptCode> promptCodes = promptCodeService.getAllPromptCodes();
+        model.addAttribute("promptCodes", promptCodes);
+
+        return "learnerSessionObjectiveTargets";
+    }
+
 }
 

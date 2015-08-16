@@ -99,6 +99,7 @@ CREATE TABLE IF NOT EXISTS conditions (
 
 CREATE TABLE IF NOT EXISTS prompt_code (
   prompt_code_id int(11) NOT NULL AUTO_INCREMENT,
+  prompt_code varchar(10) DEFAULT NULL,
   description varchar(100) DEFAULT NULL,
   PRIMARY KEY (prompt_code_id)
 );

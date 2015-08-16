@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PromptCodeRepository extends JpaRepository<PromptCode, Long> {
-
+    PromptCode findByPromptCode(String promptCode);
 }

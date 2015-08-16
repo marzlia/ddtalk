@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="learnerFragments :: standard_head"></head>
+<body>
+
+<div th:replace="learnerFragments :: learner_header"></div>
+
+<br />
+<table class="table-style-standard">
+    <tr>
+        <td>Objective</td>
+        <td>Condition</td>
+        <td>Criteria</td>
+    </tr>
+    <tr>
+        <td th:text="${planObjective.objective.description}"></td>
+        <td th:text="${planObjective.condition.description}" />
+        <td th:text="${planObjective.criteria.description}" />
+    </tr>
+</table>
+
+<br />
+
+<b>Targets</b>
+<table class="table-style-standard">
+    <tr th:each="sessionObjectiveTargetMap : ${sessionObjectiveTargets}" th:id="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}">
+        <td th:text="${sessionObjectiveTargetMap.planObjectiveTarget.targetDescription}"/>
+        <td>
+            <select name="promptCode">
+                <option th:each="promptCode : ${promptCodes}"
+                        th:value="${promptCode.promptCodeId}"
+                        th:text="${promptCode.promptCode}"
+                        th:selected="${promptCode.promptCodeId == sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode.promptCodeId}"/>/>
+            </select>
+        </td>
+        <td>
+            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="1" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == 1 ? 'checked' : null}">+</input>
+            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="0" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == 0 ? 'checked' : null}">-</input>
+            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="-1" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == -1 ? 'checked' : null}">n/a</input>
+        </td>
+    </tr>
+</table>
+
+<br /><br />
+
+<button onclick="updateSessionData()" class="standardButton">Save Target Session Data</button>
+
+<form th:action="@{../../../updateSessionObjectiveTarget}" method="post" id="update_session_objective_target_form">
+</form>
+
+<br />
+
+<table class="table-style-standard">
+    <tr>
+        <td ><a href="" th:href="@{/learnerSession} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}">Back to Session</a></td>
+    </tr>
+</table>
+
+
+<script>
+    var updateSessionData = function() {
+        var theAction = $('#update_session_objective_target_form').attr('action');
+        var theCSRF = $("[name^='_csrf']").attr('value');
+
+        var allObjectiveTableRows = $('tr[id]');
+        jQuery.each( allObjectiveTableRows, function( i, val ) {
+            var sessionObjectiveTargetId = $(val).attr("id");
+            var columns = $(val).find('td');
+
+            var checkedBox = $('input[name=' + sessionObjectiveTargetId + ']:checked');
+
+            var sessionValue = "";
+            if (checkedBox != null) {
+                sessionValue = checkedBox.val();
+            }
+
+            var promptCodeId = "";
+            var promptCodeCol = $(columns).find('[name="promptCode"]');
+            if (promptCodeCol != null) {
+                promptCodeId = promptCodeCol.val();
+            }
+
+            $.ajax({
+                url: theAction,
+                type: 'POST',
+                headers: {
+                    '_csrf':theCSRF
+                },
+                data: {
+                    learnerSessionObjectiveTargetId:sessionObjectiveTargetId, promptCodeId:promptCodeId, sessionValue:sessionValue,
+                    _csrf:theCSRF
+                },
+                success: function (data) {
+                },
+                error: function() {
+                }
+            });
+        });
+
+    }
+</script>
+
+
+</body>
+</html>

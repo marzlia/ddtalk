@@ -46,7 +46,7 @@
                     <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
-                        <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
+                        <a href="" th:href="@{../learnerSessionObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.sessionObjective.learnerSessionId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
                     </td>
                 </div>
             </tr>

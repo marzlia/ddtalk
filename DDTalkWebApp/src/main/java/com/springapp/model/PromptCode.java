@@ -11,6 +11,9 @@ public class PromptCode {
     @Column(name = "prompt_code_id")
     Long promptCodeId;
 
+    @Column(name = "prompt_code")
+    String promptCode;
+
     @Column(name = "description")
     String description;
 
@@ -20,6 +23,14 @@ public class PromptCode {
 
     public void setPromptCodeId(Long promptCodeId) {
         this.promptCodeId = promptCodeId;
+    }
+
+    public String getPromptCode() {
+        return promptCode;
+    }
+
+    public void setPromptCode(String promptCode) {
+        this.promptCode = promptCode;
     }
 
     public String getDescription() {
