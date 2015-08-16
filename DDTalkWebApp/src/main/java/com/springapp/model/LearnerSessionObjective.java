@@ -4,6 +4,7 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -24,6 +25,9 @@ public class LearnerSessionObjective {
 
     @Column(name = "session_value")
     Long sessionValue;
+
+    @Column(name = "mastery_date")
+    Date masteryDate;
 
     @OneToMany(cascade = {CascadeType.ALL})
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -68,5 +72,13 @@ public class LearnerSessionObjective {
 
     public void setLearnerSessionObjectiveTargets(List<LearnerSessionObjectiveTarget> learnerSessionObjectiveTargets) {
         this.learnerSessionObjectiveTargets = learnerSessionObjectiveTargets;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
     }
 }

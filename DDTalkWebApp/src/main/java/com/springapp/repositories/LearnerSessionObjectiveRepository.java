@@ -1,5 +1,6 @@
 package com.springapp.repositories;
 
+import com.springapp.model.LearnerPlanObjective;
 import com.springapp.model.LearnerSession;
 import com.springapp.model.LearnerSessionObjective;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,4 +15,5 @@ import java.util.List;
 public interface LearnerSessionObjectiveRepository extends JpaRepository<LearnerSessionObjective, Long> {
 
     List<LearnerSessionObjective> findByLearnerSessionId(Long learnerSessionId);
+    LearnerSessionObjective findByLearnerPlanObjectiveAndLearnerSessionId(LearnerPlanObjective learnerPlanObjective, Long learnerSessionId);
 }

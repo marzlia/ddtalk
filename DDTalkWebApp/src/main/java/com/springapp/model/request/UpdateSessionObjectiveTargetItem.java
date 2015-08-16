@@ -3,7 +3,7 @@ package com.springapp.model.request;
 /**
  * Created by peter on 8/2/15.
  */
-public class UpdateSessionObjectiveTargetRequestItem {
+public class UpdateSessionObjectiveTargetItem {
 
     String learnerSessionObjectiveTargetId;
     String promptCodeId;

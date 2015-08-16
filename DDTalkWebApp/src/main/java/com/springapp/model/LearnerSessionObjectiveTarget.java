@@ -1,6 +1,7 @@
 package com.springapp.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="learner_session_objective_target")
@@ -24,6 +25,9 @@ public class LearnerSessionObjectiveTarget {
 
     @Column(name = "session_value")
     Long sessionValue;
+
+    @Column(name = "mastery_date")
+    Date masteryDate;
 
     public Long getLearnerSessionObjectiveTargetId() {
         return learnerSessionObjectiveTargetId;
@@ -63,5 +67,13 @@ public class LearnerSessionObjectiveTarget {
 
     public void setSessionValue(Long sessionValue) {
         this.sessionValue = sessionValue;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
     }
 }

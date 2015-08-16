@@ -1,12 +1,10 @@
 package com.springapp.model;
 
 import javax.persistence.*;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name="domains")
-public class Domain {
+public class Domain implements Comparable<Domain>{
 
     @Id
     @GeneratedValue
@@ -31,5 +29,12 @@ public class Domain {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int compareTo(Domain domain) {
+        if(this.getDescription() != null && domain.getDescription() != null){
+            return this.getDescription().compareToIgnoreCase(domain.getDescription());
+        }
+        return 0;
     }
 }

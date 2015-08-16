@@ -128,6 +128,7 @@ CREATE TABLE IF NOT EXISTS learner_session_objective (
   learner_session_id int(11) NOT NULL,
   learner_plan_objective_id int(11) NOT NULL,
   session_value int(11),
+  mastery_date DATE DEFAULT NULL,
   PRIMARY KEY (learner_session_objective_id)
 );
 
@@ -137,6 +138,7 @@ CREATE TABLE IF NOT EXISTS learner_session_objective_target(
   learner_plan_objective_target_id int(11) NOT NULL,
   prompt_code_id int(11),
   session_value int(11),
+  mastery_date DATE DEFAULT NULL,
   PRIMARY KEY (learner_session_objective_target_id)
 );
 

@@ -38,30 +38,30 @@
     <h3 th:text="${mapEntry.key.description}"/>
     <div>
     <table class="table-style-standard">
-        <div th:each="planObjective, row : ${mapEntry.value}">
-            <tr th:if="${planObjective.objectiveType.typeId == 'C'}" th:id="${planObjective.learnerPlanObjectiveId}">
+        <div th:each="mapSessionObjectiveItem, row : ${mapEntry.value}">
+            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}">
                 <td th:text="${row.index} + 1"></td>
-                <td th:text="${planObjective.objective.description}"></td>
+                <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
-                    <td th:text="${planObjective.condition.description}" />
-                    <td th:text="${planObjective.criteria.description}" />
+                    <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
+                    <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
-                        <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
+                        <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
                     </td>
                 </div>
             </tr>
-            <tr th:if="${planObjective.objectiveType.typeId == 'P'}" th:id="${planObjective.learnerPlanObjectiveId}">
+            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'P'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}">
                 <td th:text="${row.index} + 1"></td>
-                <td th:text="${planObjective.objective.description}"></td>
+                <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
-                    <td th:text="${planObjective.condition.description}" />
-                    <td th:text="${planObjective.criteria.description}" />
+                    <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
+                    <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
                         <select name="mastery">
                             <option th:each="masteryPercent : ${masteryPercents}"
                                     th:value="${masteryPercent}"
                                     th:text="${masteryPercent} + '%'"
-                                    th:selected="${masteryPercent == planObjective.masteryValue}"/>
+                                    th:selected="${masteryPercent == mapSessionObjectiveItem.sessionObjective.sessionValue}"/>
                         </select>
                     </td>
                 </div>
@@ -73,17 +73,17 @@
 
 <button onclick="updateSessionData()">Save Session Data</button>
 
-<form th:action="@{updateSessionData}" th:object="${learnerSession}" method="post" id="update_session_data_form">
+<form th:action="@{../updateSessionObjective}" th:object="${learnerSession}" method="post" id="update_session_objective_form">
 </form>
 
 <script>
     var updateSessionData = function() {
-        var theAction = $('#update_session_data_form').attr('action');
+        var theAction = $('#update_session_objective_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
 
         var allObjectiveTableRows = $('tr[id]');
         jQuery.each( allObjectiveTableRows, function( i, val ) {
-            var planObjectiveId = $(val).attr("id");
+            var sessionObjectiveId = $(val).attr("id");
             var columns = $(val).find('td');
 
             var masteryValue = "";
@@ -99,7 +99,7 @@
                     '_csrf':theCSRF
                 },
                 data: {
-                    planObjectiveId:planObjectiveId, conditionId:conditionValue, criteriaId:criteriaValue, masteryValue:masteryValue,
+                    sessionObjectiveId:sessionObjectiveId, sessionValue:masteryValue,
                     _csrf:theCSRF
                 },
                 success: function (data) {

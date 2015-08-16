@@ -83,6 +83,11 @@ public class LearnerSessionService {
         learnerSessionObjectiveRepository.save(learnerSessionObjective);
     }
 
+    public LearnerSessionObjective getSessionObjective(LearnerPlanObjective learnerPlanObjective, Long sessionId) {
+        LearnerSessionObjective learnerSessionObjective = learnerSessionObjectiveRepository.findByLearnerPlanObjectiveAndLearnerSessionId(learnerPlanObjective, sessionId);
+        return learnerSessionObjective;
+    }
+
     public void updateSessionObjectiveTarget(Long sessionObjectiveTargetId, Long promptCodeId, Long sessionValue) {
         LearnerSessionObjectiveTarget learnerSessionObjectiveTarget = learnerSessionObjectiveTargetRepository.findOne(sessionObjectiveTargetId);
         PromptCode promptCode = promptCodeRepository.findOne(promptCodeId);
@@ -91,5 +96,7 @@ public class LearnerSessionService {
         learnerSessionObjectiveTarget.setPromptCode(promptCode);
         learnerSessionObjectiveTargetRepository.save(learnerSessionObjectiveTarget);
     }
+
+
 
 }

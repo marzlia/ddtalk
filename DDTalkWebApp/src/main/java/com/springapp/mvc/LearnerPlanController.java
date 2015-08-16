@@ -12,10 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/learnerPlan")
@@ -64,8 +61,10 @@ public class LearnerPlanController {
 
         model.addAttribute("learner", learner);
         model.addAttribute("plan", learnerPlan);
-        model.addAttribute("domainObjectivesMap", domainObjectivesMap);
         model.addAttribute("emptyDomains", domains);
+
+        Map<Domain, List<LearnerPlanObjective>> treeMap = new TreeMap<Domain, List<LearnerPlanObjective>>(domainObjectivesMap);
+        model.addAttribute("domainObjectivesMap", treeMap);
 
         List<Condition> conditionList = conditionService.getAllConditions();
         List<Criteria> criteriaList = criteriaService.getAllCriteria();

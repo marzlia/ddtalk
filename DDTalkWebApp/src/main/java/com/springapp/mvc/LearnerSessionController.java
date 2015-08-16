@@ -1,9 +1,9 @@
 package com.springapp.mvc;
 
 import com.springapp.model.*;
-import com.springapp.model.request.UpdateObjectiveRequestItem;
-import com.springapp.model.request.UpdateSessionObjectiveRequestItem;
-import com.springapp.model.request.UpdateSessionObjectiveTargetRequestItem;
+import com.springapp.model.request.MapSessionObjectiveItem;
+import com.springapp.model.request.UpdateSessionObjectiveItem;
+import com.springapp.model.request.UpdateSessionObjectiveTargetItem;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -46,30 +46,44 @@ public class LearnerSessionController {
     public String createLearnerSession(@PathVariable String learnerPlanId, ModelMap model) {
 
         LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        LearnerSession learnerSession = learnerSessionService.createNewSessionForLearnerPlan(plan);
+        return "redirect:../" + learnerPlanId + "/" + learnerSession.getLearnerSessionId();
+    }
+
+    @RequestMapping(value = "/{learnerPlanId}/{learnerSessionId}", method = RequestMethod.GET)
+    public String editLearnerSession(@PathVariable String learnerPlanId, @PathVariable String learnerSessionId, ModelMap model) {
+
+        LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
         Learner learner = learnerService.getLearner(plan.getLearnerId());
 
         model.addAttribute("learnerPlan", plan);
         model.addAttribute("learner", learner);
 
-        LearnerSession learnerSession = learnerSessionService.createNewSessionForLearnerPlan(plan);
+        LearnerSession learnerSession = learnerSessionService.getLearnerSession(Long.parseLong(learnerSessionId));
         model.addAttribute("learnerSession", learnerSession);
 
         List<LearnerPlanObjective> objectives = plan.getLearnerPlanObjectiveList();
         List<Domain> domains = domainService.getAllDomains();
 
         // populate existing objectives
-        Map<Domain, List<LearnerPlanObjective>> domainObjectivesMap = new HashMap<Domain, List<LearnerPlanObjective>>();
+        Map<Domain, List<MapSessionObjectiveItem>> domainObjectivesMap = new HashMap<Domain, List<MapSessionObjectiveItem>>();
         for (LearnerPlanObjective objective : objectives) {
             Domain domain = returnDomainObjectFromArrayWhichMatches(objective.getObjective().getDomain(), domains);
-            List<LearnerPlanObjective> domainObjectiveList = domainObjectivesMap.get(domain);
+            List<MapSessionObjectiveItem> domainObjectiveList = domainObjectivesMap.get(domain);
             if (domainObjectiveList == null) {
-                domainObjectiveList = new ArrayList<LearnerPlanObjective>();
+                domainObjectiveList = new ArrayList<MapSessionObjectiveItem>();
                 domainObjectivesMap.put(domain, domainObjectiveList);
             }
-            domainObjectiveList.add(objective);
+            MapSessionObjectiveItem mapSessionObjectiveItem = new MapSessionObjectiveItem();
+            mapSessionObjectiveItem.setPlanObjective(objective);
+            LearnerSessionObjective learnerSessionObjective = learnerSessionService.getSessionObjective(objective, learnerSession.getLearnerSessionId());
+            mapSessionObjectiveItem.setSessionObjective(learnerSessionObjective);
+
+            domainObjectiveList.add(mapSessionObjectiveItem);
         }
 
-        model.addAttribute("domainObjectivesMap", domainObjectivesMap);
+        Map<Domain, List<MapSessionObjectiveItem>> treeMap = new TreeMap<Domain, List<MapSessionObjectiveItem>>(domainObjectivesMap);
+        model.addAttribute("domainObjectivesMap", treeMap);
 
         List<Integer> masteryPercents = new ArrayList<Integer>();
         for (int i = 60; i <= 100; i += 5) {
@@ -94,9 +108,9 @@ public class LearnerSessionController {
 
     @RequestMapping(value = "/updateSessionObjective", method = RequestMethod.POST)
     @ResponseBody
-    public String updateSessionObjective(@ModelAttribute(value="updateSessionObjectiveRequestItem") UpdateSessionObjectiveRequestItem updateSessionObjectiveRequestItem, BindingResult errors) {
-        learnerSessionService.updateSessionObjective(Long.parseLong(updateSessionObjectiveRequestItem.getLearnerSessionObjectiveId()),
-                updateSessionObjectiveRequestItem.getSessionValue());
+    public String updateSessionObjective(@ModelAttribute(value="updateSessionObjectiveItem") UpdateSessionObjectiveItem updateSessionObjectiveItem, BindingResult errors) {
+        learnerSessionService.updateSessionObjective(Long.parseLong(updateSessionObjectiveItem.getSessionObjectiveId()),
+                updateSessionObjectiveItem.getSessionValue());
 
 
         return "{}";
@@ -104,10 +118,10 @@ public class LearnerSessionController {
 
     @RequestMapping(value = "/updateSessionObjectiveTarget", method = RequestMethod.POST)
     @ResponseBody
-    public String updateSessionObjectiveTarget(@ModelAttribute(value="updateSessionObjectiveTargetRequestItem") UpdateSessionObjectiveTargetRequestItem updateSessionObjectiveTargetRequestItem, BindingResult errors) {
-        learnerSessionService.updateSessionObjectiveTarget(Long.parseLong(updateSessionObjectiveTargetRequestItem.getLearnerSessionObjectiveTargetId()),
-                Long.parseLong(updateSessionObjectiveTargetRequestItem.getPromptCodeId()),
-                updateSessionObjectiveTargetRequestItem.getSessionValue());
+    public String updateSessionObjectiveTarget(@ModelAttribute(value="updateSessionObjectiveTargetRequestItem") UpdateSessionObjectiveTargetItem updateSessionObjectiveTargetItem, BindingResult errors) {
+        learnerSessionService.updateSessionObjectiveTarget(Long.parseLong(updateSessionObjectiveTargetItem.getLearnerSessionObjectiveTargetId()),
+                Long.parseLong(updateSessionObjectiveTargetItem.getPromptCodeId()),
+                updateSessionObjectiveTargetItem.getSessionValue());
 
 
         return "{}";
