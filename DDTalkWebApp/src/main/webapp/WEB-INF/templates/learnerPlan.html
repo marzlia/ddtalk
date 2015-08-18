@@ -31,7 +31,7 @@
 
 <br /><br />
 
-<div th:each="mapEntry : ${domainObjectivesMap}" class="accordion" style="width: 850px">
+<div th:each="mapEntry : ${domainObjectivesMap}" class="accordion" style="width: 1000px">
     <h3 th:text="${mapEntry.key.description}"/>
     <div>
         <table class="table-style-standard">
@@ -66,7 +66,11 @@
                         </td>
                         <td>
                             <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
-                        </td>                    </div>
+                        </td>
+                        <td>
+                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
+                        </td>
+                    </div>
                 </tr>
                 <tr th:if="${planObjective.objectiveType.typeId == 'P'}" th:id="${planObjective.learnerPlanObjectiveId}">
                     <td th:text="${row.index} + 1"></td>
@@ -95,6 +99,10 @@
                                         th:text="${criteria.description}"
                                         th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
                             </select>
+                        </td>
+                        <td/>
+                        <td>
+                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
                         </td>
                     </div>
                 </tr>
@@ -172,14 +180,14 @@
     });
 
     $('#select-objective').selectize({
-        create: true,
         valueField: 'objectiveId',
         labelField: 'description',
         searchField: 'description',
         sortField: {
             field: 'description',
             direction: 'asc'
-        }
+        },
+        create: true
     });
 
     $('#select-objective-type').selectize({
@@ -269,6 +277,9 @@
             toggle: false
         });
     });
+
+    var handler = function() { /* ... */ };
+    selectize.on('event_name', handler);
 </script>
 
 </body>

@@ -113,9 +113,10 @@ public class LearnerPlanController {
     @RequestMapping(value = "/addObjective", method = RequestMethod.POST)
     @ResponseBody
     public String addObjective(@ModelAttribute(value="addObjectiveRequest") AddObjectiveRequest addObjectiveRequest, BindingResult errors) {
-        learnerPlanService.addObjectiveToLearnerPlan(Long.parseLong(addObjectiveRequest.getLearnerPlanId()),
-                Long.parseLong(addObjectiveRequest.getObjectiveId()),
-                Long.parseLong(addObjectiveRequest.getObjectiveTypeId()));
+        learnerPlanService.addObjectiveToLearnerPlan(addObjectiveRequest.getLearnerPlanId(),
+                addObjectiveRequest.getDomainId(),
+                addObjectiveRequest.getObjectiveId(),
+                addObjectiveRequest.getObjectiveTypeId());
 
         return "{}";
     }
@@ -128,6 +129,24 @@ public class LearnerPlanController {
 
         model.addAttribute("learnerPlan", plan);
         model.addAttribute("learner", learner);
+
+        List<String> treatmentFrequencyOptions = new ArrayList<String>();
+        treatmentFrequencyOptions.add("1 time per week");
+        treatmentFrequencyOptions.add("2 times per week");
+        treatmentFrequencyOptions.add("3 times per week");
+        treatmentFrequencyOptions.add("4 times per week");
+        treatmentFrequencyOptions.add("5 times per week");
+        treatmentFrequencyOptions.add("Weekly");
+        treatmentFrequencyOptions.add("Bi-Monthly");
+        treatmentFrequencyOptions.add("Monthly");
+        model.addAttribute("treatmentFrequencyOptions", treatmentFrequencyOptions);
+
+        List<String> dataCollectionOptions = new ArrayList<String>();
+        dataCollectionOptions.add("Each Session");
+        dataCollectionOptions.add("Weekly");
+        dataCollectionOptions.add("Bi-Monthly");
+        dataCollectionOptions.add("Monthly");
+        model.addAttribute("dataCollectionOptions", dataCollectionOptions);
 
         return "learnerPlanNew";
     }
@@ -170,6 +189,11 @@ public class LearnerPlanController {
         return "redirect:/learnerPlan/learnerPlanObjectiveTargets/" + planId + "/" + objectiveId;
     }
 
+    @RequestMapping(value = "/removeObjective/{planId}/{objectiveId}", method = RequestMethod.GET)
+    public String removeObjective(@PathVariable String planId, @PathVariable String objectiveId) {
+        learnerPlanService.deleteLearnerPlanObjective(Long.parseLong(objectiveId));
+        return "redirect:/learnerPlan/" + planId;
+    }
 
 
 }

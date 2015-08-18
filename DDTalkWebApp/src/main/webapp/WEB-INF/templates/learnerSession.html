@@ -27,7 +27,7 @@
     <tr>
         <td>Session Date</td>
         <td>
-            <input type="text" class="datepicker" name="sessionDate" th:value="${learnerSession.sessionDate}" />
+            <input type="text" class="datepicker" name="sessionDate" th:value="${learnerSession.sessionDate} ? ${#dates.format(learnerSession.sessionDate, 'M/dd/yyyy')}"/>
         </td>
     </tr>
 </table>

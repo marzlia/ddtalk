@@ -65,7 +65,12 @@ public class LearnerController {
     public String getLearnersForUser(ModelMap model) {
 
         LoginUser loginUser = loginUserService.getLoginUser(httpServletRequest.getUserPrincipal().getName());
-        model.addAttribute("learners", loginUser.getLearners());
+        if (loginUser.getRole().equals("ADMIN")) {
+            model.addAttribute("learners", learnerService.getAllLearners());
+        }
+        else {
+            model.addAttribute("learners", loginUser.getLearners());
+        }
 
         return "learnerlist";
     }

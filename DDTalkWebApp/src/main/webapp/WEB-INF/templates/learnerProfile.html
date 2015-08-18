@@ -20,7 +20,7 @@
         <tr>
             <td>Date of Birth</td>
             <td>
-                <input type="text" class="datepicker" name="dob" th:value="${learner.dob}" />
+                <input type="text" class="datepicker" name="dob" th:value="${learner.dob} ? ${#dates.format(learner.dob, 'M/dd/yyyy')}" />
             </td>
         </tr>
 
@@ -48,7 +48,7 @@
         <tr>
             <td>Date of Initial Evaluation</td>
             <td>
-                <input type="text" class="datepicker" name="dateIntialEval" th:value="${learner.dateIntialEval}" />
+                <input type="text" class="datepicker" name="dateIntialEval" th:value="${learner.dateIntialEval} ? ${#dates.format(learner.dateIntialEval, 'M/dd/yyyy')}" />
             </td>
         </tr>
 

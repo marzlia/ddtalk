@@ -5,6 +5,7 @@ import com.springapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 import java.util.List;
 
 /**
@@ -24,6 +25,9 @@ public class LearnerPlanService {
 
     @Autowired
     ObjectiveRepository objectiveRepository;
+
+    @Autowired
+    DomainRepository domainRepository;
 
     @Autowired
     ObjectiveTypeRepository objectiveTypeRepository;
@@ -46,15 +50,34 @@ public class LearnerPlanService {
         return learnerPlanRepository.findOne(planId);
     }
 
-    public void addObjectiveToLearnerPlan(Long planId, Long objectiveId, Long objectiveTypeId) {
+    public void addObjectiveToLearnerPlan(String planId, String domainId, String objectiveId, String objectiveTypeId) {
         LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
-        learnerPlanObjective.setLearnerPlanId(planId);
+        learnerPlanObjective.setLearnerPlanId(Long.parseLong(planId));
 
-        Objective objective = objectiveRepository.findOne(objectiveId);
+
+        Objective objective = null;
+        if (isNumeric(objectiveId)) {
+            objective = objectiveRepository.findOne(Long.parseLong(objectiveId));
+        }
+        else {
+            //user added a new objective
+            Domain domain = domainRepository.findOne(Long.parseLong(domainId));
+
+            objective = new Objective();
+            objective.setDescription(objectiveId);
+            objective.setDomain(domain);
+            objective = objectiveRepository.save(objective);
+        }
         learnerPlanObjective.setObjective(objective);
 
-        ObjectiveType objectiveType = objectiveTypeRepository.findByObjectiveTypeId(objectiveTypeId);
+        ObjectiveType objectiveType = objectiveTypeRepository.findByObjectiveTypeId(Long.parseLong(objectiveTypeId));
         learnerPlanObjective.setObjectiveType(objectiveType);
+
+        Condition condition = conditionRepository.findByDescription("None");
+        learnerPlanObjective.setCondition(condition);
+
+        Criteria criteria = criteriaRepository.findByDescription("None");
+        learnerPlanObjective.setCriteria(criteria);
 
         learnerPlanObjectiveRepository.save(learnerPlanObjective);
     }
@@ -100,5 +123,14 @@ public class LearnerPlanService {
 
     public void deleteLearnerPlanObjectiveTarget(Long planObjectiveTargetId) {
         learnerPlanObjectiveTargetRepository.delete(planObjectiveTargetId);
+    }
+
+    public void deleteLearnerPlanObjective(Long planObjectiveId) {
+        learnerPlanObjectiveRepository.delete(planObjectiveId);
+    }
+
+
+    private  boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
     }
 }

@@ -109,6 +109,7 @@ CREATE TABLE login_user (
   username varchar(100) NOT NULL,
   password varchar(20) NOT NULL,
   enabled int(1) NOT NULL,
+  role varchar(20) NOT NULL,  
   PRIMARY KEY (user_id)
 );
 

@@ -15,35 +15,29 @@
         <tr>
             <td>Start Date</td>
             <td>
-                <input type="text" class="datepicker" name="dateStartPlan" th:value="${learnerPlan.dateStartPlan}" />
+                <input type="text" class="datepicker" name="dateStartPlan" th:value="${learnerPlan.dateStartPlan} ? ${#dates.format(learnerPlan.dateStartPlan, 'M/dd/yyyy')}"/>
             </td>
         </tr>
 
         <tr>
             <td>Treatment Frequency</td>
             <td>
-                <input type="text" name="treatmentFrequency" th:value="${learnerPlan.treatmentFrequency}" />
+                <select name="treatmentFrequency">
+                    <option th:each="treatmentFrequencyOption : ${treatmentFrequencyOptions}"
+                            th:value="${treatmentFrequencyOption}"
+                            th:text="${treatmentFrequencyOption}"/>
+                </select>
             </td>
         </tr>
 
         <tr>
             <td>Data Collection Frequency</td>
             <td>
-                <input type="text" name="dataCollectFrequency" th:value="${learnerPlan.dataCollectFrequency}" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>Target Number of Fluency Probes</td>
-            <td>
-                <input type="text" name="targetNumFluencyProbes" th:value="${learnerPlan.targetNumFluencyProbes}" />
-            </td>
-        </tr>
-
-        <tr>
-            <td>Target enable Retention Probes</td>
-            <td>
-                <input type="text" name="targetEnableRetentionProbes" th:value="${learnerPlan.targetEnableRetentionProbes}" />
+                <select name="dataCollectFrequency">
+                    <option th:each="dataCollectionOption : ${dataCollectionOptions}"
+                            th:value="${dataCollectionOption}"
+                            th:text="${dataCollectionOption}"/>
+                </select>
             </td>
         </tr>
 

@@ -22,6 +22,9 @@ public class LoginUser {
     @Column(name = "enabled")
     int enabled;
 
+    @Column(name = "role")
+    String role;
+
     @ManyToMany(targetEntity = Learner.class, cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(name = "learner_user_access",
             joinColumns = { @JoinColumn(name = "user_id") },
@@ -66,5 +69,13 @@ public class LoginUser {
 
     public void setLearners(List<Learner> learners) {
         this.learners = learners;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }
