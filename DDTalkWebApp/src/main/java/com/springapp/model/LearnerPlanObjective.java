@@ -31,6 +31,12 @@ public class LearnerPlanObjective {
     @JoinColumn(name = "criteria_id")
     Criteria criteria;
 
+    @Column(name = "retention_probe_days_to_recheck")
+    Long retentionProbeDaysToRecheck;
+
+    @Column(name = "retention_probe_enabled")
+    String retentionProbeEnabled;
+
     @Column(name = "mastery_value")
     Long masteryValue;
 
@@ -92,6 +98,22 @@ public class LearnerPlanObjective {
 
     public void setCriteria(Criteria criteria) {
         this.criteria = criteria;
+    }
+
+    public Long getRetentionProbeDaysToRecheck() {
+        return retentionProbeDaysToRecheck;
+    }
+
+    public void setRetentionProbeDaysToRecheck(Long retentionProbeDaysToRecheck) {
+        this.retentionProbeDaysToRecheck = retentionProbeDaysToRecheck;
+    }
+
+    public String getRetentionProbeEnabled() {
+        return retentionProbeEnabled;
+    }
+
+    public void setRetentionProbeEnabled(String retentionProbeEnabled) {
+        this.retentionProbeEnabled = retentionProbeEnabled;
     }
 
     public Long getMasteryValue() {

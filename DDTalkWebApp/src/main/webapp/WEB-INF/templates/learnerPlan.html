@@ -56,14 +56,7 @@
                                         th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
                             </select>
                         </td>
-                        <td>
-                            <select name="criteria">
-                                <option th:each="criteria : ${criterias}"
-                                        th:value="${criteria.criteriaId}"
-                                        th:text="${criteria.description}"
-                                        th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
-                            </select>
-                        </td>
+                        <td th:text="${planObjective.criteria.description}" />
                         <td>
                             <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
                         </td>
@@ -92,15 +85,7 @@
                                         th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
                             </select>
                         </td>
-                        <td>
-                            <select name="criteria">
-                                <option th:each="criteria : ${criterias}"
-                                        th:value="${criteria.criteriaId}"
-                                        th:text="${criteria.description}"
-                                        th:selected="${planObjective.criteria} ? ${criteria.criteriaId == planObjective.criteria.criteriaId}"/>
-                            </select>
-                        </td>
-                        <td/>
+                        <td th:text="${planObjective.criteria.description}" />
                         <td>
                             <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
                         </td>
@@ -140,20 +125,40 @@
     <br />
 
     <div>
-        <div>
-            <select id="select-objective-type" style="width: 250px">
-                <option th:each="objectiveType : ${objectiveTypes}"
-                        th:value="${objectiveType.objectiveTypeId}"
-                        th:text="${objectiveType.typeDescription}"/>
-            </select>
-        </div>
+        <select id="select-objective-type" style="width: 250px" placeholder="Select Objective Type...">
+            <option th:each="objectiveType : ${objectiveTypes}"
+                    th:value="${objectiveType.objectiveTypeId}"
+                    th:text="${objectiveType.typeDescription}"/>
+        </select>
+
+        <select id="select-criteria" style="width: 250px" placeholder="Select Criteria...">
+            <option th:each="criteria : ${criterias}"
+                    th:value="${criteria.criteriaId}"
+                    th:text="${criteria.description}"/>
+        </select>
+     </div>
+
+    <br />
+
+    <div id="retention-div" hidden="hidden">
+        <label for="retention-probe-enabled">Enable Retention Probe </label>
+        <input id="retention-probe-enabled" type="checkbox" checked="checked" />
+        <br />
+        <label for="retention-probe-num-days">Days after mastery on which retention probe kicks in: </label>
+        <select id="retention-probe-num-days">
+            <option th:each="retentionDay : ${retentionDays}"
+                    th:value="${retentionDay}"
+                    th:text="${retentionDay}"/>
+        </select>
+        <br /><br />
     </div>
+
 
     <form th:action="@{addObjective}" th:object="${addObjectiveRequest}" method="post" id="add_objective_form">
     </form>
 
     <div type="hidden" th:value="${plan.learnerPlanId}" id="postPlanId"/>
-    <button onclick="addObjective()">Add Objective</button>
+    <button onclick="addObjective()" class="standardButton">Add Objective</button>
 </fieldset>
 
 <br /><br /><br />
@@ -191,18 +196,74 @@
     });
 
     $('#select-objective-type').selectize({
+        create: false,
+        onChange: function(value) {
+            var retentionDiv = $('#retention-div');
+            var shouldDisplay = (value == "1") ? true : false;
+            retentionDiv.toggle(shouldDisplay);
+
+            $.ajax({
+                url: '../lookup/criteriaByObjectiveTypeId/' + value,
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var selectizeCriteria = $('#select-criteria')[0].selectize;
+                    selectizeCriteria.clearOptions();
+                    selectizeCriteria.renderCache = {};
+                    selectizeCriteria.load( function(callback) {
+                        callback(data);
+                    });
+                }
+            });
+        }
+    });
+
+    $('#select-criteria').selectize({
+        valueField: 'criteriaId',
+        labelField: 'description',
+        sortField: {
+            field: 'consecutiveToMastered',
+            direction: 'asc'
+        },
         create: false
     });
+
 
     var addObjective = function() {
         var selectizeObjective = $('#select-objective')[0].selectize;
         var selectizeDomain = $('#select-domain')[0].selectize;
         var selectizeObjectiveType = $('#select-objective-type')[0].selectize;
+        var selectizeCriteria = $('#select-criteria')[0].selectize;
 
         var planId = $('#postPlanId').attr('value');
         var objectiveId = selectizeObjective.getValue();
         var domainId = selectizeDomain.getValue();
         var objectiveTypeId = selectizeObjectiveType.getValue();
+        var criteriaId = selectizeCriteria.getValue();
+
+        if (planId.length == 0) {
+            alert("PlanId is missing");
+            return;
+        }
+        if (domainId.length == 0) {
+            alert("Must select a Domain");
+            return;
+        }
+        if (objectiveId.length == 0) {
+            alert("Must select an objective");
+            return;
+        }
+        if (objectiveTypeId.length == 0) {
+            alert("Must select an objective type");
+            return;
+        }
+        if (criteriaId.length == 0) {
+            alert("Must select a criteria");
+            return;
+        }
+
+        var retentionProbeEnabled = $('#retention-probe-enabled').val();
+        var retentionProbeNumDays = $('#retention-probe-num-days').val();
 
         var theAction = $('#add_objective_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
@@ -217,6 +278,9 @@
                 domainId: domainId,
                 objectiveId: objectiveId,
                 objectiveTypeId: objectiveTypeId,
+                criteriaId: criteriaId,
+                retentionProbeEnabled: retentionProbeEnabled,
+                retentionProbeNumDays: retentionProbeNumDays,
                 _csrf:theCSRF
             },
             dataType:'json',
@@ -243,9 +307,6 @@
             var conditionCol = $(columns).find('[name="condition"]');
             var conditionValue = conditionCol.val();
 
-            var criteriaCol = $(columns).find('[name="criteria"]');
-            var criteriaValue = criteriaCol.val();
-
             $.ajax({
                 url: theAction,
                 type: 'POST',
@@ -253,7 +314,7 @@
                     '_csrf':theCSRF
                 },
                 data: {
-                    planObjectiveId:planObjectiveId, conditionId:conditionValue, criteriaId:criteriaValue, masteryValue:masteryValue,
+                    planObjectiveId:planObjectiveId, conditionId:conditionValue, masteryValue:masteryValue,
                     _csrf:theCSRF
                 },
                 success: function (data) {
@@ -266,8 +327,11 @@
     }
 
     $( document ).ready(function() {
-        var selectizeDomain = $('#select-domain')[0].selectize;
-        selectizeDomain.clear(true);
+        var selectize = $('#select-domain')[0].selectize;
+        selectize.clear(true);
+
+        selectize = $('#select-objective-type')[0].selectize;
+        selectize.clear(true);
 
         $( ".accordion" ).accordion({
             collapsible: true,
@@ -278,8 +342,6 @@
         });
     });
 
-    var handler = function() { /* ... */ };
-    selectize.on('event_name', handler);
 </script>
 
 </body>

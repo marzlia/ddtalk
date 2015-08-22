@@ -67,11 +67,9 @@ public class LearnerPlanController {
         model.addAttribute("domainObjectivesMap", treeMap);
 
         List<Condition> conditionList = conditionService.getAllConditions();
-        List<Criteria> criteriaList = criteriaService.getAllCriteria();
         List<ObjectiveType> objectiveTypes = objectiveTypeService.getAllTypes();
 
         model.addAttribute("conditions", conditionList);
-        model.addAttribute("criterias", criteriaList);
         model.addAttribute("objectiveTypes", objectiveTypes);
 
         List<Integer> masteryCounts = new ArrayList<Integer>();
@@ -81,10 +79,16 @@ public class LearnerPlanController {
         model.addAttribute("masteryCounts", masteryCounts);
 
         List<Integer> masteryPercents = new ArrayList<Integer>();
-        for (int i = 60; i <= 100; i += 5) {
+        for (int i = 0; i <= 100; i += 5) {
             masteryPercents.add(i);
         }
         model.addAttribute("masteryPercents", masteryPercents);
+
+        List<Integer> retentionDays = new ArrayList<Integer>();
+        for (int i = 1; i <= 5; i++) {
+            retentionDays.add(i);
+        }
+        model.addAttribute("retentionDays", retentionDays);
 
         return "learnerPlan";
     }
@@ -103,7 +107,6 @@ public class LearnerPlanController {
     public String updateObjectives(@ModelAttribute(value="updateObjectiveRequestItem") UpdateObjectiveRequestItem updateObjectiveRequestItem, BindingResult errors) {
         learnerPlanService.updatePlanObjective(Long.parseLong(updateObjectiveRequestItem.getPlanObjectiveId()),
                 Long.parseLong(updateObjectiveRequestItem.getConditionId()),
-                Long.parseLong(updateObjectiveRequestItem.getCriteriaId()),
                 updateObjectiveRequestItem.getMasteryValue());
 
 
@@ -116,7 +119,10 @@ public class LearnerPlanController {
         learnerPlanService.addObjectiveToLearnerPlan(addObjectiveRequest.getLearnerPlanId(),
                 addObjectiveRequest.getDomainId(),
                 addObjectiveRequest.getObjectiveId(),
-                addObjectiveRequest.getObjectiveTypeId());
+                addObjectiveRequest.getObjectiveTypeId(),
+                addObjectiveRequest.getCriteriaId(),
+                addObjectiveRequest.getRetentionProbeEnabled(),
+                addObjectiveRequest.getRetentionProbeNumDays());
 
         return "{}";
     }

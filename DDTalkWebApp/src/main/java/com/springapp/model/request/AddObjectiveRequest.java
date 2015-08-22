@@ -9,6 +9,9 @@ public class AddObjectiveRequest {
     String objectiveId;
     String domainId;
     String objectiveTypeId;
+    String criteriaId;
+    String retentionProbeEnabled;
+    String retentionProbeNumDays;
 
     public String getLearnerPlanId() {
         return learnerPlanId;
@@ -40,5 +43,29 @@ public class AddObjectiveRequest {
 
     public void setObjectiveTypeId(String objectiveTypeId) {
         this.objectiveTypeId = objectiveTypeId;
+    }
+
+    public String getCriteriaId() {
+        return criteriaId;
+    }
+
+    public void setCriteriaId(String criteriaId) {
+        this.criteriaId = criteriaId;
+    }
+
+    public String getRetentionProbeEnabled() {
+        return retentionProbeEnabled;
+    }
+
+    public void setRetentionProbeEnabled(String retentionProbeEnabled) {
+        this.retentionProbeEnabled = retentionProbeEnabled;
+    }
+
+    public String getRetentionProbeNumDays() {
+        return retentionProbeNumDays;
+    }
+
+    public void setRetentionProbeNumDays(String retentionProbeNumDays) {
+        this.retentionProbeNumDays = retentionProbeNumDays;
     }
 }

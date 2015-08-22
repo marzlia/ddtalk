@@ -26,6 +26,9 @@ public class LearnerSessionObjectiveTarget {
     @Column(name = "session_value")
     Long sessionValue;
 
+    @Column(name = "mastered")
+    String mastered;
+
     @Column(name = "mastery_date")
     Date masteryDate;
 
@@ -67,6 +70,14 @@ public class LearnerSessionObjectiveTarget {
 
     public void setSessionValue(Long sessionValue) {
         this.sessionValue = sessionValue;
+    }
+
+    public String getMastered() {
+        return mastered;
+    }
+
+    public void setMastered(String mastered) {
+        this.mastered = mastered;
     }
 
     public Date getMasteryDate() {

@@ -14,6 +14,13 @@ public class Criteria {
     @Column(name = "description")
     String description;
 
+    @Column(name = "consecutive_to_mastered")
+    Long consecutiveToMastered;
+
+    @OneToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "objective_type_id")
+    ObjectiveType objectiveType;
+
     public Long getCriteriaId() {
         return criteriaId;
     }
@@ -28,5 +35,21 @@ public class Criteria {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Long getConsecutiveToMastered() {
+        return consecutiveToMastered;
+    }
+
+    public void setConsecutiveToMastered(Long consecutiveToMastered) {
+        this.consecutiveToMastered = consecutiveToMastered;
+    }
+
+    public ObjectiveType getObjectiveType() {
+        return objectiveType;
+    }
+
+    public void setObjectiveType(ObjectiveType objectiveType) {
+        this.objectiveType = objectiveType;
     }
 }

@@ -31,12 +31,6 @@ public class LearnerPlan {
     @Column(name = "data_collect_frequency")
     String dataCollectFrequency;
 
-    @Column(name = "target_num_fluency_probes")
-    Long targetNumFluencyProbes;
-
-    @Column(name = "target_enable_retention_probes")
-    String targetEnableRetentionProbes;
-
     @OneToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(name = "learner_plan_id")
@@ -80,22 +74,6 @@ public class LearnerPlan {
 
     public void setDataCollectFrequency(String dataCollectFrequency) {
         this.dataCollectFrequency = dataCollectFrequency;
-    }
-
-    public Long getTargetNumFluencyProbes() {
-        return targetNumFluencyProbes;
-    }
-
-    public void setTargetNumFluencyProbes(Long targetNumFluencyProbes) {
-        this.targetNumFluencyProbes = targetNumFluencyProbes;
-    }
-
-    public String getTargetEnableRetentionProbes() {
-        return targetEnableRetentionProbes;
-    }
-
-    public void setTargetEnableRetentionProbes(String targetEnableRetentionProbes) {
-        this.targetEnableRetentionProbes = targetEnableRetentionProbes;
     }
 
     public String getTreatmentDescription() {

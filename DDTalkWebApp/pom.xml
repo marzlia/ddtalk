@@ -168,6 +168,19 @@
             <version>0.9.1.2</version>
         </dependency>
 
+        <!-- Jasper Reports -->
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>6.1.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>6.0.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

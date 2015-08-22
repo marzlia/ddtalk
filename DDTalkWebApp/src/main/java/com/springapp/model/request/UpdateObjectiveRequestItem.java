@@ -10,7 +10,6 @@ public class UpdateObjectiveRequestItem {
 
     String planObjectiveId;
     String conditionId;
-    String criteriaId;
     Long masteryValue;
 
     public String getPlanObjectiveId() {
@@ -27,14 +26,6 @@ public class UpdateObjectiveRequestItem {
 
     public void setConditionId(String conditionId) {
         this.conditionId = conditionId;
-    }
-
-    public String getCriteriaId() {
-        return criteriaId;
-    }
-
-    public void setCriteriaId(String criteriaId) {
-        this.criteriaId = criteriaId;
     }
 
     public Long getMasteryValue() {

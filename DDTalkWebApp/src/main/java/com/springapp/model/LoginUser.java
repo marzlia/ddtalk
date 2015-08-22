@@ -22,6 +22,8 @@ public class LoginUser {
     @Column(name = "enabled")
     int enabled;
 
+    @Column(name = "full_name")
+    String fullName;
     @Column(name = "role")
     String role;
 
@@ -69,6 +71,14 @@ public class LoginUser {
 
     public void setLearners(List<Learner> learners) {
         this.learners = learners;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     public String getRole() {

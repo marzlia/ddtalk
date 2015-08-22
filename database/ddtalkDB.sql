@@ -42,8 +42,6 @@ CREATE TABLE IF NOT EXISTS learner_plan (
   date_start_plan DATE DEFAULT NULL,
   treatment_frequency varchar(25) DEFAULT NULL,
   data_collect_frequency varchar(25) DEFAULT NULL,  
-  target_num_fluency_probes int(11),
-  target_enable_retention_probes varchar(2) DEFAULT NULL,
   PRIMARY KEY (learner_plan_id)
 );
 
@@ -54,7 +52,9 @@ CREATE TABLE IF NOT EXISTS learner_plan_objective (
   objective_type_id int(11) NOT NULL,
   condition_id int(11),
   criteria_id int(11),
-  mastery_value int(11),  
+  retention_probe_enabled varchar(2) DEFAULT 'N',
+  retention_probe_days_to_recheck int(11) DEFAULT 0,  
+  mastery_value int(11) default 0,  
   PRIMARY KEY (learner_plan_objective_id)
 );
 
@@ -87,7 +87,9 @@ CREATE TABLE IF NOT EXISTS objective_type (
 
 CREATE TABLE IF NOT EXISTS criteria (
   criteria_id int(11) NOT NULL AUTO_INCREMENT,
+  objective_type_id int(11) NOT NULL,
   description varchar(100) DEFAULT NULL,
+  consecutive_to_mastered int(5) NOT NULL,
   PRIMARY KEY (criteria_id)
 );
 
@@ -110,6 +112,7 @@ CREATE TABLE login_user (
   password varchar(20) NOT NULL,
   enabled int(1) NOT NULL,
   role varchar(20) NOT NULL,  
+  full_name varchar(50) NOT NULL,  
   PRIMARY KEY (user_id)
 );
 
@@ -130,6 +133,7 @@ CREATE TABLE IF NOT EXISTS learner_session_objective (
   learner_session_id int(11) NOT NULL,
   learner_plan_objective_id int(11) NOT NULL,
   session_value int(11),
+  mastered varchar(2) DEFAULT 0,
   mastery_date DATE DEFAULT NULL,
   PRIMARY KEY (learner_session_objective_id)
 );
@@ -140,6 +144,7 @@ CREATE TABLE IF NOT EXISTS learner_session_objective_target(
   learner_plan_objective_target_id int(11) NOT NULL,
   prompt_code_id int(11),
   session_value int(11),
+  mastered varchar(2) DEFAULT 0,
   mastery_date DATE DEFAULT NULL,
   PRIMARY KEY (learner_session_objective_target_id)
 );

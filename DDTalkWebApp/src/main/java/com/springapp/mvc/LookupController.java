@@ -49,6 +49,14 @@ public class LookupController {
         return list;
     }
 
+    @RequestMapping(value = "/criteriaByObjectiveTypeId/{objectiveTypeId}", method = RequestMethod.GET)
+    @ResponseBody
+    public List<Criteria> criteriaByObjectiveTypeId(@PathVariable String objectiveTypeId) {
+
+        List<Criteria> list = criteriaService.getCriteriaByObjectiveTypeId(Long.parseLong(objectiveTypeId));
+        return list;
+    }
+
     @RequestMapping(value = "/criteria/create", method = RequestMethod.POST)
     @ResponseBody
     public Criteria createCriteria(@RequestBody Criteria criteria) {
@@ -80,6 +88,11 @@ public class LookupController {
         List<Objective> objectives = objectiveService.objectivesForDomainId(domainId);
         return objectives;
     }
+
+
+
+
+
 
 
 }

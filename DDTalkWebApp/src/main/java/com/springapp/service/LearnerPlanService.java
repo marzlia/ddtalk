@@ -4,6 +4,7 @@ import com.springapp.model.*;
 import com.springapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 
 import java.util.List;
@@ -50,7 +51,9 @@ public class LearnerPlanService {
         return learnerPlanRepository.findOne(planId);
     }
 
-    public void addObjectiveToLearnerPlan(String planId, String domainId, String objectiveId, String objectiveTypeId) {
+    public void addObjectiveToLearnerPlan(String planId, String domainId, String objectiveId, String objectiveTypeId,
+                                          String criteriaId, String retentionProbeEnabled, String retentionProbeNumDays ) {
+
         LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
         learnerPlanObjective.setLearnerPlanId(Long.parseLong(planId));
 
@@ -76,19 +79,26 @@ public class LearnerPlanService {
         Condition condition = conditionRepository.findByDescription("None");
         learnerPlanObjective.setCondition(condition);
 
-        Criteria criteria = criteriaRepository.findByDescription("None");
+        Criteria criteria = criteriaRepository.findOne(Long.parseLong(criteriaId));
         learnerPlanObjective.setCriteria(criteria);
+
+        if (StringUtils.isEmpty(retentionProbeEnabled)) {
+            learnerPlanObjective.setRetentionProbeEnabled("N");
+            learnerPlanObjective.setRetentionProbeDaysToRecheck(0L);
+        }
+        else {
+            learnerPlanObjective.setRetentionProbeEnabled("Y");
+            learnerPlanObjective.setRetentionProbeDaysToRecheck(Long.parseLong(retentionProbeNumDays));
+        }
 
         learnerPlanObjectiveRepository.save(learnerPlanObjective);
     }
 
-    public void updatePlanObjective(Long planObjectiveId, Long conditionId, Long criteriaId, Long masteryValue) {
+    public void updatePlanObjective(Long planObjectiveId, Long conditionId, Long masteryValue) {
         LearnerPlanObjective learnerPlanObjective = learnerPlanObjectiveRepository.findOne(planObjectiveId);
         Condition condition = conditionRepository.findOne(conditionId);
-        Criteria criteria = criteriaRepository.findOne(criteriaId);
 
         learnerPlanObjective.setCondition(condition);
-        learnerPlanObjective.setCriteria(criteria);
         learnerPlanObjective.setMasteryValue(masteryValue);
         learnerPlanObjectiveRepository.save(learnerPlanObjective);
     }
