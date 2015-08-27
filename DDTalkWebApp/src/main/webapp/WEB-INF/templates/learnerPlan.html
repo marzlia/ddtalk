@@ -161,7 +161,8 @@
     <button onclick="addObjective()" class="standardButton">Add Objective</button>
 </fieldset>
 
-<br /><br /><br />
+<br /><br />
+<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton">Report</a>
 
 <script>
     $('#select-domain').selectize({

@@ -16,8 +16,6 @@
     <!-- Enables the Spring MVC @Controller programming model -->
     <annotation-driven />
 
-    <beans:import resource="jasper-views.xml"/>
-
     <beans:bean class="org.springframework.web.servlet.view.XmlViewResolver">
         <beans:property name="location" value="/WEB-INF/jasper-views.xml"/>
         <beans:property name="order" value="0"/>
@@ -43,5 +41,6 @@
     <!-- Configure bean to convert JSON to POJO and vice versa -->
     <beans:bean id="jsonMessageConverter" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
     </beans:bean>
+
 
 </beans:beans>

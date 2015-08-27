@@ -82,7 +82,7 @@ public class LearnerPlanService {
         Criteria criteria = criteriaRepository.findOne(Long.parseLong(criteriaId));
         learnerPlanObjective.setCriteria(criteria);
 
-        if (StringUtils.isEmpty(retentionProbeEnabled)) {
+        if (StringUtils.isEmpty(retentionProbeEnabled) || objectiveType.getTypeId().equals("P")) {
             learnerPlanObjective.setRetentionProbeEnabled("N");
             learnerPlanObjective.setRetentionProbeDaysToRecheck(0L);
         }
