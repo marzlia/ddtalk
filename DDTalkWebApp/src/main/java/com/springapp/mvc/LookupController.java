@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -85,14 +86,16 @@ public class LookupController {
     @ResponseBody
     public List<Objective> objectivesForDomain(@PathVariable String domainId) {
 
+        //if not numeric, user added a new domain, return empty list
+        if (!isNumeric(domainId)) {
+            return new ArrayList<Objective>();
+        }
+
         List<Objective> objectives = objectiveService.objectivesForDomainId(domainId);
         return objectives;
     }
 
-
-
-
-
-
-
+    private  boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
 }

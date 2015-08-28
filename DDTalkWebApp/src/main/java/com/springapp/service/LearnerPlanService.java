@@ -39,6 +39,9 @@ public class LearnerPlanService {
     @Autowired
     CriteriaRepository criteriaRepository;
 
+    @Autowired
+    DomainService domainService;
+
     public List<LearnerPlan> getAllLearnerPlans() {
         return learnerPlanRepository.findAll();
     }
@@ -57,6 +60,13 @@ public class LearnerPlanService {
         LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
         learnerPlanObjective.setLearnerPlanId(Long.parseLong(planId));
 
+        //if not numeric, user added a new domain
+        if (!isNumeric(domainId)) {
+            Domain newDomain = new Domain();
+            newDomain.setDescription(domainId);
+            newDomain = domainService.createDomain(newDomain);
+            domainId = newDomain.getDomainId().toString();
+        }
 
         Objective objective = null;
         if (isNumeric(objectiveId)) {

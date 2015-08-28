@@ -35,6 +35,15 @@
     <h3 th:text="${mapEntry.key.description}"/>
     <div>
         <table class="table-style-standard">
+            <tr>
+                <th>#</th>
+                <th>Objective</th>
+                <th>Mastery</th>
+                <th>Condition</th>
+                <th>Criteria</th>
+                <th></th>
+                <th></th>
+            </tr>
             <div th:each="planObjective, row : ${mapEntry.value}">
                 <tr th:if="${planObjective.objectiveType.typeId == 'C'}" th:id="${planObjective.learnerPlanObjectiveId}">
                     <td th:text="${row.index} + 1"></td>
@@ -144,7 +153,7 @@
         <label for="retention-probe-enabled">Enable Retention Probe </label>
         <input id="retention-probe-enabled" type="checkbox" checked="checked" />
         <br />
-        <label for="retention-probe-num-days">Days after mastery on which retention probe kicks in: </label>
+        <label for="retention-probe-num-days"># of hold days between mastery and retention: </label>
         <select id="retention-probe-num-days">
             <option th:each="retentionDay : ${retentionDays}"
                     th:value="${retentionDay}"
@@ -166,7 +175,7 @@
 
 <script>
     $('#select-domain').selectize({
-        create: false,
+        create: true,
         dropdownParent: 'body',
         onChange: function(value) {
             $.ajax({
@@ -177,7 +186,7 @@
                     var selectize = $('#select-objective')[0].selectize;
                     selectize.clearOptions();
                     selectize.renderCache = {};
-                    selectize.load( function(callback) {
+                    selectize.load(function (callback) {
                         callback(data);
                     });
                 }

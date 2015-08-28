@@ -26,6 +26,9 @@ public class LearnerSessionObjectiveTarget {
     @Column(name = "session_value")
     Long sessionValue;
 
+    @Column(name = "invalidated_by_retention")
+    String invalidatedByRetention;
+
     @Column(name = "mastered")
     String mastered;
 
@@ -86,5 +89,13 @@ public class LearnerSessionObjectiveTarget {
 
     public void setMasteryDate(Date masteryDate) {
         this.masteryDate = masteryDate;
+    }
+
+    public String getInvalidatedByRetention() {
+        return invalidatedByRetention;
+    }
+
+    public void setInvalidatedByRetention(String invalidatedByRetention) {
+        this.invalidatedByRetention = invalidatedByRetention;
     }
 }
