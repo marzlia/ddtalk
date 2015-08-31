@@ -4,6 +4,7 @@ import com.springapp.model.*;
 import com.springapp.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -27,12 +28,19 @@ public class LearnerSessionService {
     @Autowired
     PromptCodeRepository promptCodeRepository;
 
+    @Autowired
+    LearnerPlanObjectiveRepository learnerPlanObjectiveRepository;
+
     public List<LearnerSession> getSessionsForLearnerPlanId(Long learnerPlanId) {
         return learnerSessionRepository.findByLearnerPlanId(learnerPlanId);
     }
 
     public LearnerSession getLearnerSession(Long learnerSessionId) {
         return learnerSessionRepository.findOne(learnerSessionId);
+    }
+
+    public List<LearnerSessionObjective> getSessionsForPlanObjective(LearnerPlanObjective learnerPlanObjective) {
+        return learnerSessionObjectiveRepository.findByLearnerPlanObjective(learnerPlanObjective);
     }
 
     public LearnerSession createNewSessionForLearnerPlan(LearnerPlan learnerPlan) {
@@ -78,10 +86,17 @@ public class LearnerSessionService {
         return learnerSessionRepository.save(learnerSession);
     }
 
-    public void updateSessionObjective(Long sessionObjectiveId, Long sessionValue) {
+    public void updateSessionObjective(Long sessionObjectiveId, Long sessionValue, String forcedMastered) {
         LearnerSessionObjective learnerSessionObjective = learnerSessionObjectiveRepository.findOne(sessionObjectiveId);
 
         learnerSessionObjective.setSessionValue(sessionValue);
+        if (!StringUtils.isEmpty(forcedMastered)) {
+            LearnerPlanObjective planObjective = learnerSessionObjective.getLearnerPlanObjective();
+            LearnerSession learnerSession = learnerSessionRepository.findOne(learnerSessionObjective.getLearnerSessionId());
+            planObjective.setMastered("Y");
+            planObjective.setMasteryDate(learnerSession.getSessionDate());
+            learnerPlanObjectiveRepository.save(planObjective);
+        }
         learnerSessionObjectiveRepository.save(learnerSessionObjective);
     }
 
@@ -98,4 +113,8 @@ public class LearnerSessionService {
         LearnerSessionObjective learnerSessionObjective = learnerSessionObjectiveRepository.findByLearnerPlanObjectiveAndLearnerSessionId(learnerPlanObjective, sessionId);
         return learnerSessionObjective;
     }
+
+
+
 }
+

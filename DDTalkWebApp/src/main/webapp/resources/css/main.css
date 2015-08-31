@@ -20,6 +20,7 @@ table.table-style-standard tr:hover td {
 table.table-style-standard tr:nth-child(even) td{
     background-color: rgba(71, 255, 42, 0.23);
 }
+
 table.table-style-standard td {
     border-width: 1px;
     padding: 8px;
@@ -27,6 +28,14 @@ table.table-style-standard td {
     border-color: #000000;
     background-color: #ffffff;
 }
+table.table-style-standard tr.mastered td {
+    background-color: #fcff50;
+}
+
+table.table-style-standard tr.retention td {
+    background-color: #2761ff;
+}
+
 label.label-style-domain {
     font-family: verdana, arial, sans-serif;
     font-size: 16px;

@@ -1,6 +1,7 @@
 package com.springapp.model;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name="learner_plan_objective_target")
@@ -16,6 +17,12 @@ public class LearnerPlanObjectiveTarget {
 
     @Column(name = "description")
     String targetDescription;
+
+    @Column(name = "mastered")
+    String mastered;
+
+    @Column(name = "mastery_date")
+    Date masteryDate;
 
     public Long getLearnerPlanObjectiveTargetId() {
         return learnerPlanObjectiveTargetId;
@@ -39,5 +46,21 @@ public class LearnerPlanObjectiveTarget {
 
     public void setTargetDescription(String targetDescription) {
         this.targetDescription = targetDescription;
+    }
+
+    public String getMastered() {
+        return mastered;
+    }
+
+    public void setMastered(String mastered) {
+        this.mastered = mastered;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
     }
 }

@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by peter on 5/19/15.
@@ -42,6 +42,9 @@ public class LearnerPlanService {
     @Autowired
     DomainService domainService;
 
+    @Autowired
+    LearnerSessionService learnerSessionService;
+
     public List<LearnerPlan> getAllLearnerPlans() {
         return learnerPlanRepository.findAll();
     }
@@ -59,6 +62,7 @@ public class LearnerPlanService {
 
         LearnerPlanObjective learnerPlanObjective = new LearnerPlanObjective();
         learnerPlanObjective.setLearnerPlanId(Long.parseLong(planId));
+        learnerPlanObjective.setMastered("N");
 
         //if not numeric, user added a new domain
         if (!isNumeric(domainId)) {
@@ -124,11 +128,17 @@ public class LearnerPlanService {
     }
 
     public void addPlanObjectiveTargets(Long planObjectiveId, String targets) {
-        LearnerPlanObjectiveTarget learnerPlanObjectiveTarget = new LearnerPlanObjectiveTarget();
-        learnerPlanObjectiveTarget.setLearnerPlanObjectiveId(planObjectiveId);
-        learnerPlanObjectiveTarget.setTargetDescription(targets);
+        //comma separated
+        List<String> targetList = new ArrayList<String>(Arrays.asList(targets.split(",")));
+        for (String aTarget : targetList) {
 
-        learnerPlanObjectiveTargetRepository.save(learnerPlanObjectiveTarget);
+            LearnerPlanObjectiveTarget learnerPlanObjectiveTarget = new LearnerPlanObjectiveTarget();
+            learnerPlanObjectiveTarget.setLearnerPlanObjectiveId(planObjectiveId);
+            learnerPlanObjectiveTarget.setTargetDescription(aTarget);
+            learnerPlanObjectiveTarget.setMastered("N");
+
+            learnerPlanObjectiveTargetRepository.save(learnerPlanObjectiveTarget);
+        }
     }
 
     public LearnerPlanObjective getLearnerPlanObjective(Long planObjectiveId) {
@@ -138,6 +148,7 @@ public class LearnerPlanService {
 
     public List<LearnerPlanObjectiveTarget> getLearnerPlanObjectiveTargets(Long planObjectiveId) {
         List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets = learnerPlanObjectiveTargetRepository.findByLearnerPlanObjectiveId(planObjectiveId);
+
         return learnerPlanObjectiveTargets;
     }
 
@@ -149,6 +160,78 @@ public class LearnerPlanService {
         learnerPlanObjectiveRepository.delete(planObjectiveId);
     }
 
+    public LearnerPlan updateMasteryForLearnerPlan(LearnerPlan plan) {
+
+        //get all the sessions for this plan and sort by date
+        List<LearnerSession> learnerSessions = getSessionsForLearnerPlanId(plan.getLearnerPlanId());
+
+        //build array of  objectives which have been mastered
+        updateObjectivesWhichHaveReachedMastery(plan, learnerSessions);
+
+        return learnerPlanRepository.save(plan);
+    }
+
+    //get all the sessions for this plan and sort by date
+    private List<LearnerSession> getSessionsForLearnerPlanId(Long learnerPlanId) {
+
+        List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(learnerPlanId);
+        Collections.sort(learnerSessions, new Comparator<LearnerSession>() {
+            @Override
+            public int compare(LearnerSession session1, LearnerSession session2) {
+                return session1.getSessionDate().compareTo(session2.getSessionDate());
+            }
+        });
+
+        return learnerSessions;
+    }
+
+    private void updateObjectivesWhichHaveReachedMastery(LearnerPlan plan, List<LearnerSession> learnerSessions) {
+
+        Map<LearnerPlanObjective, Integer> objectivesMastered = new HashMap<LearnerPlanObjective, Integer>();
+        Map<LearnerPlanObjective, Date> lastSessionDatesForMastery = new HashMap<LearnerPlanObjective, Date>();
+
+        for (LearnerSession learnerSession : learnerSessions) {
+            List<LearnerSessionObjective> learnerSessionObjectives = learnerSession.getLearnerSessionObjectiveList();
+            for (LearnerSessionObjective learnerSessionObjective : learnerSessionObjectives) {
+                LearnerPlanObjective planObjective = learnerSessionObjective.getLearnerPlanObjective();
+                if (planObjective.getMastered().equals("N")) {
+                    if (planObjective.getObjectiveType().getTypeId().equals("P")) {
+                        Integer currentConsecutiveMasteryCount = objectivesMastered.get(planObjective);
+                        if (learnerSessionObjective.getSessionValue() >= planObjective.getMasteryValue()) {
+                            currentConsecutiveMasteryCount = new Integer((currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount.intValue() + 1 : 1);
+                            objectivesMastered.put(planObjective, currentConsecutiveMasteryCount);
+                            lastSessionDatesForMastery.put(planObjective, learnerSession.getSessionDate());
+                        }
+                        else {
+                            objectivesMastered.remove(planObjective);
+                            lastSessionDatesForMastery.remove(planObjective);
+                        }
+                    }
+                    else if (planObjective.getObjectiveType().getTypeId().equals("C")) {
+                    }
+                }
+            }
+        }
+
+        //update objectives which have been mastered
+        Set<LearnerPlanObjective> keys = objectivesMastered.keySet();
+        for (LearnerPlanObjective learnerPlanObjective : keys) {
+            Integer currentConsecutiveMasteryCount = objectivesMastered.get(learnerPlanObjective);
+            currentConsecutiveMasteryCount = new Integer((currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount.intValue() : 0);
+
+            if (currentConsecutiveMasteryCount >= learnerPlanObjective.getCriteria().getConsecutiveToMastered()) {
+                for (LearnerPlanObjective planObjective : plan.getLearnerPlanObjectiveList()) {
+                    if (planObjective.equals(learnerPlanObjective)) {
+                        Date masteryDate = lastSessionDatesForMastery.get(learnerPlanObjective);
+                        planObjective.setMasteryDate(masteryDate);
+                        planObjective.setMastered("Y");
+                        learnerPlanObjectiveRepository.save(planObjective);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 
     private  boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");

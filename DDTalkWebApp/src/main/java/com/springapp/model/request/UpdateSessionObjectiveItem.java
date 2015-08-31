@@ -7,6 +7,7 @@ public class UpdateSessionObjectiveItem {
 
     String sessionObjectiveId;
     Long sessionValue;
+    String forcedMastered;
 
     public String getSessionObjectiveId() {
         return sessionObjectiveId;
@@ -22,5 +23,13 @@ public class UpdateSessionObjectiveItem {
 
     public void setSessionValue(Long sessionValue) {
         this.sessionValue = sessionValue;
+    }
+
+    public String getForcedMastered() {
+        return forcedMastered;
+    }
+
+    public void setForcedMastered(String forcedMastered) {
+        this.forcedMastered = forcedMastered;
     }
 }

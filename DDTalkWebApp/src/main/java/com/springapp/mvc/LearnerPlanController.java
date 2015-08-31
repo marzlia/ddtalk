@@ -3,6 +3,7 @@ package com.springapp.mvc;
 import com.springapp.model.*;
 import com.springapp.model.request.AddObjectiveRequest;
 import com.springapp.model.request.AddObjectiveTargetsRequest;
+import com.springapp.model.request.MapSessionObjectiveItem;
 import com.springapp.model.request.UpdateObjectiveRequestItem;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class LearnerPlanController {
     public String learnerPlan(@PathVariable String planId, ModelMap model) {
 
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
+
         List<LearnerPlanObjective> objectives = learnerPlan.getLearnerPlanObjectiveList();
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
         List<Domain> domains = domainService.getAllDomains();
@@ -64,6 +66,17 @@ public class LearnerPlanController {
         model.addAttribute("emptyDomains", domains);
 
         Map<Domain, List<LearnerPlanObjective>> treeMap = new TreeMap<Domain, List<LearnerPlanObjective>>(domainObjectivesMap);
+        Set<Domain> keys = treeMap.keySet();
+        for( Domain domain : keys) {
+            List<LearnerPlanObjective> objectiveList = treeMap.get(domain);
+            Collections.sort(objectiveList, new Comparator<LearnerPlanObjective>() {
+                @Override
+                public int compare(LearnerPlanObjective item1, LearnerPlanObjective item2) {
+                    return item1.getMastered().compareTo(item2.getMastered());
+                }
+            });
+        }
+
         model.addAttribute("domainObjectivesMap", treeMap);
 
         List<Condition> conditionList = conditionService.getAllConditions();

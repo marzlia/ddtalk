@@ -104,10 +104,20 @@ public class LearnerSessionController {
         }
 
         Map<Domain, List<MapSessionObjectiveItem>> treeMap = new TreeMap<Domain, List<MapSessionObjectiveItem>>(domainObjectivesMap);
+        Set<Domain> keys = treeMap.keySet();
+        for( Domain domain : keys) {
+            List<MapSessionObjectiveItem> objectiveList = treeMap.get(domain);
+            Collections.sort(objectiveList, new Comparator<MapSessionObjectiveItem>() {
+                @Override
+                public int compare(MapSessionObjectiveItem item1, MapSessionObjectiveItem item2) {
+                    return item1.getPlanObjective().getMastered().compareTo(item2.getPlanObjective().getMastered());
+                }
+            });
+        }
         model.addAttribute("domainObjectivesMap", treeMap);
 
         List<Integer> masteryPercents = new ArrayList<Integer>();
-        for (int i = 60; i <= 100; i += 5) {
+        for (int i = 0; i <= 100; i += 5) {
             masteryPercents.add(i);
         }
         model.addAttribute("masteryPercents", masteryPercents);
@@ -131,7 +141,8 @@ public class LearnerSessionController {
     @ResponseBody
     public String updateSessionObjective(@ModelAttribute(value="updateSessionObjectiveItem") UpdateSessionObjectiveItem updateSessionObjectiveItem, BindingResult errors) {
         learnerSessionService.updateSessionObjective(Long.parseLong(updateSessionObjectiveItem.getSessionObjectiveId()),
-                updateSessionObjectiveItem.getSessionValue());
+                                                     updateSessionObjectiveItem.getSessionValue(),
+                                                     updateSessionObjectiveItem.getForcedMastered());
 
 
         return "{}";
@@ -150,13 +161,17 @@ public class LearnerSessionController {
         return "{}";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveLearnerPlan(@ModelAttribute(value="learnerSession") LearnerSession learnerSession, BindingResult errors) {
+    @RequestMapping(value = "/masteryCheck/{sessionId}", method = RequestMethod.GET)
+    public String masteryCheck(@PathVariable String sessionId) {
 
-        learnerSessionService.saveLearnerSession(learnerSession);
+        LearnerSession learnerSession = learnerSessionService.getLearnerSession(Long.parseLong(sessionId));
 
         LearnerPlan plan = learnerPlanService.getLearnerPlan(learnerSession.getLearnerPlanId());
-        return "redirect:/learnerPlan/" + plan.getLearnerPlanId();
+
+        //ensure all mastery processing is executed
+        plan = learnerPlanService.updateMasteryForLearnerPlan(plan);
+
+        return "redirect:/learnerSession/" + plan.getLearnerPlanId();
     }
 
     @RequestMapping(value = "/learnerSessionObjectiveTargets/{learnerPlanId}/{sessionId}/{planObjectiveId}", method = RequestMethod.GET)

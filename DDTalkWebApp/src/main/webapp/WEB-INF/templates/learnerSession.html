@@ -38,11 +38,21 @@
     <h3 th:text="${mapEntry.key.description}"/>
     <div>
     <table class="table-style-standard">
+        <tr>
+            <th>#</th>
+            <th>Objective</th>
+            <th>Mastery</th>
+            <th>Condition</th>
+            <th>Criteria</th>
+            <th></th>
+            <th></th>
+        </tr>
         <div th:each="mapSessionObjectiveItem, row : ${mapEntry.value}">
             <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}">
                 <td th:text="${row.index} + 1"></td>
                 <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
+                    <td th:text="${mapSessionObjectiveItem.planObjective.masteryValue}" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
@@ -50,19 +60,28 @@
                     </td>
                 </div>
             </tr>
-            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'P'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}">
+            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'P'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}" th:attr="class=${mapSessionObjectiveItem.planObjective.mastered == 'Y' ? 'mastered' : null}">
                 <td th:text="${row.index} + 1"></td>
                 <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
+                    <td th:text="${mapSessionObjectiveItem.planObjective.masteryValue} + '%'" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
-                    <td>
+                    <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'N'}">
                         <select name="mastery">
                             <option th:each="masteryPercent : ${masteryPercents}"
                                     th:value="${masteryPercent}"
                                     th:text="${masteryPercent} + '%'"
                                     th:selected="${masteryPercent == mapSessionObjectiveItem.sessionObjective.sessionValue}"/>
                         </select>
+                    </td>
+                    <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'N'}">
+                        <label for="mastered">Mastered? </label>
+                        <input id="mastered" name="mastered" type="checkbox"/>
+                    </td>
+                    <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'Y'}">
+                        <label>Mastered on </label>
+                        <label th:text="${mapSessionObjectiveItem.planObjective.masteryDate} ? ${#dates.format(mapSessionObjectiveItem.planObjective.masteryDate, 'MMM dd, yyyy')}" />
                     </td>
                 </div>
             </tr>
@@ -75,11 +94,17 @@
 
 <button onclick="updateSessionData()" class="standardButton">Save Session Data</button>
 
-<form th:action="@{../updateSessionObjective}" th:object="${learnerSession}" method="post" id="update_session_objective_form">
-</form>
+<form th:action="@{../updateSessionObjective}" th:object="${learnerSession}" method="post" id="update_session_objective_form" />
+
+<input hidden="hidden" type="text" id="hiddenSessionId" th:value="${learnerSession.learnerSessionId}"/>
+<form th:action="@{../masteryCheck}" id="mastery_check_form" />
+
+<form th:action="@{/learnerSession/} + ${learnerPlan.learnerPlanId}" id="hidden_link_session_main" />
 
 <script>
     var updateSessionData = function() {
+        var requests = Array();
+
         var theAction = $('#update_session_objective_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
 
@@ -94,23 +119,49 @@
                 masteryValue = masteryCol.val();
             }
 
-            $.ajax({
-                url: theAction,
-                type: 'POST',
-                headers: {
-                    '_csrf':theCSRF
-                },
-                data: {
-                    sessionObjectiveId:sessionObjectiveId, sessionValue:masteryValue,
-                    _csrf:theCSRF
-                },
-                success: function (data) {
-                },
-                error: function() {
+            var isMastered = "";
+            var masteredCol = $(columns).find('[name="mastered"]');
+            if (masteredCol != null) {
+                if (masteredCol.is(':checked')) {
+                    isMastered = "on";
                 }
-            });
+            }
+
+            requests.push($.ajax({
+                        url: theAction,
+                        type: 'POST',
+                        headers: {
+                            '_csrf': theCSRF
+                        },
+                        data: {
+                            sessionObjectiveId: sessionObjectiveId, sessionValue: masteryValue, forcedMastered: isMastered,
+                            _csrf: theCSRF
+                        },
+                        success: function (data) {
+                        },
+                        error: function () {
+                        }
+                    })
+            );
         });
 
+
+        var sessionId = $('#hiddenSessionId').val();
+
+        var theMainSessionPageAction = $('#hidden_link_session_main').attr('action');
+        var theMasteryAction = $('#mastery_check_form').attr('action');
+        var defer = $.when.apply($, requests);
+        defer.done(function(){
+            $.ajax({
+                url: theMasteryAction + '/' + sessionId,
+                type: 'GET',
+                success: function (data) {
+                    window.location.href = theMainSessionPageAction;
+                },
+                error: function () {
+                }
+            })
+        });
     }
 
     $(function() {

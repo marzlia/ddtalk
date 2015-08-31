@@ -15,5 +15,8 @@ import java.util.List;
 public interface LearnerSessionObjectiveRepository extends JpaRepository<LearnerSessionObjective, Long> {
 
     List<LearnerSessionObjective> findByLearnerSessionId(Long learnerSessionId);
+
     LearnerSessionObjective findByLearnerPlanObjectiveAndLearnerSessionId(LearnerPlanObjective learnerPlanObjective, Long learnerSessionId);
+
+    List<LearnerSessionObjective> findByLearnerPlanObjective(LearnerPlanObjective learnerPlanObjective);
 }

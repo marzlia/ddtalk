@@ -8,6 +8,7 @@ import com.springapp.reports.ReportLearnerPlan;
 import com.springapp.service.LearnerPlanService;
 import com.springapp.service.LearnerService;
 import com.springapp.service.LoginUserService;
+import com.springapp.service.ReportService;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,42 +40,20 @@ public class ReportController {
     @Autowired
     LoginUserService loginUserService;
 
+    @Autowired
+    ReportService reportService;
+
     @RequestMapping(method = RequestMethod.GET , value = "/plan/{learnerPlanId}")
     public ModelAndView generateLearnerPlanReport(@PathVariable String learnerPlanId,  ModelAndView modelAndView){
 
         LoginUser loginUser = loginUserService.getLoginUser(httpServletRequest.getUserPrincipal().getName());
-
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
-        Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
 
-        List<ReportLearnerPlan> reportLearnerPlans = new ArrayList<ReportLearnerPlan>();
-        ReportLearnerPlan p = new ReportLearnerPlan();
-        p.setTreatmentProvider(loginUser.getFullName());
-
-        String fullName = learner.getFirstName() + " " + learner.getLastName();
-        p.setStudentName(fullName);
-        p.setInitialAssessmentDate("Not started");
-        p.setTreatmentPlanTitle("Treatment Plan for " + fullName);
-        p.setTreatmentPlanDescription(learnerPlan.getTreatmentDescription());
-
-        p.setSchool(learner.getSchool());
-        p.setStudentNumber(learner.getStudentId());
-        p.setTreatmentFrequency(learnerPlan.getTreatmentFrequency());
-        p.setTreatmentPlanDate(learnerPlan.getDateStartPlan().toString());
-
-        p.setObjectives(learnerPlan.getLearnerPlanObjectiveList());
-
-        reportLearnerPlans.add(p);
-
-
-        Map<String,Object> parameterMap = new HashMap<String,Object>();
-        JRDataSource JRdataSource = new JRBeanCollectionDataSource(reportLearnerPlans, false);
-        parameterMap.put("datasource", JRdataSource);
+        Map<String,Object> parameterMap = reportService.generateLearnerPlanData(learnerPlan, loginUser);
 
         modelAndView = new ModelAndView("report_ddtalk_learner_plan", parameterMap);
 
         return modelAndView;
-
     }
 
 }

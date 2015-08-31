@@ -1,6 +1,7 @@
 package com.springapp.model;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -39,6 +40,12 @@ public class LearnerPlanObjective {
 
     @Column(name = "mastery_value")
     Long masteryValue;
+
+    @Column(name = "mastered")
+    String mastered;
+
+    @Column(name = "mastery_date")
+    Date masteryDate;
 
     @OneToMany(fetch=FetchType.EAGER)
     @JoinColumn(name = "learner_plan_objective_id")
@@ -122,5 +129,40 @@ public class LearnerPlanObjective {
 
     public void setMasteryValue(Long masteryValue) {
         this.masteryValue = masteryValue;
+    }
+
+    public String getMastered() {
+        return mastered;
+    }
+
+    public void setMastered(String mastered) {
+        this.mastered = mastered;
+    }
+
+    public Date getMasteryDate() {
+        return masteryDate;
+    }
+
+    public void setMasteryDate(Date masteryDate) {
+        this.masteryDate = masteryDate;
+    }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(this.learnerPlanObjectiveId).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        LearnerPlanObjective other = (LearnerPlanObjective) obj;
+        if (this.learnerPlanObjectiveId != other.learnerPlanObjectiveId)
+            return false;
+        return true;
     }
 }
