@@ -2,6 +2,7 @@ package com.springapp.service;
 
 import com.springapp.model.*;
 import com.springapp.repositories.*;
+import org.apache.commons.lang.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -188,46 +189,145 @@ public class LearnerPlanService {
     private void updateObjectivesWhichHaveReachedMastery(LearnerPlan plan, List<LearnerSession> learnerSessions) {
 
         Map<LearnerPlanObjective, Integer> objectivesMastered = new HashMap<LearnerPlanObjective, Integer>();
-        Map<LearnerPlanObjective, Date> lastSessionDatesForMastery = new HashMap<LearnerPlanObjective, Date>();
+        Map<LearnerPlanObjective, Date> lastSessionDatesForObjectiveMastery = new HashMap<LearnerPlanObjective, Date>();
+
+        Map<LearnerPlanObjectiveTarget, Integer> objectiveTargetsMastered = new HashMap<LearnerPlanObjectiveTarget, Integer>();
+        Map<LearnerPlanObjectiveTarget, Date> lastSessionDatesForObjectiveTargetMastery = new HashMap<LearnerPlanObjectiveTarget, Date>();
 
         for (LearnerSession learnerSession : learnerSessions) {
             List<LearnerSessionObjective> learnerSessionObjectives = learnerSession.getLearnerSessionObjectiveList();
             for (LearnerSessionObjective learnerSessionObjective : learnerSessionObjectives) {
                 LearnerPlanObjective planObjective = learnerSessionObjective.getLearnerPlanObjective();
-                if (planObjective.getMastered().equals("N")) {
-                    if (planObjective.getObjectiveType().getTypeId().equals("P")) {
-                        Integer currentConsecutiveMasteryCount = objectivesMastered.get(planObjective);
-                        if (learnerSessionObjective.getSessionValue() >= planObjective.getMasteryValue()) {
-                            currentConsecutiveMasteryCount = new Integer((currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount.intValue() + 1 : 1);
-                            objectivesMastered.put(planObjective, currentConsecutiveMasteryCount);
-                            lastSessionDatesForMastery.put(planObjective, learnerSession.getSessionDate());
-                        }
-                        else {
-                            objectivesMastered.remove(planObjective);
-                            lastSessionDatesForMastery.remove(planObjective);
-                        }
+
+                if (planObjective.getObjectiveType().getTypeId().equals("P")) {
+                    if (planObjective.getMastered().equals("N")) {
+                        processPercentageObjective(learnerSession,
+                                                   learnerSessionObjective,
+                                                   planObjective,
+                                                   objectivesMastered,
+                                                   lastSessionDatesForObjectiveMastery);
                     }
-                    else if (planObjective.getObjectiveType().getTypeId().equals("C")) {
+                }
+                else if (planObjective.getObjectiveType().getTypeId().equals("C")) {
+                    if (planObjective.getMastered().equals("N") ) {
+                        processCumulativeObjective(learnerSession,
+                                                   learnerSessionObjective,
+                                                    objectiveTargetsMastered,
+                                                    lastSessionDatesForObjectiveTargetMastery);
                     }
                 }
             }
         }
 
         //update objectives which have been mastered
+        updateMasteredPercentageObjectives(plan, objectivesMastered, lastSessionDatesForObjectiveMastery);
+
+        //update objective targets which have been mastered
+        updateMasteredCumulativeObjectiveTargets(objectiveTargetsMastered, lastSessionDatesForObjectiveTargetMastery);
+
+        //update cumulative objectives which have been mastered based on mastered objective targets
+        updateMasteredCumulativeObjectives(plan);
+    }
+
+    private void processPercentageObjective(LearnerSession learnerSession,
+                                            LearnerSessionObjective learnerSessionObjective,
+                                            LearnerPlanObjective planObjective,
+                                            Map<LearnerPlanObjective, Integer> objectivesMastered,
+                                            Map<LearnerPlanObjective, Date> lastSessionDatesForMastery) {
+
+        if (learnerSessionObjective.getSessionValue() >= planObjective.getMasteryValue()) {
+            Integer currentConsecutiveMasteryCount = objectivesMastered.get(planObjective);
+            currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount + 1 : 1;
+            objectivesMastered.put(planObjective, currentConsecutiveMasteryCount);
+            lastSessionDatesForMastery.put(planObjective, learnerSession.getSessionDate());
+        } else {
+            objectivesMastered.remove(planObjective);
+            lastSessionDatesForMastery.remove(planObjective);
+        }
+    }
+
+    private void updateMasteredPercentageObjectives(LearnerPlan plan,
+                                                    Map<LearnerPlanObjective, Integer> objectivesMastered,
+                                                    Map<LearnerPlanObjective, Date> lastSessionDatesForMastery) {
+
+        //update objectives which have been mastered
         Set<LearnerPlanObjective> keys = objectivesMastered.keySet();
         for (LearnerPlanObjective learnerPlanObjective : keys) {
+
             Integer currentConsecutiveMasteryCount = objectivesMastered.get(learnerPlanObjective);
             currentConsecutiveMasteryCount = new Integer((currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount.intValue() : 0);
-
             if (currentConsecutiveMasteryCount >= learnerPlanObjective.getCriteria().getConsecutiveToMastered()) {
-                for (LearnerPlanObjective planObjective : plan.getLearnerPlanObjectiveList()) {
-                    if (planObjective.equals(learnerPlanObjective)) {
-                        Date masteryDate = lastSessionDatesForMastery.get(learnerPlanObjective);
-                        planObjective.setMasteryDate(masteryDate);
-                        planObjective.setMastered("Y");
-                        learnerPlanObjectiveRepository.save(planObjective);
-                        break;
+                Date masteryDate = lastSessionDatesForMastery.get(learnerPlanObjective);
+                learnerPlanObjective.setMasteryDate(masteryDate);
+                learnerPlanObjective.setMastered("Y");
+                learnerPlanObjectiveRepository.save(learnerPlanObjective);
+            }
+        }
+    }
+
+    private void processCumulativeObjective(LearnerSession learnerSession,
+                                            LearnerSessionObjective learnerSessionObjective,
+                                            Map<LearnerPlanObjectiveTarget, Integer> objectiveTargetsMastered,
+                                            Map<LearnerPlanObjectiveTarget, Date> lastSessionDatesForObjectiveTargetMastery) {
+
+        List<LearnerSessionObjectiveTarget> sessionObjectiveTargets = learnerSessionObjective.getLearnerSessionObjectiveTargets();
+        for (LearnerSessionObjectiveTarget sessionObjectiveTarget : sessionObjectiveTargets) {
+
+            LearnerPlanObjectiveTarget planObjectiveTarget = sessionObjectiveTarget.getLearnerPlanObjectiveTarget();
+            if (planObjectiveTarget.getMastered().equals("N")) {
+
+                if (sessionObjectiveTarget.getSessionValue() == 1) {
+                    Integer currentConsecutiveMasteryCount = objectiveTargetsMastered.get(planObjectiveTarget);
+                    currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount + 1 : 1;
+                    objectiveTargetsMastered.put(planObjectiveTarget, currentConsecutiveMasteryCount);
+                    lastSessionDatesForObjectiveTargetMastery.put(planObjectiveTarget, learnerSession.getSessionDate());
+                } else {
+                    objectiveTargetsMastered.remove(planObjectiveTarget);
+                    lastSessionDatesForObjectiveTargetMastery.remove(planObjectiveTarget);
+                }
+            }
+        }
+    }
+
+    private void updateMasteredCumulativeObjectiveTargets(Map<LearnerPlanObjectiveTarget, Integer> objectiveTargetsMastered,
+                                                    Map<LearnerPlanObjectiveTarget, Date> lastSessionDatesForMastery) {
+
+        //update objective targets which have been mastered
+        Set<LearnerPlanObjectiveTarget> keys = objectiveTargetsMastered.keySet();
+        for (LearnerPlanObjectiveTarget planObjectiveTarget : keys) {
+            LearnerPlanObjective planObjective = learnerPlanObjectiveRepository.findOne(planObjectiveTarget.getLearnerPlanObjectiveId());
+
+            Integer currentConsecutiveMasteryCount = objectiveTargetsMastered.get(planObjectiveTarget);
+            currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount : 0;
+            if (currentConsecutiveMasteryCount >= planObjective.getCriteria().getConsecutiveToMastered()) {
+                Date masteryDate = lastSessionDatesForMastery.get(planObjectiveTarget);
+                planObjectiveTarget.setMasteryDate(masteryDate);
+                planObjectiveTarget.setMastered("Y");
+                learnerPlanObjectiveTargetRepository.save(planObjectiveTarget);
+            }
+        }
+    }
+
+    private void updateMasteredCumulativeObjectives(LearnerPlan plan) {
+        List<LearnerPlanObjective> planObjectives = plan.getLearnerPlanObjectiveList();
+        for (LearnerPlanObjective planObjective : planObjectives) {
+            if (planObjective.getObjectiveType().getTypeId().equals("C") && planObjective.getMastered().equals("N")) {
+                List<LearnerPlanObjectiveTarget> objectiveTargets = planObjective.getLearnerPlanObjectiveTarget();
+                Date masteryDate = null;
+                Integer totalTargetsMastered = 0;
+                for (LearnerPlanObjectiveTarget objectiveTarget : objectiveTargets) {
+                    if (objectiveTarget.getMastered().equals("Y")) {
+                        totalTargetsMastered++;
+                        if (masteryDate == null || objectiveTarget.getMasteryDate().after(masteryDate)) {
+                            masteryDate = objectiveTarget.getMasteryDate();
+                        }
                     }
+                }
+
+                if (totalTargetsMastered >= planObjective.getMasteryValue()) {
+                    planObjective.setMasteryDate(masteryDate);
+                    planObjective.setMastered("Y");
+                    learnerPlanObjectiveRepository.save(planObjective);
                 }
             }
         }

@@ -63,4 +63,23 @@ public class LearnerPlanObjectiveTarget {
     public void setMasteryDate(Date masteryDate) {
         this.masteryDate = masteryDate;
     }
+
+    @Override
+    public int hashCode() {
+        return Long.valueOf(this.learnerPlanObjectiveTargetId).hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        LearnerPlanObjectiveTarget other = (LearnerPlanObjectiveTarget) obj;
+        if (this.learnerPlanObjectiveTargetId != other.learnerPlanObjectiveTargetId)
+            return false;
+        return true;
+    }
 }
