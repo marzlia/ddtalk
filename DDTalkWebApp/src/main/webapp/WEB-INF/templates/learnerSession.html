@@ -48,7 +48,7 @@
             <th></th>
         </tr>
         <div th:each="mapSessionObjectiveItem, row : ${mapEntry.value}">
-            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}">
+            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}" th:attr="class=${mapSessionObjectiveItem.planObjective.mastered == 'Y' ? 'mastered' : null}">
                 <td th:text="${row.index} + 1"></td>
                 <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
@@ -57,6 +57,10 @@
                     <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
                         <a href="" th:href="@{../learnerSessionObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.sessionObjective.learnerSessionId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
+                    </td>
+                    <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'Y'}">
+                        <label>Mastered on </label>
+                        <label th:text="${mapSessionObjectiveItem.planObjective.masteryDate} ? ${#dates.format(mapSessionObjectiveItem.planObjective.masteryDate, 'MMM dd, yyyy')}" />
                     </td>
                 </div>
             </tr>

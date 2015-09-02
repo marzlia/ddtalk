@@ -219,11 +219,17 @@ public class LearnerPlanService {
             }
         }
 
+        //re-fetch plan to make sure all data is up to date
+        plan = getLearnerPlan(plan.getLearnerPlanId());
+
         //update objectives which have been mastered
         updateMasteredPercentageObjectives(plan, objectivesMastered, lastSessionDatesForObjectiveMastery);
 
         //update objective targets which have been mastered
         updateMasteredCumulativeObjectiveTargets(objectiveTargetsMastered, lastSessionDatesForObjectiveTargetMastery);
+
+        //re-fetch plan to make sure all data is up to date
+        plan = getLearnerPlan(plan.getLearnerPlanId());
 
         //update cumulative objectives which have been mastered based on mastered objective targets
         updateMasteredCumulativeObjectives(plan);
@@ -276,7 +282,7 @@ public class LearnerPlanService {
             LearnerPlanObjectiveTarget planObjectiveTarget = sessionObjectiveTarget.getLearnerPlanObjectiveTarget();
             if (planObjectiveTarget.getMastered().equals("N")) {
 
-                if (sessionObjectiveTarget.getSessionValue() == 1) {
+                if (sessionObjectiveTarget.getSessionValue() != null && sessionObjectiveTarget.getSessionValue() == 1) {
                     Integer currentConsecutiveMasteryCount = objectiveTargetsMastered.get(planObjectiveTarget);
                     currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount + 1 : 1;
                     objectiveTargetsMastered.put(planObjectiveTarget, currentConsecutiveMasteryCount);

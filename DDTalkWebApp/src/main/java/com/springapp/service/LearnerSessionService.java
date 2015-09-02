@@ -6,8 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -47,7 +51,11 @@ public class LearnerSessionService {
         //create main session object
         LearnerSession learnerSession = new LearnerSession();
         learnerSession.setLearnerPlanId(learnerPlan.getLearnerPlanId());
-        learnerSession.setSessionDate(new Date());
+
+        ZonedDateTime currentDate = ZonedDateTime.now(ZoneId.of("US/Eastern"));
+        Date sessionDate = Date.from(currentDate.toInstant());
+        learnerSession.setSessionDate(sessionDate);
+
         learnerSession = learnerSessionRepository.save(learnerSession);
 
         PromptCode promptCodeNone = promptCodeRepository.findByPromptCode("None");
