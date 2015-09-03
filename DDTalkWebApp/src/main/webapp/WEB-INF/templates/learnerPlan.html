@@ -3,7 +3,7 @@
 
 <head th:replace="learnerFragments :: standard_head"></head>
 
-<body>
+<body onunload="updateObjectives()">
 
 <div th:replace="learnerFragments :: learner_header"></div>
 
@@ -68,11 +68,11 @@
                         </td>
                         <td th:if="${planObjective.mastered == 'Y'}" th:text="${planObjective.condition.description}" />
                         <td th:text="${planObjective.criteria.description}" />
-                        <td>
-                            <a href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
-                        </td>
                         <td th:if="${planObjective.mastered == 'N'}">
                             <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
+                        </td>
+                        <td>
+                            <a class="standardButton" href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
                         </td>
                         <td th:if="${planObjective.mastered == 'Y'}">
                             <label>Mastered on </label>
@@ -119,10 +119,9 @@
 
 <br />
 
-<button onclick="updateObjectives()" class="standardButton">Save Changes</button>
+<a th:href="@{/learner} + '/' + ${plan.learnerId}" class="standardButton" hidden="hidden">Save Learner Plan</a>
 
-<form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form">
-</form>
+<form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form" />
 
 <br /><br />
 
@@ -183,7 +182,7 @@
 </fieldset>
 
 <br /><br />
-<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton">Report</a>
+<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton" hidden="hidden">Report</a>
 
 <script>
     $('#select-domain').selectize({

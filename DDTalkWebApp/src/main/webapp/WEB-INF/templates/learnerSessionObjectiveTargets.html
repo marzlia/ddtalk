@@ -6,6 +6,15 @@
 <div th:replace="learnerFragments :: learner_header"></div>
 
 <br />
+
+<table class="table-style-standard">
+    <tr>
+        <td ><a href="" th:href="@{/learnerSession} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}">Back to Session</a></td>
+    </tr>
+</table>
+
+<br />
+
 <table class="table-style-standard">
     <tr>
         <td>Objective</td>
@@ -55,15 +64,12 @@
 
 <br />
 
-<table class="table-style-standard">
-    <tr>
-        <td ><a href="" th:href="@{/learnerSession} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}">Back to Session</a></td>
-    </tr>
-</table>
-
+<form th:action="@{/learnerSession} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}" id="hidden_link_session" />
 
 <script>
     var updateSessionData = function() {
+        var requests = Array();
+
         var theAction = $('#update_session_objective_target_form').attr('action');
         var theCSRF = $("[name^='_csrf']").attr('value');
 
@@ -85,7 +91,7 @@
                 promptCodeId = promptCodeCol.val();
             }
 
-            $.ajax({
+            requests.push($.ajax({
                 url: theAction,
                 type: 'POST',
                 headers: {
@@ -99,9 +105,14 @@
                 },
                 error: function() {
                 }
-            });
+            }));
         });
 
+        var theMainSessionPageAction = $('#hidden_link_session').attr('action');
+        var defer = $.when.apply($, requests);
+        defer.done(function(){
+            window.location.href = theMainSessionPageAction;
+        });
     }
 </script>
 
