@@ -102,6 +102,8 @@ public class LearnerSessionController {
             mapSessionObjectiveItem.setPlanObjective(objective);
             LearnerSessionObjective learnerSessionObjective = learnerSessionService.getSessionObjective(objective, learnerSession.getLearnerSessionId());
             mapSessionObjectiveItem.setSessionObjective(learnerSessionObjective);
+            //table row class
+            mapSessionObjectiveItem.setTableRowClass(learnerPlanService.getTableRowClassForObjective(objective));
 
             domainObjectiveList.add(mapSessionObjectiveItem);
         }

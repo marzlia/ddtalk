@@ -49,29 +49,36 @@ public class LearnerPlanController {
         List<Domain> domains = domainService.getAllDomains();
 
         // populate existing objectives
-        Map<Domain, List<LearnerPlanObjective>> domainObjectivesMap = new HashMap<Domain, List<LearnerPlanObjective>>();
+        Map<Domain, List<MapSessionObjectiveItem>> domainObjectivesMap = new HashMap<Domain, List<MapSessionObjectiveItem>>();
         for (LearnerPlanObjective objective : objectives) {
             Domain domain = returnDomainObjectFromArrayWhichMatches(objective.getObjective().getDomain(), domains);
-            List<LearnerPlanObjective> domainObjectiveList = domainObjectivesMap.get(domain);
+            List<MapSessionObjectiveItem> domainObjectiveList = domainObjectivesMap.get(domain);
             if (domainObjectiveList == null) {
-                domainObjectiveList = new ArrayList<LearnerPlanObjective>();
+                domainObjectiveList = new ArrayList<MapSessionObjectiveItem>();
                 domainObjectivesMap.put(domain, domainObjectiveList);
             }
-            domainObjectiveList.add(objective);
+
+            MapSessionObjectiveItem mapSessionObjectiveItem = new MapSessionObjectiveItem();
+            mapSessionObjectiveItem.setPlanObjective(objective);
+            //table row class
+            mapSessionObjectiveItem.setTableRowClass(learnerPlanService.getTableRowClassForObjective(objective));
+
+            domainObjectiveList.add(mapSessionObjectiveItem);
         }
+
 
         model.addAttribute("learner", learner);
         model.addAttribute("plan", learnerPlan);
         model.addAttribute("emptyDomains", domains);
 
-        Map<Domain, List<LearnerPlanObjective>> treeMap = new TreeMap<Domain, List<LearnerPlanObjective>>(domainObjectivesMap);
+        Map<Domain, List<MapSessionObjectiveItem>> treeMap = new TreeMap<Domain, List<MapSessionObjectiveItem>>(domainObjectivesMap);
         Set<Domain> keys = treeMap.keySet();
         for( Domain domain : keys) {
-            List<LearnerPlanObjective> objectiveList = treeMap.get(domain);
-            Collections.sort(objectiveList, new Comparator<LearnerPlanObjective>() {
+            List<MapSessionObjectiveItem> objectiveList = treeMap.get(domain);
+            Collections.sort(objectiveList, new Comparator<MapSessionObjectiveItem>() {
                 @Override
-                public int compare(LearnerPlanObjective item1, LearnerPlanObjective item2) {
-                    return item1.getMastered().compareTo(item2.getMastered());
+                public int compare(MapSessionObjectiveItem item1, MapSessionObjectiveItem item2) {
+                    return item1.getPlanObjective().getMastered().compareTo(item2.getPlanObjective().getMastered());
                 }
             });
         }

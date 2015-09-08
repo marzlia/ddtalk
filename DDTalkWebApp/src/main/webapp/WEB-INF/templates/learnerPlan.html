@@ -44,71 +44,71 @@
                 <th></th>
                 <th></th>
             </tr>
-            <div th:each="planObjective, row : ${mapEntry.value}">
-                <tr th:if="${planObjective.objectiveType.typeId == 'C'}" th:id="${planObjective.learnerPlanObjectiveId}" th:attr="class=${planObjective.mastered == 'Y' ? 'mastered' : null}">
+            <div th:each="planObjectiveMap, row : ${mapEntry.value}">
+                <tr th:if="${planObjectiveMap.planObjective.objectiveType.typeId == 'C'}" th:id="${planObjectiveMap.planObjective.learnerPlanObjectiveId}" th:attr="class=${planObjectiveMap.tableRowClass}">
                     <td th:text="${row.index} + 1"></td>
-                    <td th:text="${planObjective.objective.description}"></td>
+                    <td th:text="${planObjectiveMap.planObjective.objective.description}"></td>
                     <div>
-                        <td th:if="${planObjective.mastered == 'N'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
                             <select name="mastery">
                                 <option th:each="masteryCount : ${masteryCounts}"
                                         th:value="${masteryCount}"
                                         th:text="${masteryCount}"
-                                        th:selected="${masteryCount == planObjective.masteryValue}"/>
+                                        th:selected="${masteryCount == planObjectiveMap.planObjective.masteryValue}"/>
                             </select>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}" th:text="${planObjective.masteryValue}" />
-                        <td th:if="${planObjective.mastered == 'N'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}" th:text="${planObjectiveMap.planObjective.masteryValue}" />
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
                             <select name="condition">
                                 <option th:each="condition : ${conditions}"
                                         th:value="${condition.conditionId}"
                                         th:text="${condition.description}"
-                                        th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
+                                        th:selected="${planObjectiveMap.planObjective.condition} ? ${condition.conditionId == planObjectiveMap.planObjective.condition.conditionId}"/>
                             </select>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}" th:text="${planObjective.condition.description}" />
-                        <td th:text="${planObjective.criteria.description}" />
-                        <td th:if="${planObjective.mastered == 'N'}">
-                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}" th:text="${planObjectiveMap.planObjective.condition.description}" />
+                        <td th:text="${planObjectiveMap.planObjective.criteria.description}" />
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
+                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Remove</a>
                         </td>
                         <td>
-                            <a class="standardButton" href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Targets</a>
+                            <a class="standardButton" href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Targets</a>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}">
                             <label>Mastered on </label>
-                            <label th:text="${planObjective.masteryDate} ? ${#dates.format(planObjective.masteryDate, 'MMM dd, yyyy')}" />
+                            <label th:text="${planObjectiveMap.planObjective.masteryDate} ? ${#dates.format(planObjectiveMap.planObjective.masteryDate, 'MMM dd, yyyy')}" />
                         </td>
                     </div>
                 </tr>
-                <tr th:if="${planObjective.objectiveType.typeId == 'P'}" th:id="${planObjective.learnerPlanObjectiveId}" th:attr="class=${planObjective.mastered == 'Y' ? 'mastered' : null}">
+                <tr th:if="${planObjectiveMap.planObjective.objectiveType.typeId == 'P'}" th:id="${planObjectiveMap.planObjective.learnerPlanObjectiveId}" th:attr="class=${planObjectiveMap.planObjective.mastered == 'Y' ? 'mastered' : null}">
                     <td th:text="${row.index} + 1"></td>
-                    <td th:text="${planObjective.objective.description}"></td>
+                    <td th:text="${planObjectiveMap.planObjective.objective.description}"></td>
                     <div>
-                        <td th:if="${planObjective.mastered == 'N'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
                             <select name="mastery">
                                 <option th:each="masteryPercent : ${masteryPercents}"
                                         th:value="${masteryPercent}"
                                         th:text="${masteryPercent} + '%'"
-                                        th:selected="${masteryPercent == planObjective.masteryValue}"/>
+                                        th:selected="${masteryPercent == planObjectiveMap.planObjective.masteryValue}"/>
                             </select>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}" th:text="${planObjective.masteryValue} + '%'" />
-                        <td th:if="${planObjective.mastered == 'N'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}" th:text="${planObjectiveMap.planObjective.masteryValue} + '%'" />
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
                             <select name="condition">
                                 <option th:each="condition : ${conditions}"
                                         th:value="${condition.conditionId}"
                                         th:text="${condition.description}"
-                                        th:selected="${planObjective.condition} ? ${condition.conditionId == planObjective.condition.conditionId}"/>
+                                        th:selected="${planObjectiveMap.planObjective.condition} ? ${condition.conditionId == planObjectiveMap.planObjective.condition.conditionId}"/>
                             </select>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}" th:text="${planObjective.condition.description}" />
-                        <td th:text="${planObjective.criteria.description}" />
-                        <td th:if="${planObjective.mastered == 'N'}">
-                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjective.learnerPlanObjectiveId}">Remove</a>
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}" th:text="${planObjectiveMap.planObjective.condition.description}" />
+                        <td th:text="${planObjectiveMap.planObjective.criteria.description}" />
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
+                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Remove</a>
                         </td>
-                        <td th:if="${planObjective.mastered == 'Y'}">
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}">
                             <label>Mastered on </label>
-                            <label th:text="${planObjective.masteryDate} ? ${#dates.format(planObjective.masteryDate, 'MMM dd, yyyy')}" />
+                            <label th:text="${planObjectiveMap.planObjective.masteryDate} ? ${#dates.format(planObjectiveMap.planObjective.masteryDate, 'MMM dd, yyyy')}" />
                         </td>
                     </div>
                 </tr>
@@ -283,7 +283,13 @@
             return;
         }
 
-        var retentionProbeEnabled = $('#retention-probe-enabled').val();
+        var retentionProbeEnabledValue = "";
+        var retentionCol = $('#retention-probe-enabled-name').attr('value');
+        if (retentionCol != null) {
+            if (retentionCol.is(':checked')) {
+                retentionProbeEnabledValue = "on";
+            }
+        }
         var retentionProbeNumDays = $('#retention-probe-num-days').val();
 
         var theAction = $('#add_objective_form').attr('action');
@@ -300,7 +306,7 @@
                 objectiveId: objectiveId,
                 objectiveTypeId: objectiveTypeId,
                 criteriaId: criteriaId,
-                retentionProbeEnabled: retentionProbeEnabled,
+                retentionProbeEnabled: retentionProbeEnabledValue,
                 retentionProbeNumDays: retentionProbeNumDays,
                 _csrf:theCSRF
             },

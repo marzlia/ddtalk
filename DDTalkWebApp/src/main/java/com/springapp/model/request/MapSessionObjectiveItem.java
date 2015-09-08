@@ -10,6 +10,7 @@ public class MapSessionObjectiveItem {
 
     LearnerPlanObjective planObjective;
     LearnerSessionObjective sessionObjective;
+    String tableRowClass;
 
     public LearnerPlanObjective getPlanObjective() {
         return planObjective;
@@ -25,5 +26,13 @@ public class MapSessionObjectiveItem {
 
     public void setSessionObjective(LearnerSessionObjective sessionObjective) {
         this.sessionObjective = sessionObjective;
+    }
+
+    public String getTableRowClass() {
+        return tableRowClass;
+    }
+
+    public void setTableRowClass(String tableRowClass) {
+        this.tableRowClass = tableRowClass;
     }
 }

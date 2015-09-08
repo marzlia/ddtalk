@@ -174,6 +174,25 @@ public class LearnerPlanService {
         learnerPlanObjectiveRepository.delete(planObjectiveId);
     }
 
+    public String getTableRowClassForObjective(LearnerPlanObjective objective) {
+        String tableRowClass = "";
+        if (objective.getMastered().equals("Y")) {
+            tableRowClass = "mastered";
+        }
+        else {
+            if (objective.getRetentionProbeEnabled().equals("Y")) {
+                for (LearnerPlanObjectiveTarget target : objective.getLearnerPlanObjectiveTarget()) {
+                    if (TargetRetentionState.isRetentionRetestReady(target.getRetentionState()) ||
+                            TargetRetentionState.isRetentionInWaitingPeriod(target.getRetentionState())) {
+                        tableRowClass = "retention";
+                        break;
+                    }
+                }
+            }
+        }
+        return tableRowClass;
+    }
+
     public LearnerPlan updateRetentionProbeInfoForLearnerPlan(LearnerPlan plan) {
 
         //get all the sessions for this plan and sort by date

@@ -38,7 +38,7 @@
             <th></th>
         </tr>
         <div th:each="mapSessionObjectiveItem, row : ${mapEntry.value}">
-            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}" th:attr="class=${mapSessionObjectiveItem.planObjective.mastered == 'Y' ? 'mastered' : null}">
+            <tr th:if="${mapSessionObjectiveItem.planObjective.objectiveType.typeId == 'C'}" th:id="${mapSessionObjectiveItem.sessionObjective.learnerSessionObjectiveId}" th:attr="class=${mapSessionObjectiveItem.tableRowClass}">
                 <td th:text="${row.index} + 1"></td>
                 <td th:text="${mapSessionObjectiveItem.planObjective.objective.description}"></td>
                 <div>
