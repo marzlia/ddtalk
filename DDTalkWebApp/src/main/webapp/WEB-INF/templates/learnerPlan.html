@@ -284,9 +284,9 @@
         }
 
         var retentionProbeEnabledValue = "";
-        var retentionCol = $('#retention-probe-enabled-name').attr('value');
-        if (retentionCol != null) {
-            if (retentionCol.is(':checked')) {
+        var retentionCheckbox = $('#retention-probe-enabled');
+        if (retentionCheckbox != null) {
+            if (retentionCheckbox.is(':checked')) {
                 retentionProbeEnabledValue = "on";
             }
         }

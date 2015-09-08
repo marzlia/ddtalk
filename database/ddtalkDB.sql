@@ -1,3 +1,4 @@
+CREATE DATABASE ddtalk;
 use ddtalk;
 
 DROP TABLE learners;
