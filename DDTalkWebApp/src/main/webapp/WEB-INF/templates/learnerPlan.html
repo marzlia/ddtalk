@@ -68,15 +68,19 @@
                         </td>
                         <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}" th:text="${planObjectiveMap.planObjective.condition.description}" />
                         <td th:text="${planObjectiveMap.planObjective.criteria.description}" />
-                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
-                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Remove</a>
-                        </td>
                         <td>
                             <a class="standardButton" href="" th:href="@{learnerPlanObjectiveTargets} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Targets</a>
                         </td>
                         <td th:if="${planObjectiveMap.planObjective.mastered == 'Y'}">
                             <label>Mastered on </label>
                             <label th:text="${planObjectiveMap.planObjective.masteryDate} ? ${#dates.format(planObjectiveMap.planObjective.masteryDate, 'MMM dd, yyyy')}" />
+                        </td>
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'} and ${planObjectiveMap.planObjective.retentionProbeEnabled == 'Y'}">
+                            <label>Retention Probe </label>
+                            <label th:text="${planObjectiveMap.planObjective.retentionProbeDaysToRecheck} + ' day(s) after mastery'" />
+                        </td>
+                        <td th:if="${planObjectiveMap.planObjective.mastered == 'N'}">
+                            <a href="" th:href="@{removeObjective} + '/' + ${plan.learnerPlanId} + '/' + ${planObjectiveMap.planObjective.learnerPlanObjectiveId}">Remove</a>
                         </td>
                     </div>
                 </tr>

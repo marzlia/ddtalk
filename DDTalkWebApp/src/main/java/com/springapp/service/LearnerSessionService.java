@@ -96,6 +96,12 @@ public class LearnerSessionService {
         return learnerSessionRepository.save(learnerSession);
     }
 
+    public void updateSessionDate(Long sessionId, Date sessionDate) {
+        LearnerSession learnerSession = learnerSessionRepository.findOne(sessionId);
+        learnerSession.setSessionDate(sessionDate);
+        learnerSessionRepository.save(learnerSession);
+    }
+
     public void updateSessionObjective(Long sessionObjectiveId, Long sessionValue, String forcedMastered) {
         LearnerSessionObjective learnerSessionObjective = learnerSessionObjectiveRepository.findOne(sessionObjectiveId);
 

@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head th:replace="learnerFragments :: standard_head"></head>
+
 <body>
-
-
 
 <div th:replace="learnerFragments :: learner_header"></div>
 
@@ -17,7 +16,7 @@
     <tr>
         <td>Session Date</td>
         <td>
-            <input type="text" class="datepicker" name="sessionDate" th:value="${learnerSession.sessionDate} ? ${#dates.format(learnerSession.sessionDate, 'M/dd/yyyy')}"/>
+            <input type="text" class="datepicker" id="sessionDate" th:value="${learnerSession.sessionDate} ? ${#dates.format(learnerSession.sessionDate, 'M/dd/yyyy')}"/>
         </td>
     </tr>
 </table>
@@ -51,6 +50,10 @@
                     <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'Y'}">
                         <label>Mastered on </label>
                         <label th:text="${mapSessionObjectiveItem.planObjective.masteryDate} ? ${#dates.format(mapSessionObjectiveItem.planObjective.masteryDate, 'MMM dd, yyyy')}" />
+                    </td>
+                    <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'N'} and ${mapSessionObjectiveItem.planObjective.retentionProbeEnabled == 'Y'}">
+                        <label>Retention Probe </label>
+                        <label th:text="${mapSessionObjectiveItem.planObjective.retentionProbeDaysToRecheck} + ' day(s) after mastery'" />
                     </td>
                 </div>
             </tr>
@@ -95,12 +98,34 @@
 
 <form th:action="@{/learnerSession/} + ${learnerPlan.learnerPlanId}" id="hidden_link_session_main" />
 
+<form th:action="@{/learnerSession/updateSessionDate}" id="hidden_link_session_date" />
+
 <script>
     var updateSessionData = function() {
         var requests = Array();
+        var theCSRF = $("[name^='_csrf']").attr('value');
+        var sessionId = $('#hiddenSessionId').val();
+        var sessionDate = $('#sessionDate').val();
+
+        var theDateAction = $('#hidden_link_session_date').attr('action');
+        requests.push($.ajax({
+                    url: theDateAction,
+                    type: 'POST',
+                    headers: {
+                        '_csrf': theCSRF
+                    },
+                    data: {
+                        sessionId: sessionId, sessionDate: sessionDate,
+                        _csrf: theCSRF
+                    },
+                    success: function (data) {
+                    },
+                    error: function () {
+                    }
+                })
+        );
 
         var theAction = $('#update_session_objective_form').attr('action');
-        var theCSRF = $("[name^='_csrf']").attr('value');
 
         var allObjectiveTableRows = $('tr[id]');
         jQuery.each( allObjectiveTableRows, function( i, val ) {
@@ -138,9 +163,6 @@
                     })
             );
         });
-
-
-        var sessionId = $('#hiddenSessionId').val();
 
         var theMainSessionPageAction = $('#hidden_link_session_main').attr('action');
         var theMasteryAction = $('#mastery_check_form').attr('action');

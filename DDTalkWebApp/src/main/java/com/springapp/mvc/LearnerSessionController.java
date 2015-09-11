@@ -1,10 +1,7 @@
 package com.springapp.mvc;
 
 import com.springapp.model.*;
-import com.springapp.model.request.MapSessionObjectiveItem;
-import com.springapp.model.request.MapSessionObjectiveTargetItem;
-import com.springapp.model.request.UpdateSessionObjectiveItem;
-import com.springapp.model.request.UpdateSessionObjectiveTargetItem;
+import com.springapp.model.request.*;
 import com.springapp.repositories.PromptCodeRepository;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -92,20 +89,24 @@ public class LearnerSessionController {
         // populate existing objectives
         Map<Domain, List<MapSessionObjectiveItem>> domainObjectivesMap = new HashMap<Domain, List<MapSessionObjectiveItem>>();
         for (LearnerPlanObjective objective : objectives) {
-            Domain domain = returnDomainObjectFromArrayWhichMatches(objective.getObjective().getDomain(), domains);
-            List<MapSessionObjectiveItem> domainObjectiveList = domainObjectivesMap.get(domain);
-            if (domainObjectiveList == null) {
-                domainObjectiveList = new ArrayList<MapSessionObjectiveItem>();
-                domainObjectivesMap.put(domain, domainObjectiveList);
-            }
-            MapSessionObjectiveItem mapSessionObjectiveItem = new MapSessionObjectiveItem();
-            mapSessionObjectiveItem.setPlanObjective(objective);
             LearnerSessionObjective learnerSessionObjective = learnerSessionService.getSessionObjective(objective, learnerSession.getLearnerSessionId());
-            mapSessionObjectiveItem.setSessionObjective(learnerSessionObjective);
-            //table row class
-            mapSessionObjectiveItem.setTableRowClass(learnerPlanService.getTableRowClassForObjective(objective));
+            if (learnerSessionObjective != null) {
 
-            domainObjectiveList.add(mapSessionObjectiveItem);
+                Domain domain = returnDomainObjectFromArrayWhichMatches(objective.getObjective().getDomain(), domains);
+                List<MapSessionObjectiveItem> domainObjectiveList = domainObjectivesMap.get(domain);
+                if (domainObjectiveList == null) {
+                    domainObjectiveList = new ArrayList<MapSessionObjectiveItem>();
+                    domainObjectivesMap.put(domain, domainObjectiveList);
+                }
+
+                MapSessionObjectiveItem mapSessionObjectiveItem = new MapSessionObjectiveItem();
+                mapSessionObjectiveItem.setPlanObjective(objective);
+                mapSessionObjectiveItem.setSessionObjective(learnerSessionObjective);
+                //table row class
+                mapSessionObjectiveItem.setTableRowClass(learnerPlanService.getTableRowClassForObjective(objective));
+
+                domainObjectiveList.add(mapSessionObjectiveItem);
+            }
         }
 
         Map<Domain, List<MapSessionObjectiveItem>> treeMap = new TreeMap<Domain, List<MapSessionObjectiveItem>>(domainObjectivesMap);
@@ -140,6 +141,16 @@ public class LearnerSessionController {
             }
         }
         return null;
+    }
+
+    @RequestMapping(value = "/updateSessionDate", method = RequestMethod.POST)
+    @ResponseBody
+    public String updateSessionDate(@ModelAttribute(value="updateSessionDate") UpdateSessionDate updateSessionDate, BindingResult errors) {
+        learnerSessionService.updateSessionDate(Long.parseLong(updateSessionDate.getSessionId()),
+                updateSessionDate.getSessionDate());
+
+
+        return "{}";
     }
 
     @RequestMapping(value = "/updateSessionObjective", method = RequestMethod.POST)
