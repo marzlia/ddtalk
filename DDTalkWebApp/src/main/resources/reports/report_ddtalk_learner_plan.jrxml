@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-09-12T13:40:29 -->
+<!-- 2015-09-12T22:44:12 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ddtalk_learner_plan" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="17006d4b-0583-4b6d-a8e8-c7e42fb0f6cb">
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -153,6 +153,9 @@
 		<field name="objective.domain.description" class="java.lang.String">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="masteryValue" class="java.lang.Long">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 	</subDataset>
 	<queryString>
 		<![CDATA[]]>
@@ -180,7 +183,8 @@
 	<field name="treatmentPlanTitle" class="java.lang.String"/>
 	<field name="objectives" class="java.util.Collection"/>
 	<pageHeader>
-		<band height="260" splitType="Stretch">
+		<band height="240" splitType="Stretch">
+			<printWhenExpression><![CDATA[new Boolean($V{PAGE_NUMBER}.intValue() == 1)]]></printWhenExpression>
 			<textField isBlankWhenNull="true">
 				<reportElement x="160" y="41" width="402" height="30" uuid="0cadb8f4-c53d-4077-9b02-15628d32d118"/>
 				<textElement textAlignment="Left">
@@ -326,17 +330,17 @@
 							</box>
 							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="4" y="4" width="550" height="26" uuid="eb872b3c-e89a-40d7-b0b4-894d08fac87c"/>
-								<box bottomPadding="20">
+								<box topPadding="10" bottomPadding="15">
 									<pen lineStyle="Solid" lineColor="#080303"/>
-									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#080303"/>
 									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#080303"/>
 									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 								</box>
-								<textElement>
+								<textElement markup="none">
 									<font fontName="DejaVu Serif" isBold="true"/>
 								</textElement>
-								<textFieldExpression><![CDATA[$F{objective.description}.concat("\n").concat("Domain: ").concat($F{objective.domain.description}).concat("\n").concat("Condition: ").concat($F{condition.description}).concat("\n").concat("Criteria: ").concat($F{criteria.description})]]></textFieldExpression>
+								<textFieldExpression><![CDATA[$F{objective.description}.concat("\n").concat("\n").concat("Domain: ").concat($F{objective.domain.description}).concat("\n").concat("Condition: ").concat($F{condition.description}).concat("\n").concat("Criteria: ").concat($F{criteria.description}).concat("\n").concat("Mastery: ").concat($F{masteryValue}.toString())]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>
