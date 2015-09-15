@@ -11,16 +11,6 @@
 
 <table class="table-style-standard">
     <tr>
-        <td ><a href="" th:href="@{/learnerSession/} + ${learnerPlan.learnerPlanId}">Back to Sessions</a></td>
-    </tr>
-</table>
-
-
-
-<br /><br />
-
-<table class="table-style-standard">
-    <tr>
         <td>Plan</td>
         <td th:text="${learnerPlan.treatmentDescription}"></td>
     </tr>
@@ -56,7 +46,7 @@
                     <td th:text="${mapSessionObjectiveItem.planObjective.condition.description}" />
                     <td th:text="${mapSessionObjectiveItem.planObjective.criteria.description}" />
                     <td>
-                        <a href="" th:href="@{../learnerSessionObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.sessionObjective.learnerSessionId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
+                        <a class="standardButton" href="" th:href="@{../learnerSessionObjectiveTargets} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${mapSessionObjectiveItem.sessionObjective.learnerSessionId} + '/' + ${mapSessionObjectiveItem.planObjective.learnerPlanObjectiveId}">Targets</a>
                     </td>
                     <td th:if="${mapSessionObjectiveItem.planObjective.mastered == 'Y'}">
                         <label>Mastered on </label>
@@ -166,7 +156,7 @@
                 }
             })
         });
-    }
+    };
 
     $(function() {
         $( ".accordion" ).accordion({

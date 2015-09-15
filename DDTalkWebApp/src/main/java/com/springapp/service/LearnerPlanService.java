@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 
+import java.time.LocalDate;
 import java.util.*;
 
 /**
@@ -24,6 +25,9 @@ public class LearnerPlanService {
 
     @Autowired
     LearnerPlanObjectiveTargetRepository learnerPlanObjectiveTargetRepository;
+
+    @Autowired
+    LearnerSessionObjectiveTargetRepository learnerSessionObjectiveTargetRepository;
 
     @Autowired
     ObjectiveRepository objectiveRepository;
@@ -73,7 +77,7 @@ public class LearnerPlanService {
             domainId = newDomain.getDomainId().toString();
         }
 
-        Objective objective = null;
+        Objective objective;
         if (isNumeric(objectiveId)) {
             objective = objectiveRepository.findOne(Long.parseLong(objectiveId));
         }
@@ -109,9 +113,14 @@ public class LearnerPlanService {
         learnerPlanObjectiveRepository.save(learnerPlanObjective);
     }
 
-    public void updatePlanObjective(Long planObjectiveId, Long conditionId, Long masteryValue) {
+    public void updatePlanObjective(Long planObjectiveId, String conditionId, Long masteryValue) {
         LearnerPlanObjective learnerPlanObjective = learnerPlanObjectiveRepository.findOne(planObjectiveId);
-        Condition condition = conditionRepository.findOne(conditionId);
+        if (learnerPlanObjective.getMastered().equals("Y")) {
+            //don't need to update if mastered
+            return;
+        }
+
+        Condition condition = conditionRepository.findOne(Long.parseLong(conditionId));
 
         learnerPlanObjective.setCondition(condition);
         learnerPlanObjective.setMasteryValue(masteryValue);
@@ -129,6 +138,9 @@ public class LearnerPlanService {
     }
 
     public void addPlanObjectiveTargets(Long planObjectiveId, String targets) {
+        LearnerPlanObjective planObjective =  getLearnerPlanObjective(planObjectiveId);
+        boolean hasRetention = planObjective.getRetentionProbeEnabled().equals("Y");
+
         //comma separated
         List<String> targetList = new ArrayList<String>(Arrays.asList(targets.split(",")));
         for (String aTarget : targetList) {
@@ -137,6 +149,7 @@ public class LearnerPlanService {
             learnerPlanObjectiveTarget.setLearnerPlanObjectiveId(planObjectiveId);
             learnerPlanObjectiveTarget.setTargetDescription(aTarget);
             learnerPlanObjectiveTarget.setMastered("N");
+            learnerPlanObjectiveTarget.setRetentionState(hasRetention ? TargetRetentionState.HAS_RETENTION_POLICY : TargetRetentionState.NO_RETENTION_POLICY);
 
             learnerPlanObjectiveTargetRepository.save(learnerPlanObjectiveTarget);
         }
@@ -159,6 +172,18 @@ public class LearnerPlanService {
 
     public void deleteLearnerPlanObjective(Long planObjectiveId) {
         learnerPlanObjectiveRepository.delete(planObjectiveId);
+    }
+
+    public LearnerPlan updateRetentionProbeInfoForLearnerPlan(LearnerPlan plan) {
+
+        //get all the sessions for this plan and sort by date
+        List<LearnerSession> learnerSessions = getSessionsForLearnerPlanId(plan.getLearnerPlanId());
+
+        //build array of  objectives which have been mastered
+        processRetentionForCumulativeObjectiveTargets(plan, learnerSessions);
+
+        //re-fetch for changes
+        return learnerPlanRepository.findOne(plan.getLearnerPlanId());
     }
 
     public LearnerPlan updateMasteryForLearnerPlan(LearnerPlan plan) {
@@ -231,6 +256,12 @@ public class LearnerPlanService {
         //re-fetch plan to make sure all data is up to date
         plan = getLearnerPlan(plan.getLearnerPlanId());
 
+        //apply retention policy rules to cumulative objectives targets which have them
+        processRetentionForCumulativeObjectiveTargets(plan, learnerSessions);
+
+        //re-fetch plan to make sure all data is up to date
+        plan = getLearnerPlan(plan.getLearnerPlanId());
+
         //update cumulative objectives which have been mastered based on mastered objective targets
         updateMasteredCumulativeObjectives(plan);
     }
@@ -261,7 +292,7 @@ public class LearnerPlanService {
         for (LearnerPlanObjective learnerPlanObjective : keys) {
 
             Integer currentConsecutiveMasteryCount = objectivesMastered.get(learnerPlanObjective);
-            currentConsecutiveMasteryCount = new Integer((currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount.intValue() : 0);
+            currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount : 0;
             if (currentConsecutiveMasteryCount >= learnerPlanObjective.getCriteria().getConsecutiveToMastered()) {
                 Date masteryDate = lastSessionDatesForMastery.get(learnerPlanObjective);
                 learnerPlanObjective.setMasteryDate(masteryDate);
@@ -282,7 +313,9 @@ public class LearnerPlanService {
             LearnerPlanObjectiveTarget planObjectiveTarget = sessionObjectiveTarget.getLearnerPlanObjectiveTarget();
             if (planObjectiveTarget.getMastered().equals("N")) {
 
-                if (sessionObjectiveTarget.getSessionValue() != null && sessionObjectiveTarget.getSessionValue() == 1) {
+                if (sessionObjectiveTarget.getSessionValue() != null &&
+                    sessionObjectiveTarget.getInvalidatedByRetention().equals("N") &&
+                    sessionObjectiveTarget.getSessionValue() == 1) {
                     Integer currentConsecutiveMasteryCount = objectiveTargetsMastered.get(planObjectiveTarget);
                     currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount + 1 : 1;
                     objectiveTargetsMastered.put(planObjectiveTarget, currentConsecutiveMasteryCount);
@@ -309,6 +342,9 @@ public class LearnerPlanService {
                 Date masteryDate = lastSessionDatesForMastery.get(planObjectiveTarget);
                 planObjectiveTarget.setMasteryDate(masteryDate);
                 planObjectiveTarget.setMastered("Y");
+                if (planObjective.getRetentionProbeEnabled().equals("Y")) {
+                    planObjectiveTarget.setRetentionState(TargetRetentionState.RETENTION_IN_WAIT_PERIOD);
+                }
                 learnerPlanObjectiveTargetRepository.save(planObjectiveTarget);
             }
         }
@@ -318,11 +354,21 @@ public class LearnerPlanService {
         List<LearnerPlanObjective> planObjectives = plan.getLearnerPlanObjectiveList();
         for (LearnerPlanObjective planObjective : planObjectives) {
             if (planObjective.getObjectiveType().getTypeId().equals("C") && planObjective.getMastered().equals("N")) {
+
                 List<LearnerPlanObjectiveTarget> objectiveTargets = planObjective.getLearnerPlanObjectiveTarget();
                 Date masteryDate = null;
                 Integer totalTargetsMastered = 0;
+
                 for (LearnerPlanObjectiveTarget objectiveTarget : objectiveTargets) {
                     if (objectiveTarget.getMastered().equals("Y")) {
+
+                        //don't count toward mastery if has retention policy but not mastered in retention yet
+                        if (planObjective.getRetentionProbeEnabled().equals("Y")) {
+                            if (!TargetRetentionState.isMastered(objectiveTarget.getRetentionState())) {
+                                continue;
+                            }
+                        }
+
                         totalTargetsMastered++;
                         if (masteryDate == null || objectiveTarget.getMasteryDate().after(masteryDate)) {
                             masteryDate = objectiveTarget.getMasteryDate();
@@ -330,11 +376,99 @@ public class LearnerPlanService {
                     }
                 }
 
-                if (totalTargetsMastered >= planObjective.getMasteryValue()) {
-                    planObjective.setMasteryDate(masteryDate);
-                    planObjective.setMastered("Y");
-                    learnerPlanObjectiveRepository.save(planObjective);
+                if (planObjective.getMasteryValue() != null) {
+                    if (totalTargetsMastered >= planObjective.getMasteryValue()) {
+                        planObjective.setMasteryDate(masteryDate);
+                        planObjective.setMastered("Y");
+                        learnerPlanObjectiveRepository.save(planObjective);
+                    }
                 }
+            }
+        }
+    }
+
+    private void processRetentionForCumulativeObjectiveTargets(LearnerPlan plan, List<LearnerSession> learnerSessions) {
+        Date dateNow = new Date();
+        List<Long> objectTargetsToInvalidate = new ArrayList<Long>();
+
+        //figure out which items are retention retest ready
+        List<LearnerPlanObjective> planObjectives = plan.getLearnerPlanObjectiveList();
+        for (LearnerPlanObjective planObjective : planObjectives) {
+
+            if (planObjective.getObjectiveType().getTypeId().equals("C") &&
+                    planObjective.getRetentionProbeEnabled().equals("Y")) {
+
+                List<LearnerPlanObjectiveTarget> objectiveTargets = planObjective.getLearnerPlanObjectiveTarget();
+                for (LearnerPlanObjectiveTarget objectiveTarget : objectiveTargets) {
+                    if (objectiveTarget.getMastered().equals("Y")) {
+                        if (TargetRetentionState.isMastered(objectiveTarget.getRetentionState())) {
+                            //already mastered in retention, it is done
+                        }
+                        else  {
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(objectiveTarget.getMasteryDate());
+                            cal.add(Calendar.DATE, planObjective.getRetentionProbeDaysToRecheck().intValue());
+                            Date retentionStartDate = cal.getTime();
+
+                            if (TargetRetentionState.isRetentionInWaitingPeriod(objectiveTarget.getRetentionState())) {
+                                if (dateNow.compareTo(retentionStartDate) >= 0) {
+                                    objectiveTarget.setRetentionState(TargetRetentionState.RETENTION_RETEST_READY);
+                                    learnerPlanObjectiveTargetRepository.save(objectiveTarget);
+                                }
+                            }
+                            else if (TargetRetentionState.isRetentionRetestReady(objectiveTarget.getRetentionState())) {
+                                //go through the sessions and see if retention is met
+                                for (LearnerSession learnerSession : learnerSessions) {
+
+                                    if (learnerSession.getSessionDate().compareTo(retentionStartDate) >= 0) {
+                                        List<LearnerSessionObjective> learnerSessionObjectives = learnerSession.getLearnerSessionObjectiveList();
+                                        for (LearnerSessionObjective learnerSessionObjective : learnerSessionObjectives) {
+                                            if (learnerSessionObjective.getLearnerPlanObjective().getLearnerPlanObjectiveId().equals(planObjective.getLearnerPlanObjectiveId())) {
+
+                                                List<LearnerSessionObjectiveTarget> sessionObjectiveTargets = learnerSessionObjective.getLearnerSessionObjectiveTargets();
+                                                for (LearnerSessionObjectiveTarget sessionObjectiveTarget : sessionObjectiveTargets) {
+
+                                                    if (objectiveTarget.getLearnerPlanObjectiveTargetId().equals(sessionObjectiveTarget.getLearnerPlanObjectiveTarget().getLearnerPlanObjectiveTargetId())) {
+                                                        if (sessionObjectiveTarget.getSessionValue() == 1) {
+                                                            //retention is mastered
+                                                            objectiveTarget.setRetentionState(TargetRetentionState.RETENTION_MASTERED);
+                                                            learnerPlanObjectiveTargetRepository.save(objectiveTarget);
+                                                        }
+                                                        else if (sessionObjectiveTarget.getSessionValue() == -1) {
+                                                            //it failed in retention probe, negate all data until now
+                                                            objectTargetsToInvalidate.add(objectiveTarget.getLearnerPlanObjectiveTargetId());
+
+                                                            objectiveTarget.setRetentionState(TargetRetentionState.HAS_RETENTION_POLICY);
+                                                            objectiveTarget.setMastered("N");
+                                                            objectiveTarget.setMasteryDate(null);
+                                                            learnerPlanObjectiveTargetRepository.save(objectiveTarget);
+                                                        }
+                                                        else if (sessionObjectiveTarget.getSessionValue() == 0) {
+                                                            //no value means not tested, do nothing
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        invalidateObjectiveTargetSessionData(objectTargetsToInvalidate);
+    }
+
+    private void invalidateObjectiveTargetSessionData(List<Long> objectTargetsToInvalidate) {
+        for (Long objectiveTargetId : objectTargetsToInvalidate) {
+            LearnerPlanObjectiveTarget learnerPlanObjectiveTarget = learnerPlanObjectiveTargetRepository.findOne(objectiveTargetId);
+            List<LearnerSessionObjectiveTarget> sessionTargets = learnerSessionObjectiveTargetRepository.findByLearnerPlanObjectiveTarget(learnerPlanObjectiveTarget);
+            for (LearnerSessionObjectiveTarget sessionTarget : sessionTargets) {
+                sessionTarget.setInvalidatedByRetention("Y");
+                learnerSessionObjectiveTargetRepository.save(sessionTarget);
             }
         }
     }

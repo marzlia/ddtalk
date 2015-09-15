@@ -78,6 +78,8 @@ public class LearnerSessionService {
                     learnerSessionObjectiveTarget.setLearnerPlanObjectiveTarget(objectiveTarget);
                     learnerSessionObjectiveTarget.setLearnerSessionObjectiveId(learnerSessionObjective.getLearnerSessionObjectiveId());
                     learnerSessionObjectiveTarget.setPromptCode(promptCodeNone);
+                    learnerSessionObjectiveTarget.setInvalidatedByRetention("N");
+                    learnerSessionObjectiveTarget.setSessionValue(0L);
                     learnerSessionObjectiveTargets.add(learnerSessionObjectiveTarget);
                 }
                 learnerSessionObjective.setLearnerSessionObjectiveTargets(learnerSessionObjectiveTargets);
@@ -111,6 +113,12 @@ public class LearnerSessionService {
     public void updateSessionObjectiveTarget(Long sessionObjectiveTargetId, Long promptCodeId, Long sessionValue) {
         LearnerSessionObjectiveTarget learnerSessionObjectiveTarget = learnerSessionObjectiveTargetRepository.findOne(sessionObjectiveTargetId);
         PromptCode promptCode = promptCodeRepository.findOne(promptCodeId);
+        if (promptCode == null) {
+            promptCode = promptCodeRepository.findByPromptCode("None");
+        }
+        if (sessionValue == null) {
+            sessionValue = 0L;
+        }
 
         learnerSessionObjectiveTarget.setSessionValue(sessionValue);
         learnerSessionObjectiveTarget.setPromptCode(promptCode);

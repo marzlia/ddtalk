@@ -35,13 +35,14 @@
 
 <b>Targets</b>
 <table class="table-style-standard">
-    <tr th:each="target : ${learnerPlanObjectiveTargets}" th:attr="class=${target.mastered == 'Y' ? 'mastered' : null}">
-        <td th:text="${target.targetDescription}" />
-    <td th:if="${target.mastered == 'N'}">
-            <a href="" th:href="@{../../removeObjectiveTarget} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerPlanObjective.learnerPlanObjectiveId} + '/' + ${target.learnerPlanObjectiveTargetId}">Remove</a>
+    <tr th:each="target : ${objectiveTargets}" th:attr="class=${target.tableRowClass}">
+        <td th:text="${target.planObjectiveTarget.targetDescription}" />
+    <td th:if="${target.planObjectiveTarget.mastered == 'N'}">
+            <a href="" th:href="@{../../removeObjectiveTarget} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerPlanObjective.learnerPlanObjectiveId} + '/' + ${target.planObjectiveTarget.learnerPlanObjectiveTargetId}">Remove</a>
     </td>
-    <td th:if="${target.mastered == 'Y'}">
-        <label>Mastered</label>
+    <td th:if="${target.planObjectiveTarget.mastered == 'Y'}">
+        <label>Mastered on </label>
+        <label th:text="${target.planObjectiveTarget.masteryDate} ? ${#dates.format(target.planObjectiveTarget.masteryDate, 'MMM dd, yyyy')}" />
     </td>
     </tr>
 </table>

@@ -2,19 +2,23 @@ select * FROM objectives;
 select * from objective_type;
 
 select * from learners;
+
 select * from learner_plan;
 select * from learner_plan_objective;
 select * from learner_plan_objective_target;
-
-DELETE from learner_plan;
-DELETE from learner_plan_objective;
-DELETE from learner_plan_objective_target;
 
 select * from learner_session;
 select * from learner_session_objective;
 select * from learner_session_objective_target;
 
+
+
+
 use ddtalk;
+DELETE from learner_plan;
+DELETE from learner_plan_objective;
+DELETE from learner_plan_objective_target;
+
 DELETE from learner_session;
 DELETE from learner_session_objective;
 DELETE from learner_session_objective_target;
@@ -31,7 +35,7 @@ select * from learner_user_access;
 
 
 use ddtalk;
-select *  from criteria;
+select *  from prompt_code;
 DELETE from criteria;
 
 INSERT INTO login_user (username, password, enabled, role) VALUES ('p', 't', 1, 'USER' );

@@ -67,6 +67,9 @@ public class LearnerSessionController {
     public String createLearnerSession(@PathVariable String learnerPlanId, ModelMap model) {
 
         LearnerPlan plan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        //make sure retention probe data is up to date
+        plan = learnerPlanService.updateRetentionProbeInfoForLearnerPlan(plan);
+
         LearnerSession learnerSession = learnerSessionService.createNewSessionForLearnerPlan(plan);
         return "redirect:../" + learnerPlanId + "/" + learnerSession.getLearnerSessionId();
     }
@@ -130,7 +133,7 @@ public class LearnerSessionController {
 
     private Domain returnDomainObjectFromArrayWhichMatches(Domain domain, List<Domain> domainArray) {
         for (Domain searchDomain : domainArray) {
-            if (searchDomain.getDomainId() == domain.getDomainId()) {
+            if (searchDomain.getDomainId().equals(domain.getDomainId())) {
                 return searchDomain;
             }
         }
@@ -195,8 +198,28 @@ public class LearnerSessionController {
             MapSessionObjectiveTargetItem mapSessionObjectiveTargetItem = new MapSessionObjectiveTargetItem();
             mapSessionObjectiveTargetItem.setPlanObjectiveTarget(planObjectiveTarget);
 
+            //edit state
+            if (planObjectiveTarget.getMastered().equals("N") || TargetRetentionState.isRetentionRetestReady(planObjectiveTarget.getRetentionState())) {
+                mapSessionObjectiveTargetItem.setEditState("Y");
+            }
+            else {
+                mapSessionObjectiveTargetItem.setEditState("N");
+            }
+            //table row class
+            mapSessionObjectiveTargetItem.setTableRowClass("");
+            if (planObjectiveTarget.getMastered().equals("Y")) {
+                if (learnerPlanObjective.getRetentionProbeEnabled().equals("Y") &&
+                        !TargetRetentionState.isMastered(planObjectiveTarget.getRetentionState())) {
+                    mapSessionObjectiveTargetItem.setTableRowClass("retention");
+                }
+                else {
+                    mapSessionObjectiveTargetItem.setTableRowClass("mastered");
+                }
+            }
+
+
             for (LearnerSessionObjectiveTarget sessionObjectiveTarget : learnerSessionObjective.getLearnerSessionObjectiveTargets()) {
-                if (sessionObjectiveTarget.getLearnerPlanObjectiveTarget().getLearnerPlanObjectiveTargetId() == planObjectiveTarget.getLearnerPlanObjectiveTargetId()) {
+                if (sessionObjectiveTarget.getLearnerPlanObjectiveTarget().getLearnerPlanObjectiveTargetId().equals(planObjectiveTarget.getLearnerPlanObjectiveTargetId())) {
                     mapSessionObjectiveTargetItem.setSessionObjectiveTarget(sessionObjectiveTarget);
                     break;
                 }

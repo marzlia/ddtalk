@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS learner_plan_objective_target (
   learner_plan_objective_target_id int(11) NOT NULL AUTO_INCREMENT,
   learner_plan_objective_id int(11) NOT NULL,
   description varchar(512) DEFAULT NULL,
+  retention_state varchar(2) DEFAULT 'N',
   mastered varchar(2) DEFAULT 'N',
   mastery_date DATE DEFAULT NULL,  
   PRIMARY KEY (learner_plan_objective_target_id)

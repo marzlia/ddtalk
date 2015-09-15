@@ -1,10 +1,7 @@
 package com.springapp.mvc;
 
 import com.springapp.model.*;
-import com.springapp.model.request.AddObjectiveRequest;
-import com.springapp.model.request.AddObjectiveTargetsRequest;
-import com.springapp.model.request.MapSessionObjectiveItem;
-import com.springapp.model.request.UpdateObjectiveRequestItem;
+import com.springapp.model.request.*;
 import com.springapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,6 +41,8 @@ public class LearnerPlanController {
     public String learnerPlan(@PathVariable String planId, ModelMap model) {
 
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
+        //make sure data is calculated
+        learnerPlan = learnerPlanService.updateRetentionProbeInfoForLearnerPlan(learnerPlan);
 
         List<LearnerPlanObjective> objectives = learnerPlan.getLearnerPlanObjectiveList();
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
@@ -108,7 +107,7 @@ public class LearnerPlanController {
 
     private Domain returnDomainObjectFromArrayWhichMatches(Domain domain, List<Domain> domainArray) {
         for (Domain searchDomain : domainArray) {
-            if (searchDomain.getDomainId() == domain.getDomainId()) {
+            if (searchDomain.getDomainId().equals(domain.getDomainId())) {
                 return searchDomain;
             }
         }
@@ -119,7 +118,7 @@ public class LearnerPlanController {
     @ResponseBody
     public String updateObjectives(@ModelAttribute(value="updateObjectiveRequestItem") UpdateObjectiveRequestItem updateObjectiveRequestItem, BindingResult errors) {
         learnerPlanService.updatePlanObjective(Long.parseLong(updateObjectiveRequestItem.getPlanObjectiveId()),
-                Long.parseLong(updateObjectiveRequestItem.getConditionId()),
+                updateObjectiveRequestItem.getConditionId(),
                 updateObjectiveRequestItem.getMasteryValue());
 
 
@@ -195,11 +194,32 @@ public class LearnerPlanController {
         LearnerPlanObjective learnerPlanObjective = learnerPlanService.getLearnerPlanObjective(Long.parseLong(planObjectiveId));
         model.addAttribute("learnerPlanObjective", learnerPlanObjective);
 
-        List<LearnerPlanObjectiveTarget> learnerPlanObjectiveTargets = learnerPlanService.getLearnerPlanObjectiveTargets(Long.parseLong(planObjectiveId));
-        model.addAttribute("learnerPlanObjectiveTargets", learnerPlanObjectiveTargets);
+        // populate existing objective targets
+        List<MapSessionObjectiveTargetItem> objectiveTargetMapList = new ArrayList<MapSessionObjectiveTargetItem>();
+        for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
+
+            MapSessionObjectiveTargetItem mapSessionObjectiveTargetItem = new MapSessionObjectiveTargetItem();
+            mapSessionObjectiveTargetItem.setPlanObjectiveTarget(planObjectiveTarget);
+
+            //table row class
+            mapSessionObjectiveTargetItem.setTableRowClass("");
+            if (planObjectiveTarget.getMastered().equals("Y")) {
+                if (learnerPlanObjective.getRetentionProbeEnabled().equals("Y") &&
+                        !TargetRetentionState.isMastered(planObjectiveTarget.getRetentionState())) {
+                    mapSessionObjectiveTargetItem.setTableRowClass("retention");
+                }
+                else {
+                    mapSessionObjectiveTargetItem.setTableRowClass("mastered");
+                }
+            }
+            objectiveTargetMapList.add(mapSessionObjectiveTargetItem);
+        }
+        model.addAttribute("objectiveTargets", objectiveTargetMapList);
+
 
         return "learnerPlanObjectiveTargets";
     }
+
 
 
     @RequestMapping(value = "/removeObjectiveTarget/{planId}/{objectiveId}/{objectiveTargetId}", method = RequestMethod.GET)

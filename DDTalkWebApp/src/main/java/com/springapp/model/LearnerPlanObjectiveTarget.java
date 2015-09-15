@@ -18,6 +18,9 @@ public class LearnerPlanObjectiveTarget {
     @Column(name = "description")
     String targetDescription;
 
+    @Column(name = "retention_state")
+    String retentionState;
+
     @Column(name = "mastered")
     String mastered;
 
@@ -64,6 +67,15 @@ public class LearnerPlanObjectiveTarget {
         this.masteryDate = masteryDate;
     }
 
+    //See TargetRetentionState for retention states
+    public String getRetentionState() {
+        return retentionState;
+    }
+
+    public void setRetentionState(String retentionState) {
+        this.retentionState = retentionState;
+    }
+
     @Override
     public int hashCode() {
         return Long.valueOf(this.learnerPlanObjectiveTargetId).hashCode();
@@ -78,7 +90,7 @@ public class LearnerPlanObjectiveTarget {
         if (getClass() != obj.getClass())
             return false;
         LearnerPlanObjectiveTarget other = (LearnerPlanObjectiveTarget) obj;
-        if (this.learnerPlanObjectiveTargetId != other.learnerPlanObjectiveTargetId)
+        if (!this.learnerPlanObjectiveTargetId.equals(other.learnerPlanObjectiveTargetId))
             return false;
         return true;
     }

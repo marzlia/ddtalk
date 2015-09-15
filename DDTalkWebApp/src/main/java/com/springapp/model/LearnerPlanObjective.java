@@ -161,7 +161,7 @@ public class LearnerPlanObjective {
         if (getClass() != obj.getClass())
             return false;
         LearnerPlanObjective other = (LearnerPlanObjective) obj;
-        if (this.learnerPlanObjectiveId != other.learnerPlanObjectiveId)
+        if (!this.learnerPlanObjectiveId.equals(other.learnerPlanObjectiveId))
             return false;
         return true;
     }

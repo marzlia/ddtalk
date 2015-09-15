@@ -9,14 +9,6 @@
 
 <table class="table-style-standard">
     <tr>
-        <td ><a href="" th:href="@{/learnerSession} + '/' + ${learnerPlan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}">Back to Session</a></td>
-    </tr>
-</table>
-
-<br />
-
-<table class="table-style-standard">
-    <tr>
         <td>Objective</td>
         <td>Condition</td>
         <td>Criteria</td>
@@ -32,9 +24,10 @@
 
 <b>Targets</b>
 <table class="table-style-standard">
-    <tr th:each="sessionObjectiveTargetMap : ${sessionObjectiveTargets}" th:id="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" th:attr="class=${sessionObjectiveTargetMap.planObjectiveTarget.mastered == 'Y' ? 'mastered' : null}">
+    <tr th:each="sessionObjectiveTargetMap : ${sessionObjectiveTargets}" th:id="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" th:attr="class=${sessionObjectiveTargetMap.tableRowClass}">
         <td th:text="${sessionObjectiveTargetMap.planObjectiveTarget.targetDescription}"/>
-        <td th:if="${sessionObjectiveTargetMap.planObjectiveTarget.mastered == 'N'}">
+
+        <td th:if="${sessionObjectiveTargetMap.editState == 'Y'}">
             <select name="promptCode">
                 <option th:each="promptCode : ${promptCodes}"
                         th:value="${promptCode.promptCodeId}"
@@ -42,13 +35,14 @@
                         th:selected="${promptCode.promptCodeId == sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode.promptCodeId}"/>/>
             </select>
         </td>
-        <td th:if="${sessionObjectiveTargetMap.planObjectiveTarget.mastered == 'Y'}" th:text="${sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode} ? ${sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode.promptCode}" />
-        <td th:if="${sessionObjectiveTargetMap.planObjectiveTarget.mastered == 'N'}">
+        <td th:if="${sessionObjectiveTargetMap.editState == 'N'}" th:text="${sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode} ? ${sessionObjectiveTargetMap.sessionObjectiveTarget.promptCode.promptCode}" />
+
+        <td th:if="${sessionObjectiveTargetMap.editState == 'Y'}">
             <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="1" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == 1 ? 'checked' : null}">+</input>
-            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="0" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == 0 ? 'checked' : null}">-</input>
-            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="-1" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == -1 ? 'checked' : null}">n/a</input>
+            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="-1" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == -1 ? 'checked' : null}">-</input>
+            <input th:name="${sessionObjectiveTargetMap.sessionObjectiveTarget.learnerSessionObjectiveTargetId}" type="radio" value="0" th:attr="checked=${sessionObjectiveTargetMap.sessionObjectiveTarget.sessionValue == 0 ? 'checked' : null}">n/a</input>
         </td>
-        <td th:if="${sessionObjectiveTargetMap.planObjectiveTarget.mastered == 'Y'} and ${sessionObjectiveTargetMap.planObjectiveTarget.masteryDate}">
+        <td th:if="${sessionObjectiveTargetMap.editState == 'N'} and ${sessionObjectiveTargetMap.planObjectiveTarget.masteryDate}">
             <label>Mastered on </label>
             <label th:text="${sessionObjectiveTargetMap.planObjectiveTarget.masteryDate} ? ${#dates.format(sessionObjectiveTargetMap.planObjectiveTarget.masteryDate, 'MMM dd, yyyy')}" />
         </td>
