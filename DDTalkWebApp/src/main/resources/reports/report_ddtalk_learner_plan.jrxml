@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-09-12T22:44:12 -->
+<!-- 2015-09-14T21:53:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ddtalk_learner_plan" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="17006d4b-0583-4b6d-a8e8-c7e42fb0f6cb">
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -156,6 +156,9 @@
 		<field name="masteryValue" class="java.lang.Long">
 			<fieldDescription><![CDATA[]]></fieldDescription>
 		</field>
+		<field name="objectiveType.typeId" class="java.lang.String">
+			<fieldDescription><![CDATA[]]></fieldDescription>
+		</field>
 	</subDataset>
 	<queryString>
 		<![CDATA[]]>
@@ -309,42 +312,110 @@
 	<detail>
 		<band height="359" splitType="Stretch">
 			<componentElement>
-				<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="8" y="3" width="560" height="356" isPrintWhenDetailOverflows="true" uuid="7dcfae00-b512-4abf-a4b7-4fae7feb2c6d">
-					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-				</reportElement>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
-					<datasetRun subDataset="ObjectivesDataSet" uuid="890ac263-54e4-4651-871c-5ef4d6df9105">
+				<reportElement x="-4" y="15" width="578" height="160" uuid="6f80d789-637e-4a60-8134-a777f8df1731"/>
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="ObjectivesDataSet" uuid="0930179c-cf40-4aba-86cb-41fa9141c3c9">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{objectives},false)]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="560" uuid="6a29d84f-a828-49fe-8a3a-e5590d7151c2">
-						<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
-						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-						<jr:detailCell style="Table 4_TD" height="30">
-							<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
-							<property name="com.jaspersoft.studio.unit.width" value="px"/>
-							<box>
-								<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-							</box>
-							<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-								<reportElement positionType="Float" stretchType="RelativeToTallestObject" x="4" y="4" width="550" height="26" uuid="eb872b3c-e89a-40d7-b0b4-894d08fac87c"/>
-								<box topPadding="10" bottomPadding="15">
-									<pen lineStyle="Solid" lineColor="#080303"/>
-									<topPen lineWidth="0.5" lineStyle="Solid" lineColor="#080303"/>
-									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#080303"/>
-									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-								</box>
-								<textElement markup="none">
-									<font fontName="DejaVu Serif" isBold="true"/>
-								</textElement>
-								<textFieldExpression><![CDATA[$F{objective.description}.concat("\n").concat("\n").concat("Domain: ").concat($F{objective.domain.description}).concat("\n").concat("Condition: ").concat($F{condition.description}).concat("\n").concat("Criteria: ").concat($F{criteria.description}).concat("\n").concat("Mastery: ").concat($F{masteryValue}.toString())]]></textFieldExpression>
-							</textField>
-						</jr:detailCell>
-					</jr:column>
-				</jr:table>
+					<jr:listContents height="160" width="578">
+						<textField>
+							<reportElement x="13" y="13" width="548" height="30" uuid="40171496-f586-43ac-a1f1-0fb84f794cd8"/>
+							<textElement>
+								<font isBold="true"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{objective.description}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="93" y="49" width="388" height="21" uuid="2d01cbfb-3c71-4c21-800a-3d6992baf92b"/>
+							<textElement>
+								<font fontName="DejaVu Serif"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{objective.domain.description}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="93" y="74" width="388" height="21" uuid="c5810eed-b5f2-4f04-b76a-8716f7475baf"/>
+							<textElement>
+								<font fontName="DejaVu Serif"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{condition.description}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="93" y="99" width="388" height="21" uuid="b5101109-ca4c-4c82-8311-72da6dfeac27"/>
+							<textElement>
+								<font fontName="DejaVu Serif"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{criteria.description}]]></textFieldExpression>
+						</textField>
+						<textField>
+							<reportElement x="93" y="125" width="27" height="21" uuid="ef3d31d2-2c7c-4ff3-9cf6-b627a4cb92bf"/>
+							<textElement>
+								<font fontName="DejaVu Serif"/>
+							</textElement>
+							<textFieldExpression><![CDATA[$F{masteryValue}]]></textFieldExpression>
+						</textField>
+						<line>
+							<reportElement x="9" y="6" width="557" height="1" uuid="a56c68d6-dc29-4ada-83da-776a298c766d"/>
+						</line>
+						<staticText>
+							<reportElement x="15" y="49" width="70" height="21" uuid="04aae7c8-b3c2-4cf2-b768-3e868a570b4f">
+								<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<textElement>
+								<font fontName="DejaVu Serif" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Domain]]></text>
+						</staticText>
+						<staticText>
+							<reportElement x="15" y="74" width="70" height="21" uuid="a8dc6701-052d-41d4-8248-5404c813f38d">
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<textElement>
+								<font fontName="DejaVu Serif" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Condition]]></text>
+						</staticText>
+						<staticText>
+							<reportElement x="15" y="99" width="70" height="21" uuid="6b89de56-21ff-4005-92b3-4489ef0c56ed">
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<textElement>
+								<font fontName="DejaVu Serif" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Criteria]]></text>
+						</staticText>
+						<staticText>
+							<reportElement x="16" y="125" width="70" height="21" uuid="fca0549b-ee9b-4752-80e0-3e9d3e81e30d">
+								<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							</reportElement>
+							<textElement>
+								<font fontName="DejaVu Serif" isBold="true"/>
+							</textElement>
+							<text><![CDATA[Mastery]]></text>
+						</staticText>
+						<staticText>
+							<reportElement x="122" y="125" width="21" height="21" uuid="6b10cfa8-164d-4325-83e2-71eb805ab3cf">
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+								<printWhenExpression><![CDATA[$F{objectiveType.typeId}.equalsIgnoreCase( "P" )]]></printWhenExpression>
+							</reportElement>
+							<text><![CDATA[%]]></text>
+						</staticText>
+						<staticText>
+							<reportElement x="122" y="125" width="49" height="21" uuid="37fad19f-3acd-4247-bb2b-9f9a820a367f">
+								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+								<property name="com.jaspersoft.studio.unit.x" value="pixel"/>
+								<printWhenExpression><![CDATA[$F{objectiveType.typeId}.equalsIgnoreCase( "C" )]]></printWhenExpression>
+							</reportElement>
+							<textElement>
+								<font fontName="DejaVu Serif"/>
+							</textElement>
+							<text><![CDATA[Targets]]></text>
+						</staticText>
+					</jr:listContents>
+				</jr:list>
 			</componentElement>
 		</band>
 	</detail>
