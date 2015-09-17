@@ -186,7 +186,8 @@
 </fieldset>
 
 <br /><br />
-<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton" hidden="hidden">Report</a>
+<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton">Report</a>
+<a th:href="@{/report/session} + '/' + ${plan.learnerPlanId}" class="standardButton">Report Session</a>
 
 <script>
     $('#select-domain').selectize({

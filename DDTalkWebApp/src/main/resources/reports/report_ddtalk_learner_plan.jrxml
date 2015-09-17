@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-09-14T21:53:45 -->
+<!-- 2015-09-15T21:46:10 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ddtalk_learner_plan" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="17006d4b-0583-4b6d-a8e8-c7e42fb0f6cb">
 	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -313,7 +313,7 @@
 		<band height="359" splitType="Stretch">
 			<componentElement>
 				<reportElement x="-4" y="15" width="578" height="160" uuid="6f80d789-637e-4a60-8134-a777f8df1731"/>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
 					<datasetRun subDataset="ObjectivesDataSet" uuid="0930179c-cf40-4aba-86cb-41fa9141c3c9">
 						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{objectives},false)]]></dataSourceExpression>
 					</datasetRun>
@@ -328,28 +328,28 @@
 						<textField>
 							<reportElement x="93" y="49" width="388" height="21" uuid="2d01cbfb-3c71-4c21-800a-3d6992baf92b"/>
 							<textElement>
-								<font fontName="DejaVu Serif"/>
+								<font fontName="DejaVu Serif" size="8" isBold="true"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{objective.domain.description}]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="93" y="74" width="388" height="21" uuid="c5810eed-b5f2-4f04-b76a-8716f7475baf"/>
 							<textElement>
-								<font fontName="DejaVu Serif"/>
+								<font fontName="DejaVu Serif" size="8"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{condition.description}]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="93" y="99" width="388" height="21" uuid="b5101109-ca4c-4c82-8311-72da6dfeac27"/>
 							<textElement>
-								<font fontName="DejaVu Serif"/>
+								<font fontName="DejaVu Serif" size="8"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{criteria.description}]]></textFieldExpression>
 						</textField>
 						<textField>
 							<reportElement x="93" y="125" width="27" height="21" uuid="ef3d31d2-2c7c-4ff3-9cf6-b627a4cb92bf"/>
 							<textElement>
-								<font fontName="DejaVu Serif"/>
+								<font fontName="DejaVu Serif" size="8"/>
 							</textElement>
 							<textFieldExpression><![CDATA[$F{masteryValue}]]></textFieldExpression>
 						</textField>
@@ -362,7 +362,7 @@
 								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 							</reportElement>
 							<textElement>
-								<font fontName="DejaVu Serif" isBold="true"/>
+								<font fontName="DejaVu Serif" size="8" isBold="true"/>
 							</textElement>
 							<text><![CDATA[Domain]]></text>
 						</staticText>
@@ -371,7 +371,7 @@
 								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 							</reportElement>
 							<textElement>
-								<font fontName="DejaVu Serif" isBold="true"/>
+								<font fontName="DejaVu Serif" size="8" isBold="true"/>
 							</textElement>
 							<text><![CDATA[Condition]]></text>
 						</staticText>
@@ -380,7 +380,7 @@
 								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 							</reportElement>
 							<textElement>
-								<font fontName="DejaVu Serif" isBold="true"/>
+								<font fontName="DejaVu Serif" size="8" isBold="true"/>
 							</textElement>
 							<text><![CDATA[Criteria]]></text>
 						</staticText>
@@ -390,7 +390,7 @@
 								<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 							</reportElement>
 							<textElement>
-								<font fontName="DejaVu Serif" isBold="true"/>
+								<font fontName="DejaVu Serif" size="8" isBold="true"/>
 							</textElement>
 							<text><![CDATA[Mastery]]></text>
 						</staticText>
@@ -400,6 +400,9 @@
 								<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
 								<printWhenExpression><![CDATA[$F{objectiveType.typeId}.equalsIgnoreCase( "P" )]]></printWhenExpression>
 							</reportElement>
+							<textElement>
+								<font size="8"/>
+							</textElement>
 							<text><![CDATA[%]]></text>
 						</staticText>
 						<staticText>
@@ -410,7 +413,7 @@
 								<printWhenExpression><![CDATA[$F{objectiveType.typeId}.equalsIgnoreCase( "C" )]]></printWhenExpression>
 							</reportElement>
 							<textElement>
-								<font fontName="DejaVu Serif"/>
+								<font fontName="DejaVu Serif" size="8"/>
 							</textElement>
 							<text><![CDATA[Targets]]></text>
 						</staticText>

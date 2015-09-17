@@ -56,4 +56,17 @@ public class ReportController {
         return modelAndView;
     }
 
+    @RequestMapping(method = RequestMethod.GET , value = "/session/{learnerPlanId}")
+    public ModelAndView generateLearnerSessionReport(@PathVariable String learnerPlanId,  ModelAndView modelAndView){
+
+        LoginUser loginUser = loginUserService.getLoginUser(httpServletRequest.getUserPrincipal().getName());
+        LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+
+        Map<String,Object> parameterMap = reportService.generateLearnerSessionData(learnerPlan, loginUser);
+
+        modelAndView = new ModelAndView("report_ddtalk_learner_session", parameterMap);
+
+        return modelAndView;
+    }
+
 }
