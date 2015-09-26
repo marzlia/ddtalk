@@ -166,12 +166,65 @@ public class LearnerPlanService {
         return learnerPlanObjectiveTargets;
     }
 
-    public void deleteLearnerPlanObjectiveTarget(Long planObjectiveTargetId) {
+    public void deleteLearnerPlanObjectiveTarget(Long planId, Long planObjectiveTargetId) {
+        //remove any session data potentially associated with this objective target
+        List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(planId);
+        for (LearnerSession learnerSession : learnerSessions) {
+
+            List<LearnerSessionObjective> learnerSessionObjectives = learnerSession.getLearnerSessionObjectiveList();
+            for (LearnerSessionObjective learnerSessionObjective : learnerSessionObjectives) {
+
+                LearnerPlanObjective planObjective = learnerSessionObjective.getLearnerPlanObjective();
+                if (planObjective.getObjectiveType().getTypeId().equals("C")) {
+                    //remove any associated target data
+                    List<LearnerSessionObjectiveTarget> targets = learnerSessionObjective.getLearnerSessionObjectiveTargets();
+                    for (LearnerSessionObjectiveTarget target : targets) {
+                        if (target.getLearnerPlanObjectiveTarget().getLearnerPlanObjectiveTargetId().equals(planObjectiveTargetId)) {
+                            learnerSessionService.deleteSessionObjectiveTarget(target);
+                        }
+                    }
+                }
+            }
+        }
+
         learnerPlanObjectiveTargetRepository.delete(planObjectiveTargetId);
     }
 
-    public void deleteLearnerPlanObjective(Long planObjectiveId) {
-        learnerPlanObjectiveRepository.delete(planObjectiveId);
+    public void deleteLearnerPlanObjective(Long planId, Long planObjectiveId) {
+        //remove any session data potentially associated with this objective
+        List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(planId);
+        for (LearnerSession learnerSession : learnerSessions) {
+
+            List<LearnerSessionObjective> learnerSessionObjectives = learnerSession.getLearnerSessionObjectiveList();
+            for (LearnerSessionObjective learnerSessionObjective : learnerSessionObjectives) {
+                LearnerPlanObjective planObjective = learnerSessionObjective.getLearnerPlanObjective();
+                if (planObjective.getLearnerPlanObjectiveId().equals(planObjectiveId)) {
+                    if (planObjective.getObjectiveType().getTypeId().equals("C")) {
+                        //remove any associated target data
+                        List<LearnerSessionObjectiveTarget> targets = learnerSessionObjective.getLearnerSessionObjectiveTargets();
+                        for (LearnerSessionObjectiveTarget target : targets) {
+                            learnerSessionService.deleteSessionObjectiveTarget(target);
+                        }
+                    }
+                    //remove session objective
+                    learnerSessionObjective.setLearnerSessionObjectiveTargets(new ArrayList<LearnerSessionObjectiveTarget>());
+                    learnerSessionService.deleteSessionObjective(learnerSessionObjective);
+                }
+            }
+        }
+
+        //remove targets from objective if necessary
+        LearnerPlanObjective learnerPlanObjective = learnerPlanObjectiveRepository.findOne(planObjectiveId);
+        if (learnerPlanObjective.getObjectiveType().getTypeId().equals("C")) {
+            List<LearnerPlanObjectiveTarget> objectiveTargets = learnerPlanObjective.getLearnerPlanObjectiveTarget();
+            for (LearnerPlanObjectiveTarget objectiveTarget : objectiveTargets) {
+                learnerPlanObjectiveTargetRepository.delete(objectiveTarget);
+            }
+            learnerPlanObjective.setLearnerPlanObjectiveTarget(new ArrayList<LearnerPlanObjectiveTarget>());
+        }
+
+        //remove objective from plan
+        learnerPlanObjectiveRepository.delete(learnerPlanObjective);
     }
 
     public String getTableRowClassForObjective(LearnerPlanObjective objective) {

@@ -137,6 +137,13 @@ public class LearnerSessionService {
     }
 
 
+    public void deleteSessionObjective(LearnerSessionObjective learnerSessionObjective) {
+        learnerSessionObjectiveRepository.delete(learnerSessionObjective);
+    }
+
+    public void deleteSessionObjectiveTarget(LearnerSessionObjectiveTarget learnerSessionObjectiveTarget) {
+        learnerSessionObjectiveTargetRepository.delete(learnerSessionObjectiveTarget);
+    }
 
 }
 

@@ -243,13 +243,13 @@ public class LearnerPlanController {
 
     @RequestMapping(value = "/removeObjectiveTarget/{planId}/{objectiveId}/{objectiveTargetId}", method = RequestMethod.GET)
     public String removeObjectiveTarget(@PathVariable String planId, @PathVariable String objectiveId, @PathVariable String objectiveTargetId) {
-        learnerPlanService.deleteLearnerPlanObjectiveTarget(Long.parseLong(objectiveTargetId));
+        learnerPlanService.deleteLearnerPlanObjectiveTarget(Long.parseLong(planId), Long.parseLong(objectiveTargetId));
         return "redirect:/learnerPlan/learnerPlanObjectiveTargets/" + planId + "/" + objectiveId;
     }
 
     @RequestMapping(value = "/removeObjective/{planId}/{objectiveId}", method = RequestMethod.GET)
     public String removeObjective(@PathVariable String planId, @PathVariable String objectiveId) {
-        learnerPlanService.deleteLearnerPlanObjective(Long.parseLong(objectiveId));
+        learnerPlanService.deleteLearnerPlanObjective(Long.parseLong(planId), Long.parseLong(objectiveId));
         return "redirect:/learnerPlan/" + planId;
     }
 
