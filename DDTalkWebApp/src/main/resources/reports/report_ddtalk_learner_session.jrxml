@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-09-16T21:50:42 -->
+<!-- 2015-09-22T21:37:05 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ddtalk_learner_session" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4711a08d-e19f-43a9-b11d-6dc4d0ac954b">
 	<subDataset name="SessionData" uuid="aee5ac9d-41fe-454d-bb03-73baaf1bd1e8">
 		<queryString>
@@ -169,21 +169,22 @@
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<lineChart>
 				<chart evaluationTime="Report">
-					<reportElement x="8" y="10" width="562" height="400" uuid="0a780869-8943-4083-9f64-41b8a4988f8f"/>
+					<reportElement x="8" y="10" width="562" height="400" uuid="daa52bd5-b99d-4067-9e2a-e321c3112d6b"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="SessionData" uuid="d04d6f5c-2278-4e84-965b-0fb757110da4">
+						<datasetRun subDataset="SessionData" uuid="9fd70d66-c892-49b8-916f-0e81a512de4c">
 							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{reportSessionDataList},false)]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
 					<categorySeries>
-						<seriesExpression><![CDATA["SERIES 1"]]></seriesExpression>
+						<seriesExpression><![CDATA[$F{sessionDate}]]></seriesExpression>
 						<categoryExpression><![CDATA[$F{sessionDate}]]></categoryExpression>
 						<valueExpression><![CDATA[$F{sessionValue}]]></valueExpression>
+						<labelExpression><![CDATA[$F{sessionValue}]]></labelExpression>
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>

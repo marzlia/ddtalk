@@ -291,7 +291,8 @@ public class LearnerPlanService {
                                             Map<LearnerPlanObjective, Integer> objectivesMastered,
                                             Map<LearnerPlanObjective, Date> lastSessionDatesForMastery) {
 
-        if (learnerSessionObjective.getSessionValue() >= planObjective.getMasteryValue()) {
+        if (learnerSessionObjective.getSessionValue() != null &&
+                learnerSessionObjective.getSessionValue() >= planObjective.getMasteryValue()) {
             Integer currentConsecutiveMasteryCount = objectivesMastered.get(planObjective);
             currentConsecutiveMasteryCount = (currentConsecutiveMasteryCount != null) ? currentConsecutiveMasteryCount + 1 : 1;
             objectivesMastered.put(planObjective, currentConsecutiveMasteryCount);

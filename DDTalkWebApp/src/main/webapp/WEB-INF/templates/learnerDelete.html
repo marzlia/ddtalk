@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="learnerFragments :: standard_head"></head>
+
+<body>
+<b><p th:text="${'Delete Learner: ' + learner.firstName + ' ' + learner.lastName + ' ?'}" /></b>
+
+<a href="" th:href="@{'/learner/delete/' + ${learner.learnerId}}" class="standardButton">Yes</a>
+<a href="" th:href="@{/learner/user}" class="standardButton">No</a>
+
+</body>
+</html>

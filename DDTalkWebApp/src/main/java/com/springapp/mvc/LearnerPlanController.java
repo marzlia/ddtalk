@@ -121,6 +121,18 @@ public class LearnerPlanController {
         return null;
     }
 
+    @RequestMapping(value = "/reports/{planId}", method = RequestMethod.GET)
+    public String learnerPlanReports(@PathVariable String planId, ModelMap model) {
+
+        LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(planId));
+        Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
+
+        model.addAttribute("learner", learner);
+        model.addAttribute("plan", learnerPlan);
+
+        return "learnerPlanReports";
+    }
+
     @RequestMapping(value = "/updateObjectives", method = RequestMethod.POST)
     @ResponseBody
     public String updateObjectives(@ModelAttribute(value="updateObjectiveRequestItem") UpdateObjectiveRequestItem updateObjectiveRequestItem, BindingResult errors) {

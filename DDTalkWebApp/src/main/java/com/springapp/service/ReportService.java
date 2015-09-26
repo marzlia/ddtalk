@@ -74,7 +74,7 @@ public class ReportService {
 
             String fullName = learner.getFirstName() + " " + learner.getLastName();
             p.setStudentName(fullName);
-            p.setInitialAssessmentDate("Not started");
+            p.setInitialAssessmentDate(learnerPlan.getDateStartPlan().toString());
             p.setTreatmentPlanTitle("Treatment Plan for " + fullName);
             p.setTreatmentPlanDescription(learnerPlan.getTreatmentDescription());
 

@@ -103,5 +103,21 @@ public class LearnerController {
         return "learnerProfile";
     }
 
+    @RequestMapping(value = "/deleteConfirm/{learnerId}", method = RequestMethod.GET)
+    public String deleteConfirmLearner(@PathVariable String learnerId, ModelMap model) {
+
+        Learner learner = learnerService.getLearner(Long.parseLong(learnerId));
+        model.addAttribute("learner", learner);
+        return "learnerDelete";
+    }
+
+    @RequestMapping(value = "/delete/{learnerId}", method = RequestMethod.GET)
+    public String deleteLearner(@PathVariable String learnerId) {
+
+        learnerService.deleteLearner(Long.parseLong(learnerId));
+
+        return "redirect:/learner/user";
+    }
+
 }
 

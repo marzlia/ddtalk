@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head th:replace="learnerFragments :: standard_head"></head>
+
+<body onbeforeunload="updateObjectives()">
+
+<div th:replace="learnerFragments :: learner_header"></div>
+
+<table class="table-style-standard">
+    <tr>
+        <td ><a href="" th:href="@{/learner} + '/' + ${plan.learnerId}">Back to Learner</a></td>
+    </tr>
+</table>
+
+<br /><br />
+
+<h3 th:text="'Treatment Plan: ' + ${plan.treatmentDescription}"/>
+<table class="table-style-standard">
+    <tr>
+        <td>Plan Start</td>
+        <td>Treatment Frequency</td>
+        <td>Data Collection Frequency</td>
+    </tr>
+    <tr>
+        <td th:text="${#dates.format(plan.dateStartPlan, 'MMM dd, yyyy')}"></td>
+        <td th:text="${plan.treatmentFrequency}"></td>
+        <td th:text="${plan.dataCollectFrequency}"></td>
+    </tr>
+</table>
+
+<br /><br />
+<a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton">Report</a>
+<a th:href="@{/report/session} + '/' + ${plan.learnerPlanId}" class="standardButton">Report Session</a>
+
+</body>
+</html>

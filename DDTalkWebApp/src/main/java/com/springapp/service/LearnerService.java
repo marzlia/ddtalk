@@ -40,4 +40,9 @@ public class LearnerService {
         learnerUserAccess.setLearnerId(learner.getLearnerId());
         loginUserAccessRepository.save(learnerUserAccess);
     }
+
+    public void deleteLearner(Long longId) {
+        learnerRepository.delete(longId);
+    }
+
 }
