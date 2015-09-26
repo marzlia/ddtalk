@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head th:replace="learnerFragments :: standard_head"></head>
+
+<body>
+
+<form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form" />
+
+<div>
+    <div>
+        <label for="select-domain"></label>
+        <select id="select-domain" placeholder="Select a domain..." style="width: 250px">
+            <option th:each="domain : ${domains}"
+                    th:value="${domain.domainId}"
+                    th:text="${domain.description}"/>
+        </select>
+    </div>
+</div>
+
+<table id="objectives_table" class="table-style-standard">
+</table>
+
+<br /><br />
+<a th:href="@{/learner/user}" class="standardButton">Back to Main</a>
+
+<script>
+    $('#select-domain').selectize({
+        create: true,
+        dropdownParent: 'body',
+        onChange: function(value) {
+            $.ajax({
+                url: '../lookup/objectives/' + value,
+                type: 'GET',
+                dataType: 'json'
+            })
+            .done(function(data){
+                generateTable(data);
+            });
+        }
+    });
+
+    function generateTable(data) {
+
+        var tableElement = $("#objectives_table");
+        tableElement.empty();
+        tableElement.append(createTableRow(data[0]));
+    };
+
+    function createTableRow(objectiveData){
+
+        var trElement = "tr";
+
+        trElement += "tr";
+
+        return trElement;
+    };
+
+</script>
+
+</body>
+</html>

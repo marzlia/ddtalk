@@ -95,6 +95,11 @@ public class LookupController {
         return objectives;
     }
 
+    @RequestMapping(value = "/objectivesEdit", method = RequestMethod.GET)
+    public String objectivesEdit() {
+        return "objectivesEdit";
+    }
+
     private  boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
