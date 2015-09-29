@@ -5,7 +5,12 @@
 
 <body>
 
+<a th:href="@{/learner/user}" class="standardButton">Back to Main</a>
+<br /><br />
+
 <form th:action="@{updateObjectives}" th:object="${plan}" method="post" id="update_objectives_form" />
+
+<br /><br />
 
 <div>
     <div>
@@ -21,21 +26,21 @@
 <table id="objectives_table" class="table-style-standard">
 </table>
 
-<br /><br />
-<a th:href="@{/learner/user}" class="standardButton">Back to Main</a>
-
 <script>
     $('#select-domain').selectize({
         create: true,
         dropdownParent: 'body',
         onChange: function(value) {
             $.ajax({
-                url: '../lookup/objectives/' + value,
+                url: '../lookup/objectiveTable/' + value,
                 type: 'GET',
-                dataType: 'json'
-            })
-            .done(function(data){
-                generateTable(data);
+                dataType: 'text',
+                success: function (data) {
+                    generateTable(data);
+                },
+                error: function (xhr, status, error) {
+                    alert(error);
+                }
             });
         }
     });
@@ -44,16 +49,24 @@
 
         var tableElement = $("#objectives_table");
         tableElement.empty();
-        tableElement.append(createTableRow(data[0]));
+        tableElement.append(data);
     };
 
-    function createTableRow(objectiveData){
-
-        var trElement = "tr";
-
-        trElement += "tr";
-
-        return trElement;
+    function deleteRow(r) {
+        $.ajax({
+            url: '../lookup/objectiveRemove/' + r.id,
+            type: 'GET',
+            dataType: 'text',
+            success: function (data) {
+                if(data == "OK") {
+                    var i = r.parentNode.parentNode.rowIndex;
+                    document.getElementById("objectives_table").deleteRow(i);
+                }
+                else {
+                    alert("Cannot remove Objective since it is attached to a learner plan.");
+                }
+            }
+        });
     };
 
 </script>

@@ -23,4 +23,12 @@ public class ObjectiveService {
 
         return objectiveRepository.findByDomain(domain);
     }
+
+    public Objective objectiveForId(String objectiveId) {
+        return objectiveRepository.findOne(Long.parseLong(objectiveId));
+    }
+
+    public void delete(String objectiveId) {
+        objectiveRepository.delete(Long.parseLong(objectiveId));
+    }
 }

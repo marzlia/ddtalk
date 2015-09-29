@@ -133,6 +133,14 @@ public class LearnerPlanService {
         return learnerPlanRepository.save(plan);
     }
 
+    public boolean isObjectivePartOfAnyPlan(Objective objective) {
+        List<LearnerPlanObjective> learnerPlanObjectives =  learnerPlanObjectiveRepository.findByObjective(objective);
+        if (learnerPlanObjectives.size() > 0) {
+            return true;
+        }
+        return false;
+    }
+
     public LearnerPlan saveLearnerPlan(LearnerPlan plan) {
         return learnerPlanRepository.save(plan);
     }
