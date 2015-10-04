@@ -26,11 +26,6 @@ public class JasperConfig {
         resolver.setViewNames(viewNames);
 
         resolver.setViewClass(JasperReportsPdfView.class);
-
-        Properties properties = new Properties();
-        properties.put("chartSubReport", "classpath:reports/report_ddtalk_session_chart.jasper");
-        resolver.setSubReportUrls(properties);
-
         resolver.setOrder(0);
         return resolver;
     }

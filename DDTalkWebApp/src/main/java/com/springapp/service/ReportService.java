@@ -64,7 +64,7 @@ public class ReportService {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
 
         learnerPlanService.updateMasteryForLearnerPlan(learnerPlan);
-        Long countMastered = 0L;
+
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
 
         List<ReportLearnerSession> reportLearnerSessions = new ArrayList<ReportLearnerSession>();
@@ -92,14 +92,13 @@ public class ReportService {
                     sessionData.setSessionValue(sessionObjective.getSessionValue());
                 }
                 else {
-//                    Long countMastered = 0L;
+                    Long countMastered = 0L;
                     for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
                         if (planObjectiveTarget.getMastered().equals("Y") &&
                             planObjectiveTarget.getMasteryDate().equals(sessionDate)) {
                             countMastered++;
                         }
                     }
-                    countMastered += 20;
                     sessionData.setSessionValue(countMastered);
                 }
                 reportSessionDataList.add(sessionData);
