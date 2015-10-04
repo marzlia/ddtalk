@@ -145,5 +145,19 @@ public class LearnerSessionService {
         learnerSessionObjectiveTargetRepository.delete(learnerSessionObjectiveTarget);
     }
 
+
+    public void deleteSession(LearnerSession learnerSession) {
+        for (LearnerSessionObjective sessionObjective : learnerSession.getLearnerSessionObjectiveList()) {
+            if (sessionObjective.getLearnerPlanObjective().getObjectiveType().getTypeId().equals("C")) {
+                for (LearnerSessionObjectiveTarget learnerSessionObjectiveTarget : sessionObjective.getLearnerSessionObjectiveTargets()) {
+                    learnerSessionObjectiveTargetRepository.delete(learnerSessionObjectiveTarget);
+                }
+                sessionObjective.setLearnerSessionObjectiveTargets(new ArrayList<LearnerSessionObjectiveTarget>());
+            }
+            learnerSessionObjectiveRepository.delete(sessionObjective);
+        }
+        learnerSession.setLearnerSessionObjectiveList(new ArrayList<LearnerSessionObjective>());
+        learnerSessionRepository.delete(learnerSession);
+    }
 }
 

@@ -250,5 +250,27 @@ public class LearnerSessionController {
         return "learnerSessionObjectiveTargets";
     }
 
+    @RequestMapping(value = "/deleteConfirm/{learnerPlanId}/{sessionId}", method = RequestMethod.GET)
+    public String deleteConfirmSession(@PathVariable String learnerPlanId, @PathVariable String sessionId, ModelMap model) {
+        LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
+        Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
+
+        LearnerSession learnerSession = learnerSessionService.getLearnerSession(Long.parseLong(sessionId));
+        model.addAttribute("learnerSession", learnerSession);
+        model.addAttribute("learnerPlanId", learnerPlanId);
+        model.addAttribute("learner", learner);
+
+        return "learnerSessionDelete";
+    }
+
+    @RequestMapping(value = "/delete/{learnerPlanId}/{sessionId}", method = RequestMethod.GET)
+    public String sessionDelete(@PathVariable String learnerPlanId, @PathVariable String sessionId) {
+
+        LearnerSession learnerSession = learnerSessionService.getLearnerSession(Long.parseLong(sessionId));
+        learnerSessionService.deleteSession(learnerSession);
+
+        return "redirect:/learnerSession/" + learnerPlanId;
+    }
+
 }
 

@@ -6,14 +6,14 @@ import java.util.Date;
  * Created by peter on 9/16/15.
  */
 public class ReportSessionData {
-    Date sessionDate;
+    String sessionDate;
     Long sessionValue;
 
-    public Date getSessionDate() {
+    public String getSessionDate() {
         return sessionDate;
     }
 
-    public void setSessionDate(Date sessionDate) {
+    public void setSessionDate(String sessionDate) {
         this.sessionDate = sessionDate;
     }
 

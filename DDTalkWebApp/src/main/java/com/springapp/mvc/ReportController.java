@@ -63,7 +63,6 @@ public class ReportController {
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
 
         Map<String,Object> parameterMap = reportService.generateLearnerSessionData(learnerPlan, loginUser);
-
         modelAndView = new ModelAndView("report_ddtalk_learner_session", parameterMap);
 
         return modelAndView;

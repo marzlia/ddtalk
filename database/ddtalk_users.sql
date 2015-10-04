@@ -16,7 +16,7 @@ INSERT INTO login_user_role VALUES (5, 'USER' );
 INSERT INTO login_user (username, password, enabled, role, full_name) VALUES ('sam', 'data', 1, 'USER', 'Sam DeTeso' );
 INSERT INTO login_user_role VALUES (6, 'USER' );
 
-INSERT INTO login_user (username, password, enabled, role, full_name) VALUES ('tori', 'data', 1, 'USER', 'Tori Poteet' );
+INSERT INTO login_user (username, password, enabled, role, full_name) VALUES ('tori', 'data', 1, 'USER', 'Tori Blake' );
 INSERT INTO login_user_role VALUES (7, 'USER' );
 
 INSERT INTO login_user (username, password, enabled, role, full_name) VALUES ('mallory', 'data', 1, 'USER', 'Mallory Greenstein' );

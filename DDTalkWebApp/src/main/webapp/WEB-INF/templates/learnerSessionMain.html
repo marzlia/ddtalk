@@ -19,9 +19,10 @@
 <table class="table-style-standard">
     <tr th:each="learnerSession : ${learnerSessions}">
         <td th:text="${learnerSession.sessionDate} ? ${#dates.format(learnerSession.sessionDate, 'MMM dd, yyyy')}"></td>
-        <td >
+        <td>
             <a th:href="@{'/learnerSession/' + ${plan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}}">Edit Session</a>
         </td>
+        <td><a th:href="@{'/learnerSession/deleteConfirm/' + ${plan.learnerPlanId} + '/' + ${learnerSession.learnerSessionId}}">Remove Session</a> </td>
     </tr>
 </table>
 

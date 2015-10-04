@@ -9,6 +9,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -60,9 +61,10 @@ public class ReportService {
     }
 
     public Map<String,Object> generateLearnerSessionData(LearnerPlan learnerPlan, LoginUser loginUser) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
 
         learnerPlanService.updateMasteryForLearnerPlan(learnerPlan);
-
+        Long countMastered = 0L;
         Learner learner = learnerService.getLearner(learnerPlan.getLearnerId());
 
         List<ReportLearnerSession> reportLearnerSessions = new ArrayList<ReportLearnerSession>();
@@ -74,24 +76,32 @@ public class ReportService {
 
             String fullName = learner.getFirstName() + " " + learner.getLastName();
             p.setStudentName(fullName);
-            p.setInitialAssessmentDate(learnerPlan.getDateStartPlan().toString());
-            p.setTreatmentPlanTitle("Treatment Plan for " + fullName);
-            p.setTreatmentPlanDescription(learnerPlan.getTreatmentDescription());
-
-            p.setSchool(learner.getSchool());
-            p.setStudentNumber(learner.getStudentId());
-            p.setTreatmentFrequency(learnerPlan.getTreatmentFrequency());
-            p.setTreatmentPlanDate(learnerPlan.getDateStartPlan().toString());
-
-            p.setObjective(learnerPlanObjective);
+            p.setDomain(learnerPlanObjective.getObjective().getDomain().getDescription());
+            p.setObjective(learnerPlanObjective.getObjective().getDescription());
+            p.setCondition(learnerPlanObjective.getCondition().getDescription());
+            p.setCriteria(learnerPlanObjective.getCriteria().getDescription());
+            p.setMastery(learnerPlanObjective.getMasteryValue().toString());
 
             List<LearnerSessionObjective> objectiveSessions = learnerSessionService.getSessionsForPlanObjective(learnerPlanObjective);
             List<ReportSessionData> reportSessionDataList = new ArrayList<ReportSessionData>();
             for (LearnerSessionObjective sessionObjective : objectiveSessions) {
                 ReportSessionData sessionData = new ReportSessionData();
                 Date sessionDate = learnerSessionService.getLearnerSession(sessionObjective.getLearnerSessionId()).getSessionDate();
-                sessionData.setSessionDate(sessionDate);
-                sessionData.setSessionValue(sessionObjective.getSessionValue());
+                sessionData.setSessionDate(simpleDateFormat.format(sessionDate));
+                if (learnerPlanObjective.getObjectiveType().getTypeId().equals("P")) {
+                    sessionData.setSessionValue(sessionObjective.getSessionValue());
+                }
+                else {
+//                    Long countMastered = 0L;
+                    for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
+                        if (planObjectiveTarget.getMastered().equals("Y") &&
+                            planObjectiveTarget.getMasteryDate().equals(sessionDate)) {
+                            countMastered++;
+                        }
+                    }
+                    countMastered += 20;
+                    sessionData.setSessionValue(countMastered);
+                }
                 reportSessionDataList.add(sessionData);
             }
             p.setReportSessionDataList(reportSessionDataList);

@@ -11,16 +11,13 @@ import java.util.List;
 public class ReportLearnerSession {
 
     String studentName;
-    String initialAssessmentDate;
-    String studentNumber;
     String treatmentProvider;
-    String treatmentPlanDate;
-    String treatmentFrequency;
-    String school;
-    String treatmentPlanDescription;
-    String treatmentPlanTitle;
+    String domain;
+    String objective;
+    String condition;
+    String criteria;
+    String mastery;
 
-    LearnerPlanObjective objective;
 
     List<ReportSessionData> reportSessionDataList;
 
@@ -32,22 +29,6 @@ public class ReportLearnerSession {
         this.studentName = studentName;
     }
 
-    public String getInitialAssessmentDate() {
-        return initialAssessmentDate;
-    }
-
-    public void setInitialAssessmentDate(String initialAssessmentDate) {
-        this.initialAssessmentDate = initialAssessmentDate;
-    }
-
-    public String getStudentNumber() {
-        return studentNumber;
-    }
-
-    public void setStudentNumber(String studentNumber) {
-        this.studentNumber = studentNumber;
-    }
-
     public String getTreatmentProvider() {
         return treatmentProvider;
     }
@@ -56,52 +37,44 @@ public class ReportLearnerSession {
         this.treatmentProvider = treatmentProvider;
     }
 
-    public String getTreatmentPlanDate() {
-        return treatmentPlanDate;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setTreatmentPlanDate(String treatmentPlanDate) {
-        this.treatmentPlanDate = treatmentPlanDate;
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
-    public String getTreatmentFrequency() {
-        return treatmentFrequency;
-    }
-
-    public void setTreatmentFrequency(String treatmentFrequency) {
-        this.treatmentFrequency = treatmentFrequency;
-    }
-
-    public String getSchool() {
-        return school;
-    }
-
-    public void setSchool(String school) {
-        this.school = school;
-    }
-
-    public String getTreatmentPlanDescription() {
-        return treatmentPlanDescription;
-    }
-
-    public void setTreatmentPlanDescription(String treatmentPlanDescription) {
-        this.treatmentPlanDescription = treatmentPlanDescription;
-    }
-
-    public String getTreatmentPlanTitle() {
-        return treatmentPlanTitle;
-    }
-
-    public void setTreatmentPlanTitle(String treatmentPlanTitle) {
-        this.treatmentPlanTitle = treatmentPlanTitle;
-    }
-
-    public LearnerPlanObjective getObjective() {
+    public String getObjective() {
         return objective;
     }
 
-    public void setObjective(LearnerPlanObjective objective) {
+    public void setObjective(String objective) {
         this.objective = objective;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
+    public String getCriteria() {
+        return criteria;
+    }
+
+    public void setCriteria(String criteria) {
+        this.criteria = criteria;
+    }
+
+    public String getMastery() {
+        return mastery;
+    }
+
+    public void setMastery(String mastery) {
+        this.mastery = mastery;
     }
 
     public List<ReportSessionData> getReportSessionDataList() {

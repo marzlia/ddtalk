@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="learnerFragments :: standard_head"></head>
+
+<body>
+
+<p><b>Delete Session?</b></p>
+
+<br /><br /><br />
+<a href="" th:href="@{'/learnerSession/delete/' + ${learnerPlanId} + '/' + ${learnerSession.learnerSessionId}}" class="standardButton">Yes</a>
+<a href="" th:href="@{'/learnerSession/' + ${learnerPlanId}}" class="standardButton">No</a>
+
+</body>
+</html>
