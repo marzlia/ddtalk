@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.1.0.final using JasperReports Library version 6.1.0  -->
-<!-- 2015-10-04T00:14:55 -->
+<!-- 2015-10-05T23:42:49 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_ddtalk_learner_session" pageWidth="612" pageHeight="792" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4711a08d-e19f-43a9-b11d-6dc4d0ac954b">
 	<subDataset name="SessionDataset" uuid="c364c52e-d4cc-4b87-b658-a459363cd53f">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
@@ -61,28 +61,32 @@
 		<band height="639" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
 			<staticText>
-				<reportElement x="0" y="32" width="100" height="20" uuid="53150069-b4a0-490f-9d06-095f391af34e"/>
+				<reportElement x="0" y="40" width="100" height="20" uuid="53150069-b4a0-490f-9d06-095f391af34e"/>
 				<textElement>
 					<font fontName="DejaVu Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Objective]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="-1" y="129" width="100" height="21" uuid="86bd4870-1a7c-448c-bc5b-59e63678a141"/>
+				<reportElement x="0" y="130" width="100" height="20" uuid="86bd4870-1a7c-448c-bc5b-59e63678a141">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Mastery]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="99" width="100" height="20" uuid="716b8638-e877-4336-9cbf-6f6bccd633b0"/>
+				<reportElement x="0" y="100" width="100" height="20" uuid="716b8638-e877-4336-9cbf-6f6bccd633b0"/>
 				<textElement>
 					<font fontName="DejaVu Serif" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Criteria]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="69" width="100" height="21" uuid="0fcffaf3-d354-4991-a09a-08c4f6ae56dc"/>
+				<reportElement x="0" y="70" width="100" height="20" uuid="0fcffaf3-d354-4991-a09a-08c4f6ae56dc">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textElement>
 					<font fontName="DejaVu Serif" size="12" isBold="true"/>
 				</textElement>
@@ -96,35 +100,45 @@
 				<text><![CDATA[Domain]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="130" y="10" width="431" height="21" uuid="70d5d2c9-a70f-4fa5-bb3c-a8763a0c70ac"/>
+				<reportElement x="130" y="10" width="431" height="20" uuid="70d5d2c9-a70f-4fa5-bb3c-a8763a0c70ac">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{domain}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="132" y="37" width="431" height="21" uuid="9c905dec-ea4c-4b16-b189-000592b9b4d4"/>
+				<reportElement x="130" y="40" width="431" height="20" uuid="9c905dec-ea4c-4b16-b189-000592b9b4d4">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{objective}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="132" y="68" width="431" height="21" uuid="95c9cac0-5fa7-460a-b48d-4f15b3508f25"/>
+				<reportElement x="130" y="70" width="431" height="20" uuid="95c9cac0-5fa7-460a-b48d-4f15b3508f25">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{condition}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="130" y="100" width="431" height="21" uuid="f94540fd-b704-4f6c-bccf-70c2aa3934b6"/>
+				<reportElement x="130" y="100" width="431" height="20" uuid="f94540fd-b704-4f6c-bccf-70c2aa3934b6">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{criteria}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="130" y="127" width="431" height="21" uuid="1a131a03-763b-480c-994b-89d5e9fda0cf"/>
+				<reportElement x="130" y="130" width="431" height="20" uuid="1a131a03-763b-480c-994b-89d5e9fda0cf">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
 				<textFieldExpression><![CDATA[$F{mastery}]]></textFieldExpression>
 			</textField>
 			<lineChart>
 				<chart evaluationTime="Page">
-					<reportElement stretchType="RelativeToBandHeight" x="0" y="169" width="570" height="470" uuid="9fd395d1-f98c-4692-9cc2-8c0a0bdf215f"/>
+					<reportElement stretchType="RelativeToBandHeight" x="0" y="169" width="570" height="470" uuid="77e33384-c10a-4bf1-abc5-3879adba8fae"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend/>
 				</chart>
 				<categoryDataset>
 					<dataset>
-						<datasetRun subDataset="SessionDataset" uuid="8bd52d9e-c84f-4eeb-a304-65b18fe30a5b">
+						<datasetRun subDataset="SessionDataset" uuid="4efbcf90-2265-4606-82f5-33a237c404ee">
 							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{reportSessionDataList},false)]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
@@ -135,12 +149,23 @@
 					</categorySeries>
 				</categoryDataset>
 				<linePlot>
-					<plot/>
-					<categoryAxisFormat>
-						<axisFormat/>
+					<plot labelRotation="52.0"/>
+					<categoryAxisFormat labelRotation="52.0">
+						<axisFormat>
+							<labelFont>
+								<font size="8"/>
+							</labelFont>
+							<tickLabelFont>
+								<font fontName="DejaVu Serif" size="8"/>
+							</tickLabelFont>
+						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat/>
+						<axisFormat>
+							<tickLabelFont>
+								<font fontName="DejaVu Serif" size="8"/>
+							</tickLabelFont>
+						</axisFormat>
 					</valueAxisFormat>
 				</linePlot>
 			</lineChart>

@@ -31,7 +31,22 @@
 
 <br /><br />
 <a th:href="@{/report/plan} + '/' + ${plan.learnerPlanId}" class="standardButton">Plan Report</a>
-<a th:href="@{/report/session} + '/' + ${plan.learnerPlanId}" class="standardButton">Session Report</a>
+<br /><br /><br /><br />
+<fieldset style="width: 600px">
+    <form th:action="@{/report/session} + '/' + ${plan.learnerPlanId}" th:object="${requestDates}" method="post">
+        <input type="submit" value="Session Report" class="standardButton"/>
+        <br /><br />
+        Session Report Date Range:
+        <br />
+        Start Date
+        <input type="text" class="datepicker" name="startDate"/>
+        <br />
+        End Date
+        <input type="text" class="datepicker" name="endDate" />
+        <br /><br /><br />
+        Note: If no date range is given, report will default to all session data
+    </form>
+</fieldset>
 
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.springapp.service;
 
 import com.springapp.model.*;
+import com.springapp.model.request.SessionReportRequestDates;
 import com.springapp.reports.ReportLearnerPlan;
 import com.springapp.reports.ReportLearnerSession;
 import com.springapp.reports.ReportSessionData;
@@ -60,7 +61,7 @@ public class ReportService {
         return parameterMap;
     }
 
-    public Map<String,Object> generateLearnerSessionData(LearnerPlan learnerPlan, LoginUser loginUser) {
+    public Map<String,Object> generateLearnerSessionData(LearnerPlan learnerPlan, LoginUser loginUser, SessionReportRequestDates requestDates) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM/dd");
 
         learnerPlanService.updateMasteryForLearnerPlan(learnerPlan);
@@ -85,23 +86,25 @@ public class ReportService {
             List<LearnerSessionObjective> objectiveSessions = learnerSessionService.getSessionsForPlanObjective(learnerPlanObjective);
             List<ReportSessionData> reportSessionDataList = new ArrayList<ReportSessionData>();
             for (LearnerSessionObjective sessionObjective : objectiveSessions) {
-                ReportSessionData sessionData = new ReportSessionData();
+
                 Date sessionDate = learnerSessionService.getLearnerSession(sessionObjective.getLearnerSessionId()).getSessionDate();
-                sessionData.setSessionDate(simpleDateFormat.format(sessionDate));
-                if (learnerPlanObjective.getObjectiveType().getTypeId().equals("P")) {
-                    sessionData.setSessionValue(sessionObjective.getSessionValue());
-                }
-                else {
-                    Long countMastered = 0L;
-                    for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
-                        if (planObjectiveTarget.getMastered().equals("Y") &&
-                            planObjectiveTarget.getMasteryDate().equals(sessionDate)) {
-                            countMastered++;
+                if (includeSessionInReport(sessionDate, requestDates)) {
+                    ReportSessionData sessionData = new ReportSessionData();
+                    sessionData.setSessionDate(simpleDateFormat.format(sessionDate));
+                    if (learnerPlanObjective.getObjectiveType().getTypeId().equals("P")) {
+                        sessionData.setSessionValue(sessionObjective.getSessionValue());
+                    } else {
+                        Long countMastered = 0L;
+                        for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
+                            if (planObjectiveTarget.getMastered().equals("Y") &&
+                                    !planObjectiveTarget.getMasteryDate().after(sessionDate)) {
+                                countMastered++;
+                            }
                         }
+                        sessionData.setSessionValue(countMastered);
                     }
-                    sessionData.setSessionValue(countMastered);
+                    reportSessionDataList.add(sessionData);
                 }
-                reportSessionDataList.add(sessionData);
             }
             p.setReportSessionDataList(reportSessionDataList);
 
@@ -115,4 +118,16 @@ public class ReportService {
         return parameterMap;
     }
 
+    public boolean includeSessionInReport(Date sessionDate, SessionReportRequestDates requestDates) {
+        Date startDate = requestDates.getStartDate();
+        Date endDate = requestDates.getEndDate();
+        if (startDate != null && endDate != null) {
+            if (sessionDate.before(startDate) ||
+                    sessionDate.after(endDate)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

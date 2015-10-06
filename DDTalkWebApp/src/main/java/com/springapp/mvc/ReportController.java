@@ -4,6 +4,7 @@ import com.springapp.model.Learner;
 import com.springapp.model.LearnerPlan;
 import com.springapp.model.LearnerPlanObjective;
 import com.springapp.model.LoginUser;
+import com.springapp.model.request.SessionReportRequestDates;
 import com.springapp.reports.ReportLearnerPlan;
 import com.springapp.service.LearnerPlanService;
 import com.springapp.service.LearnerService;
@@ -13,6 +14,8 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -56,14 +59,14 @@ public class ReportController {
         return modelAndView;
     }
 
-    @RequestMapping(method = RequestMethod.GET , value = "/session/{learnerPlanId}")
-    public ModelAndView generateLearnerSessionReport(@PathVariable String learnerPlanId,  ModelAndView modelAndView){
+    @RequestMapping(method = RequestMethod.POST , value = "/session/{learnerPlanId}")
+    public ModelAndView generateLearnerSessionReport(@PathVariable String learnerPlanId, @ModelAttribute(value="requestDates") SessionReportRequestDates requestDates, BindingResult errors){
 
         LoginUser loginUser = loginUserService.getLoginUser(httpServletRequest.getUserPrincipal().getName());
         LearnerPlan learnerPlan = learnerPlanService.getLearnerPlan(Long.parseLong(learnerPlanId));
 
-        Map<String,Object> parameterMap = reportService.generateLearnerSessionData(learnerPlan, loginUser);
-        modelAndView = new ModelAndView("report_ddtalk_learner_session", parameterMap);
+        Map<String,Object> parameterMap = reportService.generateLearnerSessionData(learnerPlan, loginUser, requestDates);
+        ModelAndView modelAndView = new ModelAndView("report_ddtalk_learner_session", parameterMap);
 
         return modelAndView;
     }
