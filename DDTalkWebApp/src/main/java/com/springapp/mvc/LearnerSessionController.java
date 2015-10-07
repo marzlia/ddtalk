@@ -55,6 +55,13 @@ public class LearnerSessionController {
         model.addAttribute("learner", learner);
 
         List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(Long.parseLong(learnerPlanId));
+        Collections.sort(learnerSessions, new Comparator<LearnerSession>() {
+            @Override
+            public int compare(LearnerSession session1, LearnerSession session2) {
+                return session1.getSessionDate().compareTo(session2.getSessionDate());
+            }
+        });
+
         model.addAttribute("learnerSessions", learnerSessions);
 
         return "learnerSessionMain";

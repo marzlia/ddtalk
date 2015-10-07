@@ -29,6 +29,7 @@ public class ReportService {
     LearnerPlanService learnerPlanService;
 
     public Map<String,Object> generateLearnerPlanData(LearnerPlan learnerPlan, LoginUser loginUser) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("MM-dd-yyyy");
 
         learnerPlanService.updateMasteryForLearnerPlan(learnerPlan);
 
@@ -40,14 +41,30 @@ public class ReportService {
 
         String fullName = learner.getFirstName() + " " + learner.getLastName();
         p.setStudentName(fullName);
-        p.setInitialAssessmentDate("Not started");
+
+        List<LearnerSession> learnerSessions = learnerSessionService.getSessionsForLearnerPlanId(learnerPlan.getLearnerPlanId());
+        if (learnerSessions == null || learnerSessions.size() == 0) {
+            p.setInitialAssessmentDate("No sessions yet");
+        }
+        else {
+            Date earliestDate = null;
+            for (LearnerSession learnerSession : learnerSessions) {
+                if (earliestDate == null ||
+                        learnerSession.getSessionDate().before(earliestDate)) {
+                    earliestDate = learnerSession.getSessionDate();
+                }
+            }
+            p.setInitialAssessmentDate(simpleDateFormat.format(earliestDate));
+        }
+
         p.setTreatmentPlanTitle("Treatment Plan for " + fullName);
         p.setTreatmentPlanDescription(learnerPlan.getTreatmentDescription());
 
         p.setSchool(learner.getSchool());
         p.setStudentNumber(learner.getStudentId());
         p.setTreatmentFrequency(learnerPlan.getTreatmentFrequency());
-        p.setTreatmentPlanDate(learnerPlan.getDateStartPlan().toString());
+
+        p.setTreatmentPlanDate(simpleDateFormat.format(learnerPlan.getDateStartPlan()));
 
         p.setObjectives(learnerPlan.getLearnerPlanObjectiveList());
 
@@ -71,7 +88,7 @@ public class ReportService {
         List<ReportLearnerSession> reportLearnerSessions = new ArrayList<ReportLearnerSession>();
 
         for (LearnerPlanObjective learnerPlanObjective : learnerPlan.getLearnerPlanObjectiveList()) {
-
+            boolean isPercentage = (learnerPlanObjective.getObjectiveType().getTypeId().equals("P"));
             ReportLearnerSession p = new ReportLearnerSession();
             p.setTreatmentProvider(loginUser.getFullName());
 
@@ -81,7 +98,7 @@ public class ReportService {
             p.setObjective(learnerPlanObjective.getObjective().getDescription());
             p.setCondition(learnerPlanObjective.getCondition().getDescription());
             p.setCriteria(learnerPlanObjective.getCriteria().getDescription());
-            p.setMastery(learnerPlanObjective.getMasteryValue().toString());
+            p.setMastery(learnerPlanObjective.getMasteryValue().toString() + ((isPercentage) ? "%" : " Target(s)"));
 
             List<LearnerSessionObjective> objectiveSessions = learnerSessionService.getSessionsForPlanObjective(learnerPlanObjective);
             List<ReportSessionData> reportSessionDataList = new ArrayList<ReportSessionData>();
@@ -91,8 +108,13 @@ public class ReportService {
                 if (includeSessionInReport(sessionDate, requestDates)) {
                     ReportSessionData sessionData = new ReportSessionData();
                     sessionData.setSessionDate(simpleDateFormat.format(sessionDate));
-                    if (learnerPlanObjective.getObjectiveType().getTypeId().equals("P")) {
-                        sessionData.setSessionValue(sessionObjective.getSessionValue());
+                    if (isPercentage) {
+                        if (sessionObjective.getSessionValue() != null) {
+                            sessionData.setSessionValue(sessionObjective.getSessionValue());
+                        }
+                        else {
+                            sessionData = null;
+                        }
                     } else {
                         Long countMastered = 0L;
                         for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
@@ -103,9 +125,19 @@ public class ReportService {
                         }
                         sessionData.setSessionValue(countMastered);
                     }
-                    reportSessionDataList.add(sessionData);
+                    if (sessionData != null) {
+                        reportSessionDataList.add(sessionData);
+                    }
                 }
             }
+
+            Collections.sort(reportSessionDataList, new Comparator<ReportSessionData>() {
+                @Override
+                public int compare(ReportSessionData session1, ReportSessionData session2) {
+                    return session1.getSessionDate().compareTo(session2.getSessionDate());
+                }
+            });
+
             p.setReportSessionDataList(reportSessionDataList);
 
             reportLearnerSessions.add(p);
