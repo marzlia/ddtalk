@@ -1,8 +1,10 @@
 package com.springapp.service;
 
 import com.springapp.model.Learner;
+import com.springapp.model.LearnerNote;
 import com.springapp.model.LearnerUserAccess;
 import com.springapp.model.LoginUser;
+import com.springapp.repositories.LearnerNoteRepository;
 import com.springapp.repositories.LearnerRepository;
 import com.springapp.repositories.LoginUserAccessRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class LearnerService {
 
     @Autowired
     LearnerRepository learnerRepository;
+
+    @Autowired
+    LearnerNoteRepository learnerNoteRepository;
 
     @Autowired
     LoginUserAccessRepository loginUserAccessRepository;
@@ -45,4 +50,11 @@ public class LearnerService {
         learnerRepository.delete(longId);
     }
 
+    public LearnerNote noteForLearner(Long learnerId) {
+        return learnerNoteRepository.findByLearnerId(learnerId);
+    }
+
+    public void saveNoteForLearner(LearnerNote learnerNote) {
+        learnerNoteRepository.save(learnerNote);
+    }
 }

@@ -32,10 +32,66 @@
     </tr>
 </table>
 
-<br /><br /><br />
-
+<br /><br />
 
 <a th:href="@{'/learnerPlan/newLearnerPlan/' + ${learner.learnerId}}" class="standardButton">Create New Plan</a>
+
+<br /><br /><br />
+
+<b>Learner Notes</b>
+<br />
+<textarea id="learner_note"  disabled="disabled" readonly="readonly" rows="10" cols="100" th:text="${learnerNote} ? ${learnerNote.note}"/>
+<br />
+<button id="noteButtonEdit" onclick="startEditLearnerNote()" class="standardButton">Edit Learner Notes</button>
+<button id="noteButtonSave" style="display: none;" onclick="saveLearnerNote()" class="standardButton">Save Learner Notes</button>
+
+<form th:action="@{/learner/note}" id="hidden_link_session" />
+<input hidden="hidden" type="text" id="hiddenLearnerId" th:value="${learner.learnerId}"/>
+<input hidden="hidden" type="text" id="hiddenLearnerNoteId" th:value="${learnerNote} ? ${learnerNote.learnerNoteId}"/>
+
+<script>
+    var startEditLearnerNote = function() {
+        $("#learner_note").removeAttr('readonly');
+        $("#learner_note").removeAttr('disabled');
+
+        $("#noteButtonEdit").attr('style', 'display: none;');
+        $("#noteButtonSave").removeAttr('style');
+
+    };
+
+    var saveLearnerNote = function() {
+        $("#learner_note").attr('readonly', 'readonly');
+        $("#learner_note").attr('disabled', 'disabled');
+
+        $("#noteButtonSave").attr('style', 'display: none;');
+        $("#noteButtonEdit").removeAttr('style');
+
+        var theAction = $('#hidden_link_session').attr('action');
+        var theCSRF = $("[name^='_csrf']").attr('value');
+
+        var learnerNoteId = $('#hiddenLearnerNoteId').val();
+        var learnerId = $('#hiddenLearnerId').val();
+        var learnerNote = $('#learner_note').val();
+
+        $.ajax({
+            url: theAction,
+            type: 'POST',
+            headers: {
+                '_csrf':theCSRF
+            },
+            data: {
+                learnerNoteId:learnerNoteId,
+                learnerId:learnerId,
+                note:learnerNote,
+                _csrf:theCSRF
+            },
+            success: function (data) {
+            },
+            error: function() {
+            }
+        });
+    }
+</script>
 
 </body>
 </html>

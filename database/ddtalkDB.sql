@@ -3,6 +3,7 @@ use ddtalk;
 
 DROP TABLE learners;
 DROP TABLE learner_user_access;
+DROP TABLE learner_note;
 DROP TABLE learner_plan;
 DROP TABLE learner_plan_objective;
 DROP TABLE learner_plan_objective_target;
@@ -29,6 +30,13 @@ CREATE TABLE IF NOT EXISTS learners (
   date_initial_eval DATE DEFAULT NULL,
   status varchar(15) DEFAULT NULL,
   PRIMARY KEY (learner_id)
+);
+
+CREATE TABLE IF NOT EXISTS learner_note (
+  learner_note_id int(11) NOT NULL AUTO_INCREMENT,
+  learner_id int(11) NOT NULL,
+  note LONGTEXT DEFAULT NULL,  
+  PRIMARY KEY (learner_note_id)
 );
 
 CREATE TABLE IF NOT EXISTS learner_user_access (

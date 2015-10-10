@@ -118,9 +118,19 @@ public class ReportService {
                     } else {
                         Long countMastered = 0L;
                         for (LearnerPlanObjectiveTarget planObjectiveTarget : learnerPlanObjective.getLearnerPlanObjectiveTarget()) {
+                            //check if it is initially mastered and meets the date range criteria
                             if (planObjectiveTarget.getMastered().equals("Y") &&
                                     !planObjectiveTarget.getMasteryDate().after(sessionDate)) {
-                                countMastered++;
+                                //check if it is in retention
+                                if (planObjectiveTarget.getRetentionState().equals(TargetRetentionState.NO_RETENTION_POLICY)) {
+                                    countMastered++;
+                                }
+                                else {
+                                    //has retention policy, so is it mastered yet?
+                                    if (planObjectiveTarget.getRetentionState().equals(TargetRetentionState.RETENTION_MASTERED)) {
+                                        countMastered++;
+                                    }
+                                }
                             }
                         }
                         sessionData.setSessionValue(countMastered);

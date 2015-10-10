@@ -1,9 +1,6 @@
 package com.springapp.mvc;
 
-import com.springapp.model.Domain;
-import com.springapp.model.Learner;
-import com.springapp.model.LearnerPlan;
-import com.springapp.model.LoginUser;
+import com.springapp.model.*;
 import com.springapp.service.DomainService;
 import com.springapp.service.LearnerPlanService;
 import com.springapp.service.LearnerService;
@@ -45,11 +42,22 @@ public class LearnerController {
 
         Learner learner = learnerService.getLearner(Long.parseLong(learnerId));
         List<LearnerPlan> plans = learnerPlanService.getPlansForLearnerId(learner.getLearnerId());
+        LearnerNote learnerNote = learnerService.noteForLearner(Long.parseLong(learnerId));
 
         model.addAttribute("learner", learner);
         model.addAttribute("plans", plans);
+        if (learnerNote != null) {
+            model.addAttribute("learnerNote", learnerNote);
+        }
 
         return "learnerMain";
+    }
+
+    @RequestMapping(value = "/note", method = RequestMethod.POST)
+    @ResponseBody
+    public String learnerNoteUpdate(@ModelAttribute(value="learnerNote") LearnerNote learnerNote, BindingResult errors) {
+        learnerService.saveNoteForLearner(learnerNote);
+        return "{}";
     }
 
     @RequestMapping(value = "/all", method = RequestMethod.GET)

@@ -5,10 +5,11 @@ package com.springapp.model;
  */
 
 //retention states as follows:
-//  'NA', no retention policy for this target
-//  'NM', target has retention policy but is not mastered yet; if fails retention, will be reset to this state
-//  'MW', target has retention policy and is mastered but still in waiting period
-//  'MM', target has retention policy and is mastered and retention retest was mastered
+//  'N', no retention policy for this target
+//  'Y', has retention policy for this target
+//  'W', target has retention policy and is mastered but still in waiting period
+//  'R', target has retention policy and is mastered and is ready for retest
+//  'M', target has retention policy and is mastered and retention retest was mastered
 
 public class TargetRetentionState {
     static public String NO_RETENTION_POLICY            =   "N";
